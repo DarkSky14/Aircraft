@@ -4,7 +4,7 @@ from os import listdir
 
 FPS = pygame.time.Clock()
 
-IMGS_PATH = '_internal/library/player'
+IMGS_PATH = 'library/player'
 
 CREATE_ENEMY1 = pygame.USEREVENT + 2
 CREATE_ENEMY2 = pygame.USEREVENT + 2
@@ -41,12 +41,12 @@ max_score1=30
 max_score2=300
 max_score3=1500 
 
-bg = pygame.transform.scale(pygame.image.load('_internal/library/pictures/background.png').convert(), screen)
+bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), screen)
 bgX = 0
 bgX2 = bg.get_width()
 
 
-enemy = pygame.image.load('_internal/library/pictures/enemy.png')
+enemy = pygame.image.load('library/pictures/enemy.png')
 def create_enemy(speed_w1, speed_w2):
     global enemy
     enemy_rect = pygame.Rect(width, random.randint(0,height), *enemy.get_size())
@@ -54,7 +54,7 @@ def create_enemy(speed_w1, speed_w2):
     return[enemy, enemy_rect, enemy_speed]
 
 
-bonus = pygame.image.load('_internal/library/pictures/bonus.jpg ').convert_alpha()
+bonus = pygame.image.load('library/pictures/bonus.jpg ').convert_alpha()
 def create_bonus():
     global bonus
     bonus_rect = pygame.Rect(random.randint(0, width), -1000, *bonus.get_size())    

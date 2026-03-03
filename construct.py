@@ -5,44 +5,18 @@ from pygame import (
     MOUSEBUTTONDOWN, KEYDOWN
 )
 
-from clients.menu_client import * 
+from clients.menu_client import *
 from clients.game_client import * 
-from clients.language import * 
-from clients.null import Passage
+from clients._lib_ import (
+    Passage, config, vie, conf_height, TextM,
+    MusicConf, main_surface, d, width, height, screen,
+    English, Українська, Русский
+)
+
 
 # Setup pygame/window -----------------------------
-icon = pygame.transform.scale(pygame.image.load('_internal/library/Aircraft.ico').convert(),screen)
-fon = pygame.image.load('_internal/library/pictures/fon_.png').convert()
-
-def __check__read__(hundred = None) -> dict:
-        """
-        This func open with starting game
-        and save data in dict.
-        """
-        global f_c
-        if hundred != None:
-            f_c.update(hundred)
-        
-        else:
-            if f_c == {}:
-                try:
-                    data = Passage11.__reader__()
-                except FileNotFoundError: 
-                    data = list_1
-                    
-                f_c.update(data)
-                
-                return f_c
-            else:
-                return f_c 
-
-list_1 = __check__read__()
-
-config = Passage(
-    "none",
-    file_check,
-    list_1
-)
+icon = pygame.transform.scale(pygame.image.load('library/Aircraft.ico').convert(),screen)
+fon = pygame.image.load('library/pictures/fon_.png').convert()
 
 pygame.display.set_caption('Aircraft',"Aircraft")
 pygame.display.set_icon(icon) 
@@ -65,35 +39,15 @@ def background():
     bgX -= bg_speed
     bgX2 -= bg_speed
         
-    main_surface.blit(bg, (bgX, 0))
-    main_surface.blit(bg, (bgX2, 0))    
+    
+    d.blit(bg, (bgX, 0))
+    d.blit(bg, (bgX2, 0))    
    
 def background1():
-    main_surface.blit(bg, (0, 0))
- 
+   d.blit(bg, (0, 0))
 
-class TextM:
-    def __init__(self):
-        pass
-    
-    def text_standart(self, num_text, x_text, y_text):
-        draw_text(language[num_text], BUTT_TEXT, (0, 0, 0), main_surface, x_text, y_text)
-    
-    def Big_text(self, num_text=0, x_text = 80, y_text = 150):
-        draw_text(language[num_text], NAME_MENU, (0, 0, 0), main_surface, x_text, y_text)  
- 
-    def text_change(self, change, num_text, change_x, change_y, x_text, y_text):
-        num_text = language[num_text]
-        
-        if config.check(vie, change) == True: 
-            number = language[change_x]
-        
-        elif config.check(vie, change) == False:
-            number = language[change_y]
-        draw_text("{} {}".format(num_text, number), BUTT_TEXT, (0, 0, 0), main_surface, x_text, y_text)
-              
 
-class SurfaceM: 
+class SurfaceM(): 
     def __init__(self, s):
         pass
     
@@ -103,7 +57,6 @@ class SurfaceM:
         self.click = click
         for event in pygame.event.get():
             if event.type == QUIT:
-                config.writer_({"musicID": "None"})
                 pygame.quit()
                 sys.exit()
             if event.type == KEYDOWN:
@@ -120,7 +73,7 @@ class SurfaceM:
         sub_surface = pygame.Rect(((x_c - 25), (y_c - 90)), (350, 250))
 
         mx, my = pygame.mouse.get_pos()
-        pygame.draw.rect(main_surface, (100, 100, 100), sub_surface, 300,10,50,50,50,50)
+        pygame.draw.rect(d, (100, 100, 100), sub_surface, 300,10,50,50,50,50)
 
         if self.click:
             if sub_surface.collidepoint((mx, my)) == False:
@@ -131,7 +84,7 @@ class SurfaceM:
     def Button(self, x, y, size, function1, effect_click, check = "None", text=0):      
         global language, work, game_work
         mx, my = pygame.mouse.get_pos() 
-        button = pygame.Rect((x, y), (size))
+        button = pygame.Rect((x, y + conf_height), (size))
                  
         if button.collidepoint((mx, my)) == True:
             if self.click:
@@ -155,15 +108,15 @@ class SurfaceM:
                     if config.check(vie, text) == False:
                         config.writer_(text)
                         language = function1
+                        standart_text.language_change(language)
+                        big_text.language_change(language)
                     else: None
             
             click_cursor()        
-            pygame.draw.rect(main_surface, (205, 200, 200), button,15,10,50,50,50,50)
-        
-        pygame.draw.rect(main_surface, (205, 200, 200), button,3,10,50,50,50,50)
-            
-        #print(button.collidepoint((mx, my)))
-        
+            pygame.draw.rect(main_surface, (205, 200, 200), button, 15, 10, 50, 50, 50, 50)
+
+        pygame.draw.rect(main_surface, (205, 200, 200), button, 3, 10, 50, 50, 50, 50)
+
 
 class Button:
     pass
@@ -171,7 +124,6 @@ class Button:
        
 def language_get(): 
     surfM = SurfaceM("si")
-    textM = TextM()
     s = 35
          
     def exit():
@@ -180,19 +132,19 @@ def language_get():
         
     def button_1():
         surfM.Button(50, (220 + s*0), (300, 30), English, clicks, "Language", {"language": "EN"})
-        draw_text('English', BUTT_TEXT, (0, 0, 0), main_surface, 75, (221 + s*0))
+        standart_text.draw_text('English', (0, 0, 0), d, 75, (221 + s*0))
     
     def button_2():
         surfM.Button(50, (220 + s*1), (300, 30), Українська, clicks, "Language", {"language": "UA"})
-        draw_text('Українська', BUTT_TEXT, (0, 0, 0), main_surface, 75, (221 + s*1))
-    
+        standart_text.draw_text('Українська', (0, 0, 0), d, 75, (221 + s*1))
+
     def button_3():
         surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
-        draw_text('Русский', BUTT_TEXT, (0, 0, 0), main_surface, 75, (221 + s*2))
-    
+        standart_text.draw_text('Русский', (0, 0, 0), d, 75, (221 + s*2))
+
     def button_4():
         surfM.Button(50, (220 + s*2 + 6), (300, 30), exit, return_exit)
-        textM.text_standart(6, 75, (221 + s*2 + 6))
+        standart_text.text_standart(6, 75, (221 + s*2 + 6))
     
     while work:     
         background()
@@ -205,7 +157,7 @@ def language_get():
         button_4()    
         
         version_game()
-        textM.Big_text(2)
+        big_text.Big_text(2)        
             
         FPS.tick(90)
         pygame.display.update()
@@ -216,8 +168,7 @@ def level():
     from clients.game_client import sw3, sh3, CREATE_ENEMY3, max_score3
     
     surfM = SurfaceM("si")
-    textM = TextM()
-    
+
     def exit():
         global work
         work = False
@@ -227,32 +178,32 @@ def level():
             sourse(sw1, sh1, CREATE_ENEMY1, max_score1, {"level": 2}) 
         
         surfM.Button(50, 220, (300, 30), lvl1, clicks)    
-        textM.text_standart(3, 75, 222) 
-    
-    def l2():            
-        def lvl2(): 
-            sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
+        standart_text.text_standart(3, 75, 222) 
+     
+    def button_2():   
+        def l2():            
+            def lvl2(): 
+                sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
         
-        config.check(lvl2, {"level": 2})
-    
-    def button_2():    
+            config.check(lvl2, {"level": 2})
+
         surfM.Button(50, 255, (300, 30), l2, clicks)
-        textM.text_standart(4, 75, 256)
-    
-    def l3(): 
-        def lvl3(): 
-            sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
-        
-        config.check(lvl3, {"level": 3})
+        standart_text.text_standart(4, 75, 256)
     
     def button_3():       
+        def l3(): 
+            def lvl3(): 
+                sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
+        
+            config.check(lvl3, {"level": 3})
+
         surfM.Button(50, 290, (300, 30), l3, clicks)
-        textM.text_standart(5, 75, 291)
+        standart_text.text_standart(5, 75, 291)
     
     def button_4():
         surfM.Button(50, 330, (300, 30), exit, return_exit)
-        textM.text_standart(6, 75, 332,)
-    
+        standart_text.text_standart(6, 75, 332)
+
     while work:
         background()
         surfM.quit(return_exit)
@@ -264,7 +215,7 @@ def level():
         button_4()
             
         version_game()
-        textM.Big_text(11)
+        big_text.Big_text(11)
             
         FPS.tick(90)
         pygame.display.update()
@@ -310,16 +261,16 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level=None):
         bgX2 -= bg_speed1      
         if bgX2 < -bg.get_width():
             bgX2 = bg.get_width()
-        
-        main_surface.blit(bg, (bgX, 0))
-        main_surface.blit(bg, (bgX2, 0))
-        main_surface.blit(font.render(str(scores), True, BLACK), (width - 30, 0))       
-        main_surface.blit(player, (player_rect))
+
+        d.blit(bg, (bgX, 0))
+        d.blit(bg, (bgX2, 0))
+        d.blit(font.render(str(scores), True, BLACK), (width - 30, 0))
+        d.blit(player, (player_rect))
         version_game()
         
         for enemy in enemies:
             enemy[1] = enemy[1].move(-enemy[2], 0)
-            main_surface.blit(enemy[0], enemy[1])
+            d.blit(enemy[0], enemy[1])
         
             if enemy[1].left < -200:
                 enemies.pop(enemies.index(enemy))
@@ -329,7 +280,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level=None):
         
         for bonus in bonusies:             
             bonus[1] = bonus[1].move(-bonus[2], 2)
-            main_surface.blit(bonus[0], bonus[1])
+            d.blit(bonus[0], bonus[1])
         
             if bonus[1].bottom > 1000:
                 bonusies.pop(bonusies.index(bonus))
@@ -369,22 +320,20 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level=None):
             MusicConf.music_all(sound_game)
         
         main_surface_fps = GAME_TEXT.render(str(int(FPS.get_fps())), 10, (RED))
-        main_surface.blit(main_surface_fps, (10, 10))
+        d.blit(main_surface_fps, (10, 10))
         FPS.tick(90)
         pygame.display.update()
     
     clean_bon_and_en()
-    MusicConf.music_all()
+    MusicConf.music_all(sound_menu)
     standart_curs() 
     visible_cursor() 
 
 def main_menu():
     work = True    
     surfM = SurfaceM("si")
-    textM = TextM()
-    
+
     def exit():     
-        config.writer_({"musicID": "None"})  
         pygame.quit()
         sys.exit()
             
@@ -393,22 +342,23 @@ def main_menu():
         
     def button_1():
         surfM.Button(50, 220, (300, 30), level, clicks)
-        textM.text_standart(0, 75, 222)
+        standart_text.text_standart(0, 75, 222)
     
     def button_2():
         surfM.Button(50, 255, (300, 30), opti, clicks)
-        textM.text_standart(1, 75, 256)
+        standart_text.text_standart(1, 75, 256)
     
     def button_3():
         surfM.Button(50, 290, (300, 30), language_get, clicks)
-        textM.text_standart(2, 75, 291)
+        standart_text.text_standart(2, 75, 291)
     
     def button_4():
         surfM.Button(50, 360, (300, 30), exit, return_exit)
-        textM.text_standart(6, 75, 361)
+        standart_text.text_standart(6, 75, 361)
     
-    while work:      
+    while work:       
         background() 
+        version_game() 
         standart_curs()
         surfM.quit(vie)
         
@@ -417,8 +367,8 @@ def main_menu():
         button_3()   
         button_4() 
         
-        textM.Big_text(7)
-        version_game()  
+        big_text.Big_text(7)
+        
 
         FPS.tick(90)
         pygame.display.flip()
@@ -426,8 +376,7 @@ def main_menu():
 def options(x_c = 540, y_c = 347.5):
     global width   
     surfM = SurfaceM("si")
-    textM = TextM()
-    
+
     def quit():
         global work
         work = False
@@ -441,23 +390,23 @@ def options(x_c = 540, y_c = 347.5):
         quit()
     
     version_game()
-    MusicConf.music_all()
+    MusicConf.music_all(sound_menu)
     visible_cursor()  
     
     def button_1():
-        surfM.Button(x_c, y_c, (300, 30), vie, clicks, "Check", ({"effect": "True"},{"effect":"False"}))
-        textM.text_change({"effect": "True"}, 12, 8, 9, (x_c + 25), (y_c - 0.5))
+        surfM.Button(x_c, y_c, (300, 30), vie, clicks, "Check", ({"effect": "True"}, {"effect": "False"}))
+        standart_text.text_change({"effect": "True"}, 12, 8, 9, (x_c + 25), (y_c - 0.5))
             
     def button_2():
-        surfM.Button(x_c, (y_c + 35), (300, 30), MusicConf.music_all, MusicConf.music_all, "Check", ({"music": "True"},{"music":"False"}))
-        textM.text_change({"music": "True"}, 10, 8, 9, (x_c + 25), (y_c + 34.5))
-    
+        surfM.Button(x_c, (y_c + 35), (300, 30), MusicConf.music_all, MusicConf.music_all, "Check", ({"music": "True"},{"music": "False"}))
+        standart_text.text_change({"music": "True"}, 10, 8, 9, (x_c + 25), (y_c + 34.5))
+
     def button_3():
         surfM.Button(x_c, (y_c + 81), (300, 30), exit, return_exit)
-        textM.text_standart(6, (x_c + 20), (y_c + 80.5))
+        standart_text.text_standart(6, (x_c + 20), (y_c + 80.5))
     
     fon.set_alpha(150)
-    main_surface.blit(fon, (0,0))
+    main_surface.blit(fon, (0, 0 + conf_height))
     
     while work:
         surfM.quit()
@@ -468,7 +417,7 @@ def options(x_c = 540, y_c = 347.5):
         button_2() 
         button_3()
         
-        textM.Big_text(1, (x_c + 20), (y_c - 60))
+        big_text.Big_text(1, (x_c + 20), (y_c - 60))
         
         FPS.tick(90)
         pygame.display.flip()
@@ -477,17 +426,23 @@ def language_set(*kwargs: dict):
     language = English
     
     for kwar in kwargs:
-        data_key, data_value = Passage.__key_value__(kwar)
-        if config.check(vie, {"language": data_key}) == True: 
-            data_value = dict(data_value)
+        data_key, data_value = config.__key_value__(kwar)
+        check = {"language": data_key}
+        if config.check(vie, check) == True: 
             language = data_value
             return language
         else:
-            None
+            continue
 
     return language
 
 language = language_set({"EN": English}, {"UA": Українська})#, {"RU": Русский})
 
-MusicConf.music_all()
+text = TextM(language=language)
+big_text = text.copy()
+big_text.font_change(BIG_TEXT)
+standart_text = text.copy()
+standart_text.font_change(STANDART_TEXT)
+
+MusicConf.music_all(sound_menu)
 main_menu()
