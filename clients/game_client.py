@@ -23,6 +23,8 @@ pygame.time.set_timer(CREATE_BONUS, 2500)
 width, height = 1373, 767
 screen = width, height
 
+pygame.init()
+
 player_imgs = [pygame.image.load(IMGS_PATH + '/' + file).convert_alpha() for file in listdir(IMGS_PATH)]
 player = player_imgs[0]
 player_rect = player.get_rect()
@@ -54,7 +56,7 @@ def create_enemy(speed_w1, speed_w2):
     return[enemy, enemy_rect, enemy_speed]
 
 
-bonus = pygame.image.load('library/pictures/bonus.jpg ').convert_alpha()
+bonus = pygame.image.load('library/pictures/bonus.jpg ')
 def create_bonus():
     global bonus
     bonus_rect = pygame.Rect(random.randint(0, width), -1000, *bonus.get_size())    
@@ -66,3 +68,18 @@ def clean_bon_and_en():
     """Delete all bonusies and enemies"""
     enemies.clear()
     bonusies.clear()
+
+fps = 0
+
+def set_fps(tick = None):
+    global fps
+    if tick == None:
+        #fps = fps
+        return fps
+    else:
+        fps = tick
+        return fps
+
+def tick_fps():
+    global fps
+    FPS.tick(fps)

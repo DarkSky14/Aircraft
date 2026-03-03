@@ -1,3 +1,4 @@
 clients/*_class_
 library/*data
+library/data/config.json
 clients/*__pycache__

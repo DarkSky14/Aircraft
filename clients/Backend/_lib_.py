@@ -1,0 +1,180 @@
+import json
+import os
+from abc import ABC, abstractmethod
+
+if __name__ == "__main__":
+    import logged as log
+else: 
+    import clients.Backend.logged as log
+
+logging = log.log
+
+
+class _DLib: #Correct
+    def __init__(self, name: str, url: str, dict: dict, file: str = "None"):
+        self._name = name
+        self._url = url
+        self._dict = dict
+        self._file = file
+
+    def get_name(self):
+        return self._name
+
+    def get_url(self):
+        return self._url
+
+    def get_dict(self):
+        return self._dict
+
+    def get_file(self):
+        return self._file
+    
+    def get_value(self, argID: str):
+        return dict.get(self._dict, argID)
+
+    def update_name(self, new_name: str):
+        self._name = new_name
+
+    def update_url(self, new_url: str):
+        self._url = new_url
+
+    def update_dict(self, new_dict: dict):
+        self._dict.update(new_dict)
+
+    def update_file(self, new_file: str):
+        self._file = new_file
+
+    def clear_dict(self):
+        self._dict.clear()
+
+
+class __Formatter__(_DLib):
+    def __init__(self):
+        pass
+
+    def __keys_str_clear__(self, args: dict):
+        key = args.keys().__str__().lstrip("dict_keys").strip("([''])")
+ 
+        key_dict = self.get_value(key)
+        full_clear_dict = {key: key_dict}
+        return full_clear_dict
+    
+
+class CheckedDict(__Formatter__):
+    def __init__(self):
+        pass
+
+    def check(self, args: dict, script = None):
+        full = self.__keys_str_clear__(args)
+
+        if args != full:
+            return False
+            
+        else: 
+            try:
+                script() #type: ignore
+            except TypeError:
+                script  #type: ignore
+            return True       
+
+
+class Writer:
+    def __init__(self):
+        pass
+    
+    @abstractmethod
+    def write(self):
+        pass
+
+
+class Reader:
+    def __init__(self):
+        pass
+    
+    @abstractmethod
+    def read(self):
+        pass
+
+
+class JsonReader(Reader, _DLib):
+    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
+        _DLib.__init__(self, name, url, data, file)
+    
+    def read(self, encoding = "utf-8"):
+        with open(self._url + "/" + self._file, "r", encoding = encoding) as file:
+            data = json.load(file)
+            self.update_dict(data)
+            return data
+
+
+class JsonWriter(Reader, _DLib):
+    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
+        _DLib.__init__(self, name, url, data, file)
+
+    def write(self, args: dict, encoding = None):
+        data = self._dict.copy()
+        data.update(args)
+
+        self._dict.update(data)
+        os.makedirs(self._url, exist_ok=True)
+
+        with open((self._url + "/" + self._file), "w", encoding=encoding) as file:
+            json.dump(data, file, indent = 4) 
+
+
+class JsonWorker(JsonReader, JsonWriter, CheckedDict, _DLib):
+    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
+        _DLib.__init__(self, name, url, data, file)
+        JsonWriter.__init__(self, name, url, data, file)
+        JsonReader.__init__(self, name, url, data, file)
+
+    def reader(self, encoding = "utf-8"):
+        try: 
+            with open(self._url + "/" + self._file, "r", encoding = encoding) as file:
+                data = json.load(file)
+                self.update_dict(data)
+                return data
+            
+        except FileNotFoundError as fnfe: 
+            logging.log_error("File not found, creating new file...", fnfe)
+            self.writer(self._dict)
+
+        except json.decoder.JSONDecodeError as jde:
+            logging.log_error("File void or crash, recording...", jde)
+            self.writer(self._dict)
+        except:
+            logging.critical_error("Undefined error...")
+
+    def writer(self, args: dict, encoding = "utf-8"):
+        data = self._dict.copy()
+        data.update(args)
+
+        self._dict.update(data)
+        os.makedirs(self._url, exist_ok=True)
+
+        with open((self._url + "/" + self._file), "w", encoding = encoding) as file:
+            json.dump(data, file, indent = 4) 
+         
+
+logging.log("_lib_ module loaded")
+
+config = JsonWorker(
+    "config",
+    "library/data",
+    {
+        "level": 1, 
+        "effect": "True", 
+        "music": "True", 
+        "language": "EN"
+    },
+    "config.json"
+)
+config.reader()
+logging.log({"INITIALIAZE_CONFIG": config.get_dict()})
+
+temp = JsonWorker(
+    "temporary_options",
+    "none",
+    {"musicID": "None"}
+)
+logging.log({"INITIALIAZE_TEMP": temp.get_dict()})
