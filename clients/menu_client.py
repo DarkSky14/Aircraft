@@ -1,4 +1,4 @@
-__version__ = '0.2.3'
+__version__ = '0.2.4'
 __author__ = 'Chinho'
 
 import pygame.font
@@ -27,10 +27,10 @@ init()
 
 def vie(): pass
 
-STANDART_TEXT = pygame.font.SysFont('Georgia', 21, 0, 0) #Arial
-BIG_TEXT = pygame.font.SysFont('Georgia', 36)
-VERS_GAME = pygame.font.SysFont('Segou UI', 20)
-GAME_TEXT = pygame.font.SysFont("Consolas", 30)
+STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * Surface.procent), 0, 0) #Arial
+BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * Surface.procent))
+VERS_GAME = pygame.font.SysFont('Segou UI', round(20 * Surface.procent))
+GAME_TEXT = pygame.font.SysFont("Consolas", round(30 * Surface.procent))
 
 click_open_2 = ('library/effect/click_open2.mp3')
 click_open_1 = ('library/effect/click_open1.mp3')
@@ -70,5 +70,5 @@ bg_speed1 = 2
 def version_game():
     Surface.d.blit(
         VERS_GAME.render(str(get_version()), True, BLACK), 
-        (Surface.width - 30, Surface.height - 14)
+        (Surface.width - (32 * Surface.procent), Surface.height - (14 * Surface.procent))
     )

@@ -88,6 +88,7 @@ class SurfaceM(animation.AnimationMove, animation.Resizable):
 
         if surface.collidepoint((mx - Surface.conf_width, my - Surface.conf_height)) == False:
             if self.event.click:
+                self.event.click = False
                 exit()    
             else:
                 pass

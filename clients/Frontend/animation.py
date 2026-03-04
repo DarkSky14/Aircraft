@@ -6,8 +6,8 @@ class AnimationMove:
 
     def moved(self, pixel_x = None, pixel_y = None, millisecounds: int = 0): # type: ignore #
         global is_move
-        self.pixel_x = pixel_x
-        self.pixel_y = pixel_y
+        self._pixel_x = pixel_x
+        self._pixel_y = pixel_y
 
         if is_move == True:
             if millisecounds == 0:
@@ -16,37 +16,43 @@ class AnimationMove:
                 times = (millisecounds / 10)
 
             if pixel_x == None:
-                self.move_to_x = 0
-                self.pixel_x = self.x
-                self.pixel_x = round(self.pixel_x)
+                self._move_to_x = 0
+                self._pixel_x = round(self.x)
             else:
-                self.move_to_x = ((pixel_x - self.x_true) / times) * self.size_config
-                self.move_to_x = round(self.move_to_x)
+                self._pixel_x = round(self._pixel_x * self.size_config)
+                self._move_to_x = (self._pixel_x - self.x) / times
 
             if pixel_y == None:
-                self.move_to_y = 0
-                self.pixel_y = self.y
-                self.pixel_y = round(self.pixel_y)
+                self._move_to_y = 0
+                self._pixel_y = round(self.y)
             else:
-                self.move_to_y = ((pixel_y - self.y_true) / times) * self.size_config
-                self.move_to_y = round(self.move_to_y)
+                self._pixel_y = round(self._pixel_y * self.size_config)
+                self._move_to_y = (self._pixel_y - self.y) / times
+
         
         else:
-            self.pixel_x = self.x
-            self.pixel_y = self.y
-            self.move_to_x = 0
-            self.move_to_y = 0
+            if pixel_x == None:
+                self._pixel_x = self.x
+            else:
+                self.x = round(self._pixel_x * self.size_config)
+
+            if pixel_y == None:
+                self._pixel_y = self.y
+            else:
+                self.y = round(self._pixel_y * self.size_config)
+
+            self._move_to_x = 0
+            self._move_to_y = 0
 	
     def animation(self, func = None): # type: ignore #
-        self.x = (self.x + self.move_to_x)
-        self.y = (self.y + self.move_to_y)
-        if round(self.x) == self.pixel_x and round(self.y) == self.pixel_y:
-            self.move_to_x = 0
-            self.move_to_y = 0
+        self.x += self._move_to_x
+        self.y += self._move_to_y
+        if round(self.x) == self._pixel_x and round(self.y) == self._pixel_y:
+            self._move_to_x = 0
+            self._move_to_y = 0
             self.x_true = self.x
             self.y_true = self.y
             func  # type: ignore
-            #return True
 
 class Resizable:
     def __init__(self, size_config) -> None:

@@ -14,13 +14,12 @@ else:
     import clients.Frontend.surface as Surface
 
 class Button(animation.AnimationMove):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, size_config = 0):       
+    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, size_config:int|float = 0):       
         self.event = event
         self.button_list = button_list
         self.surface = surface
-        self.draw_button = UI.MyDrawObject
         self.size_config = size_config
-        #print(size_config)
+        self.draw_button = UI.MyDrawObject
         animation.AnimationMove.__init__(self, self.size_config)
     
     @abstractmethod
@@ -38,14 +37,19 @@ class Button(animation.AnimationMove):
     def __copy_button__(self):
         return self.x, self.y, self.size
         
-    def set_button(self, x, y, size):
-        self.x, self.y = x * self.size_config, y * self.size_config
+    def set_button(self, x, y, size: tuple = (int, int)):
+        self.x, self.y = round(x), round(y)
         self.size = size
         self.size_x, self.size_y = size    
         self.size_x *= self.size_config
         self.size_y *= self.size_config
-        
-        self.x_true, self.y_true, self.size_true = self.__copy_button__()
+        self.size = self.size_x, self.size_y
+
+        self.b_radius = int(round(self.size_y / 2))
+        if self.size_y <= (self.b_radius * 2): 
+            self.b_radius -= 1
+        else:
+            pass
         return self.x, self.y, self.size
     
     def get_position(self):
@@ -66,27 +70,9 @@ class Button(animation.AnimationMove):
     def get_size_y(self):
         return self.size_y
 
-    def Button(self, x, y, size, function1):      
-        mx, my = pygame.mouse.get_pos() 
-        
-        button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
-        
-        if button.rect.collidepoint(mx - Surface.conf_width, my - Surface.conf_height) == True:
-            self.button_list.append(".")
-            button.draw_object((205, 200, 200), 15, 10)
-
-            if self.event.click:
-                button.draw_object((205, 200, 200), 3, 10)
-                function1()
-                self.event.click = False
-            elif not self.event.click:
-                pass
-
-        button.draw_object((205, 200, 200), 3, 10)
-
 
 class ModuleButton(Button, Text.ModuleText):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, config, class_text: Text.Text, size_config = 0):
+    def __init__(self, event, button_list, surface: pygame.surface.Surface, config, class_text: Text.Text, size_config:int|float = 0):
         Button.__init__(self, event, button_list, surface, size_config)
         Text.ModuleText.__init__(self, class_text)
         self.config = config
@@ -111,3 +97,19 @@ class ModuleButton(Button, Text.ModuleText):
     
     def get_text(self, text_class: Text.ModuleText, base_key, color: tuple = (0, 0, 0)):
         text_class.get_set_text(base_key, self.x + 15, self.y + 2, color)
+
+    def Button(self, x, y, size, function1):      
+        mx, my = pygame.mouse.get_pos() 
+        
+        button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
+        
+        if button.rect.collidepoint(mx - Surface.conf_width, my - Surface.conf_height) == True:
+            self.button_list.append(".")
+            button.draw_object((205, 200, 200), self.b_radius, 10)
+
+            if self.event.click:
+                button.draw_object((205, 200, 200), 3, 10)
+                self.event.click = False
+                function1()
+
+        button.draw_object((205, 200, 200), 3, 10)

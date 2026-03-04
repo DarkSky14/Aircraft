@@ -27,7 +27,7 @@ fon = pygame.transform.scale(pygame.image.load('library/pictures/fon_.png').conv
 pygame.display.set_caption('Aircraft',"Aircraft")
 pygame.display.set_icon(icon) 
 
-BASEFONT = pygame.font.SysFont("Calibri", 20)
+BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
 button_list = []
 
 def event_check_button(standart, nostandart, button_list: list = button_list):
@@ -51,7 +51,7 @@ def background():
     fon_background.draw(Surface.d)
  
 def update_display():
-    pygame.display.update(int(Surface.conf_width), int(Surface.conf_height), Surface.width, Surface.height)
+    pygame.display.update(round(Surface.conf_width), round(Surface.conf_height), Surface.width, Surface.height)
 
 def get_fps(font: pygame.font.Font = BASEFONT, color: tuple = (200, 200, 200), coordinate: tuple = (3,3)):
     main_surface_fps = font.render(str(int(FPS.get_fps())), True, (color))
@@ -62,8 +62,8 @@ e = Event.EventControl()
 big_text = Text.ModuleText(Text.big_text)
 standart_text = Text.ModuleText(Text.standart_text)
 
-sub_surface = Surface.SubSurface(350, 250).surface(Surface.d, 50, 240)
-button_modified = Button.ModuleButton(e, button_list, Surface.d, my_json.config, standart_text, Surface.procent)#type: ignore
+#sub_surface = Surface.SubSurface(350, 250).surface(Surface.d, 50, 240)
+button_modified = Button.ModuleButton(e, button_list, Surface.d, my_json.config, standart_text, Surface.procent)
 
 music = mus.Music(my_json.config, my_json.temp, 0.1)
 #game_music = mus.Music(my_json.config, my_json.temp, 0.1)
@@ -86,19 +86,19 @@ def main_menu():
     #sub_surface.draw_object((100, 100, 100), 300, 10)
 
     button1 = button_modified.copy()
-    button1.set_button(-300, 220, (300, 30))
+    button1.set_button((-300 * Surface.procent), (220 * Surface.procent), (300, 30))
     button1.moved(50, None, 300) 
     
     button2 = button_modified.copy()
-    button2.set_button(-300, (button1.get_y_pos() + button1.get_size_y() + 25), (300, 30))
+    button2.set_button((-300 * Surface.procent), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.moved(50, None, 300) 
 
     button3 = button_modified.copy()
-    button3.set_button(-300, (button2.get_y_pos() + button2.get_size_y() + 25), (300, 30))
+    button3.set_button((-300 * Surface.procent), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
     button3.moved(50, None, 300) 
 
     button4 = button_modified.copy()
-    button4.set_button(-300, (button3.get_y_pos() + button3.get_size_y() + 50), (300, 30))
+    button4.set_button((-300 * Surface.procent), (button3.get_y_pos() + button3.get_size_y() + (25 * Surface.procent)), (300, 30))
     button4.moved(50, None, 300) 
         
     def button_1():
@@ -157,9 +157,9 @@ def main_menu():
         button_3()   
         button_4() 
         
-        big_text.get_set_text("7", 70, 150)     
+        big_text.get_set_text("7", 70 * Surface.procent, 150 * Surface.procent)     
 
-        get_fps(coordinate=(3, Surface.height - 20))
+        get_fps(coordinate=(3, Surface.height - (20 * Surface.procent)))
         tick_fps()
         update_display()
 
@@ -193,15 +193,15 @@ def options(x_c = 540.0, y_c = 347.5):
         music.music_all(sound_menu)
 
     button1 = button_modified.copy()
-    button1.set_button(x_c + 25, y_c + 90, (300, 30))
+    button1.set_button((x_c) + (23 * Surface.procent), (y_c) + 85 * Surface.procent, (300, 30))
     button1.text_change({"effect": "True"}, "8", "9")
     
     button2 = button_modified.copy()
-    button2.set_button(x_c + 25, (button1.get_y_pos() + button1.get_size_y() + 25), (300, 30))
+    button2.set_button(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.text_change({"music": "True"}, "8", "9")
 
     button3 = button_modified.copy()
-    button3.set_button(x_c + 25, (button2.get_y_pos() + button2.get_size_y() + 40), (300, 30))
+    button3.set_button(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (20 * Surface.procent)), (300, 30))
     
     def button_1():
         #if button1.button_click():
@@ -265,7 +265,7 @@ def options(x_c = 540.0, y_c = 347.5):
         button_2() 
         button_3()
         
-        big_text.get_set_text("1", (x_c + 20), (y_c - 60))
+        big_text.get_set_text("1", (x_c) + 45 * Surface.procent, (y_c) + 25 * Surface.procent)
         
         #get_fps(coordinate=(3, Surface.height - 20))
         tick_fps()      
@@ -274,7 +274,7 @@ def options(x_c = 540.0, y_c = 347.5):
     while work:       
         if anim_time_fon <= 180:
             anim_time_fon += 20
-            Surface.main_surface.blit(fon, (0 + Surface.conf_width, 0 + Surface.conf_height))
+            Surface.main_surfaces.blit(fon, (0 + Surface.conf_width, 0 + Surface.conf_height))
 
         initialize()
 
@@ -300,10 +300,6 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
 
     while game_work:
         pressed_keys = pygame.key.get_pressed()  
-        #e.event_pool()
-        #ch = e.add_key_event(KEYDOWN, K_ESCAPE, options)
-        #e.add_event(CREATE_BONUS, bonusies.append, create_bonus())
-        #e.add_event(ENEMY, enemies.append, create_enemy(speed_w1, speed_w2))
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -400,7 +396,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
 
 def language_get(): 
     global work
-    surfM = UI.SurfaceM(e, Surface.main_surface)
+    surfM = UI.SurfaceM(e, Surface.main_surfaces)
     s = 35
 
     def update_text():
@@ -413,15 +409,15 @@ def language_get():
         work = False
     
     button1 = button_modified.copy()
-    button1.set_button(-300, 220, (300, 30))
+    button1.set_button((-300) * Surface.procent, (220) * Surface.procent, (300, 30))
     button1.moved(50, None, 300)
     
     button2 = button_modified.copy()
-    button2.set_button(-300, (button1.get_y_pos() + button1.get_size_y() + 25), (300, 30))
+    button2.set_button(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.moved(50, None, 300)
 
     button4 = button_modified.copy()
-    button4.set_button(-300, (button2.get_y_pos() + button2.get_size_y() + 31), (300, 30))
+    button4.set_button(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (30 * Surface.procent)), (300, 30))
     button4.moved(50, None, 300)
 
     def button_1():
@@ -477,9 +473,9 @@ def language_get():
         button_4()    
         
         version_game()
-        big_text.get_set_text("2", 70, 150)        
+        big_text.get_set_text("2", 70 * Surface.procent, 150 * Surface.procent)        
         
-        get_fps(coordinate=(3, Surface.height - 20))
+        get_fps(coordinate=(3, Surface.height - (20 * Surface.procent)))
         tick_fps()
         update_display()
 
@@ -499,19 +495,19 @@ def level():
         work = False
         
     button1 = button_modified.copy()
-    button1.set_button(-300, 220, (300, 30))
+    button1.set_button(-300 * Surface.procent, 220 * Surface.procent, (300, 30))
     button1.moved(50, None, 300) 
     
     button2 = button_modified.copy()
-    button2.set_button(-300, (button1.get_y_pos() + button1.get_size_y() + 25), (300, 30))
+    button2.set_button(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.moved(50, None, 300) 
 
     button3 = button_modified.copy()
-    button3.set_button(-300, (button2.get_y_pos() + button2.get_size_y() + 25), (300, 30))
+    button3.set_button(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
     button3.moved(50, None, 300) 
 
     button4 = button_modified.copy()
-    button4.set_button(-300, (button3.get_y_pos() + button3.get_size_y() + 30), (300, 30))
+    button4.set_button(button3.get_x_pos(), (button3.get_y_pos() + button3.get_size_y() + (30 * Surface.procent)), (300, 30))
     button4.moved(50, None, 300) 
 
     def button_1():
@@ -584,9 +580,9 @@ def level():
         button_4()
             
         version_game()
-        big_text.get_set_text("11", 70, 150)
+        big_text.get_set_text("11", 70 * Surface.procent, 150 * Surface.procent)
         
-        get_fps(coordinate=(3, Surface.height - 20))
+        get_fps(coordinate=(3, Surface.height - (20 * Surface.procent)))
         tick_fps()
         update_display()
 
