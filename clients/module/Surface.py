@@ -1,7 +1,14 @@
+from pygame import init
 import pygame.display
 import screeninfo
 from abc import abstractmethod
-from clients.Backend.logged import log
+if __name__ == "__main__":
+    from logged import log
+else:
+    try:
+        from clients.module.logged import log
+    except ImportError:
+        from logged import log
 
 class _ClassSurface:
     def __init__(self, width: int = 0, height: int = 0):
@@ -78,14 +85,7 @@ class AdjustmentSubSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
     
-    def surface(self, surface: pygame.surface.Surface):
-        # Якщо висота > 761, то потрібно взяти відсоток на який це збільшилось
-        # Якщо ширина > 1373, то потрібно взяти відсоток на який це збільшилось
-        # Якщо і ширина і висота більші за оригінал, то потрібно взяти менший відсоток
-        # Якщо висота < 761, то потрібно взяти відсоток на який це зменшилось
-        # Якщо ширина < 1373, то потрібно взяти відсоток на який це зменшиилось
-        # Якщо і ширина і висота меньші за оригінал, то потрібно взяти більший відсоток
-        
+    def surface(self, surface: pygame.surface.Surface):     
         procent_width = (surface.get_width() / self.width) 
         procent_height = (surface.get_height() / self.height) 
 
@@ -149,12 +149,12 @@ class ScrollingBG:
         surface.blit(self.image, (self.x, 0))
         surface.blit(self.image, (self.width, 0))
  
+init()
 
-main_surface = AdjustmentSurface(960, 544) # 960, 544
-main_surfaces = main_surface.surface()
+main_surface = AdjustmentSurface(960, 544).surface() # 960, 544 StandartSurface(960, 544) #
 e = AdjustmentSubSurface(1373, 761)# Original size 300x168
-d = e.surface(main_surfaces)
-main_surfaces.fill((0, 0, 0))
+d = e.surface(main_surface)
+main_surface.fill((0, 0, 0))
 d.fill((255, 255, 255))
 
 screen = e.get_size_surface()

@@ -1,22 +1,27 @@
-import clients.Backend.language as Language
+#import clients.Backend.language as Language
 import pygame.surface
 from abc import abstractmethod
 
 if __name__ == "__main__":
     import UI
     import Text
-    import animation
-    import surface as Surface
+    import UI_module.animation as animation
+    import Surface as Surface
 else:   
-    import clients.Frontend.UI as UI
-    import clients.Frontend.Text as Text
-    import clients.Frontend.animation as animation
-    import clients.Frontend.surface as Surface
+    try:
+        import UI
+        import Text
+        import UI_module.animation as animation
+        import Surface as Surface
+    except ImportError:
+        import clients.module.UI as UI
+        import clients.module.Text as Text
+        import clients.module.UI_module.animation as animation
+        import clients.module.Surface as Surface
 
 class Button(animation.AnimationMove):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, size_config:int|float = 0):       
+    def __init__(self, event, surface: pygame.surface.Surface, size_config:int|float = 0):       
         self.event = event
-        self.button_list = button_list
         self.surface = surface
         self.size_config = size_config
         self.draw_button = UI.MyDrawObject
@@ -28,7 +33,7 @@ class Button(animation.AnimationMove):
     
     @abstractmethod
     def copy(self):
-        return Button(self.event, self.button_list, self.surface, self.size_config)
+        return Button(self.event, self.surface, self.size_config)
 
     @abstractmethod
     def get_text(self):
@@ -43,13 +48,12 @@ class Button(animation.AnimationMove):
         self.size_x, self.size_y = size    
         self.size_x *= self.size_config
         self.size_y *= self.size_config
-        self.size = self.size_x, self.size_y
+        self.b_radius = round(self.size_y / 2)
 
-        self.b_radius = int(round(self.size_y / 2))
-        if self.size_y <= (self.b_radius * 2): 
-            self.b_radius -= 1
-        else:
-            pass
+        if self.size_y <= (self.b_radius * 2):
+            self.size_y = (self.b_radius * 2)
+
+        self.size = self.size_x, self.size_y
         return self.x, self.y, self.size
     
     def get_position(self):
@@ -72,13 +76,13 @@ class Button(animation.AnimationMove):
 
 
 class ModuleButton(Button, Text.ModuleText):
-    def __init__(self, event, button_list, surface: pygame.surface.Surface, config, class_text: Text.Text, size_config:int|float = 0):
-        Button.__init__(self, event, button_list, surface, size_config)
+    def __init__(self, event, surface: pygame.surface.Surface, config, class_text: Text.Text, size_config:int|float = 0):
+        Button.__init__(self, event, surface, size_config)
         Text.ModuleText.__init__(self, class_text)
         self.config = config
 
     def copy(self):
-        return ModuleButton(self.event, self.button_list, self.surface, self.config, self.class_text, self.size_config)
+        return ModuleButton(self.event, self.surface, self.config, self.class_text, self.size_config)
 
     def check_config(self, text, effect_click = None):
         return self.config.check(text, effect_click)
@@ -98,18 +102,18 @@ class ModuleButton(Button, Text.ModuleText):
     def get_text(self, text_class: Text.ModuleText, base_key, color: tuple = (0, 0, 0)):
         text_class.get_set_text(base_key, self.x + 15, self.y + 2, color)
 
-    def Button(self, x, y, size, function1):      
-        mx, my = pygame.mouse.get_pos() 
-        
+    def Button(self, function1):           
         button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
         
-        if button.rect.collidepoint(mx - Surface.conf_width, my - Surface.conf_height) == True:
-            self.button_list.append(".")
+        if button.rect.collidepoint(self.event.mx - Surface.conf_width, self.event.my - Surface.conf_height) == True:
             button.draw_object((205, 200, 200), self.b_radius, 10)
+            self.event.set_choose_button(1)
+            self.event.set_choose_fake_button(1)
 
-            if self.event.click:
+            if self.event.get_click() == True:
                 button.draw_object((205, 200, 200), 3, 10)
-                self.event.click = False
+                self.event.set_choose_button(0)
+                self.event.set_click(False)
                 function1()
 
         button.draw_object((205, 200, 200), 3, 10)

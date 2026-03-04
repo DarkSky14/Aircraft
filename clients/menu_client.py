@@ -1,20 +1,18 @@
-__version__ = '0.2.4'
+__version__ = '0.2.5'
 __author__ = 'Chinho'
 
 import pygame.font
 from pygame import init
-import clients.Backend.music as mus
+import clients.module.music as mus
 if __name__ == "__main__":    
-    import Frontend.surface as Surface
+    import clients.module.Surface as Surface
 else:
-    import clients.Frontend.surface as Surface
+    import clients.module.Surface as Surface
 
 def get_version():
-    #print(__version__)
     return __version__
 
 def get_author():
-    #print(__author__)
     return __author__
 
 BLACK = ((0,0,0))
@@ -25,7 +23,8 @@ LIME = (100, 250, 100)
 
 init()
 
-def vie(): pass
+def vie(): 
+    pass
 
 STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * Surface.procent), 0, 0) #Arial
 BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * Surface.procent))
@@ -70,5 +69,5 @@ bg_speed1 = 2
 def version_game():
     Surface.d.blit(
         VERS_GAME.render(str(get_version()), True, BLACK), 
-        (Surface.width - (32 * Surface.procent), Surface.height - (14 * Surface.procent))
+        (Surface.width - (33 * Surface.procent), Surface.height - (14 * Surface.procent))
     )

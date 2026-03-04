@@ -1,17 +1,18 @@
 import logging
 import os
+import time
 
 
-path_log = 'library/log'
+path_log = 'library/Logs'
 
 os.makedirs(path_log, exist_ok=True)
 log = logging
 log.basicConfig(
-    filename = (path_log + "/" + "logs.log"),
-    format = u'%(levelname)-8s [%(asctime)s] %(message)s', 
+    filename = (path_log + "/" + "logs {}.log").format(time.strftime("%Y-%m-%d %H-%M-%S")),
+    format = u'%(levelname)-8s [%(asctime)s.%(msecs)03d] %(message)s',
+    datefmt = '%Y-%m-%d %H:%M:%S',
     level = logging.DEBUG
 )
-
 
 
 class LoggingError(BaseException):
@@ -30,10 +31,3 @@ class Logger:
     def critical_error(self, text):
         raise LoggingError("CRITICAL: {}".format(text))
     
-
-log.addLevelName(50, "SPACE")
-log.log(50, "---------------------------------------")
-log.log(50, "---------------------------------------")
-log.log(50, "---------------------------------------")
-log.log(50, "---------------------------------------")
-log.log(50, "---------------------------------------")

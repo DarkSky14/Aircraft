@@ -1,16 +1,19 @@
 import pygame.font
 
-if __name__ == "__main__":
-    import surface as Surface
-    import clients.Backend._lib_ as _lib_
-    import clients.Backend.language as language
-    from clients.menu_client import VERS_GAME, BLACK, BIG_TEXT, STANDART_TEXT
+if __name__ == "__main__": #or __name__.find("clients.Frontend.Text") != -1:
+    import Surface as Surface
+    import _lib_ as _lib_
+    import language as language
 
 else:
-    import clients.Frontend.surface as Surface
-    import clients.Backend.language as language
-    import clients.Backend._lib_ as _lib_
-    from clients.menu_client import VERS_GAME, BLACK, BIG_TEXT, STANDART_TEXT
+    try:
+        import Surface as Surface
+        import _lib_ as _lib_
+        import language as language
+    except ImportError:
+        import clients.module.Surface as Surface
+        import clients.module._lib_ as _lib_
+        import clients.module.language as language
 
 
 class Font:
@@ -53,7 +56,13 @@ class Text(Font): #Correct
         self.config = config
         self.color = color
 
-    def draw_text(self, text, x, y, color: tuple):
+    def draw_text_full_topleft(self, font: pygame.font.Font,  text,  x, y, antialias = True, color: tuple = (0,0,0), special_flags: int = 0):
+        textobj = font.render(str(int(text)), antialias, color)
+        textrect = textobj.get_rect()
+        textrect.topleft = (x, y)
+        self.surface.blit(textobj, textrect, special_flags=special_flags)
+    
+    def draw_text(self, text, x, y, color: tuple = (0,0,0)):
         textobj = self.font.render(text, 1, color)
         textrect = textobj.get_rect()
         textrect.topleft = (x, y)
@@ -104,10 +113,11 @@ class ModuleText(Text):
         self.text = self.lang.get(base_key, f"{base_key}")
         self.draw_text("{} {}".format(self.text, self.chosen), x_text, y_text, color)
 
+VERS_GAME = pygame.font.SysFont('Segou UI', round(20 * Surface.procent))
 
-text = Text(VERS_GAME, language.language, Surface.d, _lib_.config, BLACK)
+text = Text(VERS_GAME, language.language, Surface.d, _lib_.config, (0,0,0))
 big_text = text.copy()
-big_text.set_font(BIG_TEXT)
+big_text.create_font('Georgia', round(36 * Surface.procent))
 
 standart_text = text.copy()
-standart_text.set_font(STANDART_TEXT)
+standart_text.create_font('Georgia', round(21 * Surface.procent))

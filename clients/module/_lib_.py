@@ -1,11 +1,13 @@
 import json
 import os
-from abc import ABC, abstractmethod
 
 if __name__ == "__main__":
     from logged import log
 else: 
-    from clients.Backend.logged import log
+    try:
+        from clients.module.logged import log
+    except ImportError:
+        from logged import log
 
 
 class _DLib: #Correct
@@ -46,26 +48,14 @@ class _DLib: #Correct
         self._dict.clear()
 
 
-class __Formatter__(_DLib):
-    def __init__(self):
-        pass
-
-    def __keys_str_clear__(self, args: dict):
-        key = args.keys().__str__().lstrip("dict_keys").strip("([''])")
- 
-        key_dict = self.get_value(key)
-        full_clear_dict = {key: key_dict}
-        return full_clear_dict
-    
-
-class CheckedDict(__Formatter__):
+class CheckedDict(_DLib):
     def __init__(self):
         pass
 
     def check(self, args: dict, script = None):
-        full = self.__keys_str_clear__(args)
+        key = args.keys().__str__().lstrip("dict_keys").strip("([''])")
 
-        if args != full:
+        if args != {key: self.get_value(key)}:
             return False
             
         else: 
@@ -76,25 +66,7 @@ class CheckedDict(__Formatter__):
             return True       
 
 
-class Writer:
-    def __init__(self):
-        pass
-    
-    @abstractmethod
-    def write(self):
-        pass
-
-
-class Reader:
-    def __init__(self):
-        pass
-    
-    @abstractmethod
-    def read(self):
-        pass
-
-
-class JsonReader(Reader, _DLib):
+class JsonReader(_DLib):
     def __init__(self, name: str, url: str, data: dict, file: str = "None"):
         _DLib.__init__(self, name, url, data, file)
     
@@ -105,7 +77,7 @@ class JsonReader(Reader, _DLib):
             return data
 
 
-class JsonWriter(Reader, _DLib):
+class JsonWriter(_DLib):
     def __init__(self, name: str, url: str, data: dict, file: str = "None"):
         _DLib.__init__(self, name, url, data, file)
 
@@ -131,6 +103,7 @@ class JsonWorker(JsonReader, JsonWriter, CheckedDict, _DLib):
             with open(self._url + "/" + self._file, "r", encoding = encoding) as file:
                 data = json.load(file)
                 self.update_dict(data)
+                log.info({f"Load {self.get_name()}": self.get_dict()})
                 return data
             
         except FileNotFoundError as fnfe: 
@@ -166,10 +139,9 @@ config = JsonWorker(
     "config.json"
 )
 config.reader()
-log.debug({"INITIALIAZE_CONFIG": config.get_dict()})
 
 temp = JsonWorker(
-    "temporary_options",
+    "temp",
     "none",
     {"musicID": "None"}
 )

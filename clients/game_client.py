@@ -3,9 +3,9 @@ import random
 from os import listdir
 
 if __name__ == "__main__":    
-    from Frontend import surface as Surface
+    from module import Surface
 else:
-    import clients.Frontend.surface as Surface
+    import clients.module.Surface as Surface
 
 FPS = pygame.time.Clock()
 

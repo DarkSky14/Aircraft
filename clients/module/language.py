@@ -2,8 +2,13 @@ if __name__ == "__main__":
     import _lib_ as my_json
     from logged import log
 else:
-    import clients.Backend._lib_ as my_json
-    from clients.Backend.logged import log
+    try:
+        import _lib_ as my_json
+        from logged import log
+    except ImportError:
+        import clients.module._lib_ as my_json
+        from clients.module.logged import log
+
 
 English = {
     0:'Start',
@@ -66,8 +71,12 @@ class LanguageCreater:
     
     def set_lang(self, reader) -> dict[int, str]:
         work = reader(self._name, self._url, self._lang, self._file) 
-        self._lang = work.read()
-
+        try:
+            self._lang = work.read()
+            log.debug({"LANGUAGE LOADED:": self._name})
+        except FileNotFoundError:
+            log.error({"LANGUAGE_LOAD_ERROR": self._file})
+            self._lang = {0: ""}
         return self._lang 
     
     def get_name(self):
@@ -94,15 +103,13 @@ class LanguageSetter(LanguageCreater):
         return language  
 
 
-ENG = LanguageCreater("EN", "library/lang", "english.json")
+ENG = LanguageCreater("EN", "library/language", "english.json")
 ENG.set_lang(my_json.JsonReader)
 ENGLISH = ENG.get_lang()
-log.debug({"INITIALIAZE_LANGUAGE": ENG.get_name()})
 
-UKR = LanguageCreater("UA", "library/lang", "ukrainian.json")
+UKR = LanguageCreater("UA", "library/language", "ukrainian.json")
 UKR.set_lang(my_json.JsonReader)
 UKRAINIAN = UKR.get_lang()
-log.debug({"INITIALIAZE_LANGUAGE": UKR.get_name()})
 
 language = LanguageSetter(my_json.config).language_set(ENG, UKR)
 

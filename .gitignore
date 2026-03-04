@@ -3,5 +3,8 @@ clients/*__pycache__/
 clients/Backend/*__pycache__/
 clients/Frontend/*__pycache__/
 output
-library/log/
+library/Logs/
 library/*data/
+options.py
+buildozer.spec
+.vscode*/
