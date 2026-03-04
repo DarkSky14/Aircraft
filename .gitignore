@@ -1,4 +1,6 @@
-clients/*_class_
-library/*data
+clients/*__pycache__
+library/data
 library/data/config.json
 clients/*__pycache__
+output
+__pycache__/

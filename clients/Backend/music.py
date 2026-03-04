@@ -21,6 +21,9 @@ class Music:
         self.volume = volume
         self.config = config
         self.temp = temp
+
+    def music_stop(self, fade_ms=100):
+        self.music.fadeout(fade_ms)
     
     def create_mus_channel(self, address, loops=-1, start=0, fade_ms=0):
         self.music.load(address, "music")
@@ -28,24 +31,26 @@ class Music:
         play = self.music.play(loops, start, fade_ms)
         return play
 
-    
+    def music_play(self):
+        self.music.play(-1, 0, 100)
+
     def music_all(self, name_track, loops=-1, start=0, fade_ms=100):    
         arg = self.temp.get_value("musicID")
  
         if self.config.check({"music": "False"}) == True: 
-            if pygame.mixer_music.get_busy() == True:
-                pygame.mixer_music.pause()
+            if self.music.get_busy() == True:
+                self.music.pause()
                        
         else:               
-            if pygame.mixer_music.get_busy() == False:
+            if self.music.get_busy() == False:
                 if self.temp.check({"musicID": "None"}) == True:
                     self.create_mus_channel(name_track, loops, start, fade_ms)
                     self.temp.update_dict({"musicID": name_track})
 
                 else:
-                    pygame.mixer_music.unpause()                
+                    self.music.unpause()                
             
-            elif pygame.mixer_music.get_busy() == True:
+            elif self.music.get_busy() == True:
                 if arg != name_track:
                     self.create_mus_channel(name_track,loops, start, fade_ms)
                     self.temp.update_dict({"musicID": name_track})

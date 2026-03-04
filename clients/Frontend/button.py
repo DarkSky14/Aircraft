@@ -46,7 +46,7 @@ class Button(animation.AnimationMove):
         
         button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
                  
-        if button.rect.collidepoint(mx, my - Surface.conf_height) == True:
+        if button.rect.collidepoint(mx - Surface.conf_width, my - Surface.conf_height) == True:
             self.button_list.append(".")
             button.draw_object((205, 200, 200), 15, 10)
 
@@ -81,7 +81,10 @@ class ButtonChecked(Button):
     def copy(self):
         return ButtonChecked(self.event, self.button_list, self.surface, self.config)
     
-    def text_set(self, textm: Text.TextChange, change, base_key, change_x, change_y, x_text, y_text, color: tuple = (0, 0, 0)):
+    def text_change(self, textm: Text.ModuleText, change, change_x, change_y):
+        textm.change_key(change, change_x, change_y)
+    
+    def text_set(self, textm: Text.ModuleText, change, base_key, change_x, change_y,  color: tuple = (0, 0, 0)):
         textm.text(change, base_key, change_x, change_y, self.x + 15, self.y + 2, color)
 
     def button(self, text, effect_click = None, function_open = None):

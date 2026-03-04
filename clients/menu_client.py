@@ -1,4 +1,4 @@
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 __author__ = 'Chinho'
 
 import pygame.font
@@ -70,5 +70,5 @@ bg_speed1 = 2
 def version_game():
     Surface.d.blit(
         VERS_GAME.render(str(get_version()), True, BLACK), 
-        (Surface.width - 33, Surface.height - 15)
+        (Surface.width - 30, Surface.height - 14)
     )

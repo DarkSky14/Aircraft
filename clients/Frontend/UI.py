@@ -35,7 +35,7 @@ class MyDrawObject(DrawingMy): #Correct
         return pygame.draw.rect(self.surface, color, self.rect, border, border_radius, radius, radius, radius, radius)
 
 
-class SurfaceM(animation.AnimationMove):
+class SurfaceM(animation.AnimationMove, animation.Resizable):
     def __init__(self, event, surface: pygame.surface.Surface, x_move = 0, y_move = 0):
         self.event = event
         self.surface = surface
@@ -47,19 +47,23 @@ class SurfaceM(animation.AnimationMove):
         
     def set_object(self, x, y, size):
         self.x, self.y = x, y
+        self.size_x, self.size_y = size       
         self.size = size
-        self.x_true, self.y_true, self.size_true = self.__copy_object__()
+        #self.x_true, self.y_true, self.size_true = self.__copy_object__()
+        #self.size_x_true, self.size_y_true = self.size_true
+        self.b_radius = self.size_y / 2
         self.sub_surface = MyDrawObject(self.x - 25, self.y - 90, self.size, self.surface)
         return self.x, self.y, self.size
     
     def update_pos(self):
         self.sub_surface = MyDrawObject(self.x - 25, self.y - 90, self.size, self.surface)
+        self.b_radius = self.size_y / 2
 
     def surface_wait(self, exit): 
         mx, my = pygame.mouse.get_pos()
-        self.sub_surface.draw_object((100, 100, 100), 300, 10)
+        self.sub_surface.draw_object((100, 100, 100), int(self.b_radius), 30)
 
-        if self.sub_surface.get_rect().collidepoint((mx, my - Surface.conf_height)) == False:
+        if self.sub_surface.get_rect().collidepoint((mx - Surface.conf_width, my - Surface.conf_height)) == False:
             if self.event.click:
                 exit()    
             else:

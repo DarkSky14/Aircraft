@@ -2,7 +2,7 @@ import sys
 import pygame
 import clients.Backend.language as Language
 import clients.Backend._lib_ as my_json
-import clients.Backend.event as event
+import clients.Backend.event as Event
 import clients.Backend.logged as Log
 
 pygame.init()
@@ -22,11 +22,10 @@ from clients.game_client import *
 
 # Setup pygame/window -----------------------------
 icon = pygame.transform.scale(pygame.image.load('library/Aircraft.ico').convert(), Surface.screen)
-fon = pygame.image.load('library/pictures/fon_.png').convert()
+fon = pygame.transform.scale(pygame.image.load('library/pictures/fon_.png').convert(), Surface.screen)
 
 pygame.display.set_caption('Aircraft',"Aircraft")
 pygame.display.set_icon(icon) 
-pygame.init()
 
 BASEFONT = pygame.font.SysFont("Calibri", 20)
 button_list = []
@@ -51,8 +50,10 @@ def background():
     fon_background.update()
     fon_background.draw(Surface.d)
  
+def update_display():
+    pygame.display.update(int(Surface.conf_width), int(Surface.conf_height), Surface.width, Surface.height)
 
-e = event.EventControl()
+e = Event.EventControl()
 
 sub_surface = Surface.SubSurface(350, 250).surface(Surface.d, 50, 240)
 b_s = Button.ButtonBased(e, button_list, Surface.d, my_json.config)
@@ -60,9 +61,10 @@ b_c = Button.ButtonChecked(e, button_list, Surface.d, my_json.config)
 b_l = Button.ButtonLang(e, button_list, Surface.d, my_json.config)
 
 music = mus.Music(my_json.config, my_json.temp, 0.1)
+#game_music = mus.Music(my_json.config, my_json.temp, 0.1)
 music.music_all(sound_menu)
 
-text_change = Text.TextChange(Text.standart_text)
+text_change = Text.ModuleText(Text.standart_text)
 big_text = Text.AllText(Text.big_text)
 standart_text = Text.AllText(Text.standart_text)
 
@@ -81,7 +83,7 @@ def main_menu():
 
     #sub_surface = initial.UI.MyDrawObject(50, 240, (350, 250), initial.d)
     #sub_surface.draw_object((100, 100, 100), 300, 10)
-    
+
     button1 = b_s.copy()
     button1.set_button(-300, 220, (300, 30))
     button1.moved(50, None, 300) 
@@ -100,19 +102,19 @@ def main_menu():
         
     def button_1():
         def button(): 
-            #button1.moved(-300, 220, 300)
-            #pygame.time.wait(300)
-            #if button1.animation() == True:
-            button1.button(clicks, level)            
-                #button1.moved(50, 220, 300) 
+            #button1.moved(-300, None, 0)
+            button1.animation(button1.button(clicks, level))               
+            #button1.moved(50, None, 300) 
             
         button1.Button(50, 220, (300, 30), button)
         button1.animation()
-        button1.text_set(standart_text, "0", 65, 223)
+        button1.text_set(standart_text, "0",  65, 223)
     
     def button_2():
         def button(): 
-            button2.button(clicks, opti)
+            #button2.moved(50, None, 0) 
+            button2.animation(button2.button(clicks, opti))
+
         button2.Button(50, 255, (300, 30), button)
         button2.animation()
         button2.text_set(standart_text, "1", 65, 257)
@@ -137,7 +139,8 @@ def main_menu():
         version_game() 
         event_check_button(standart_curs, click_cursor)
 
-        e.__event_pool__(vie)
+        e.event_pool()
+        e.MOUSEBUTTONDOWN()
         
         button_1() 
         button_2() 
@@ -147,7 +150,7 @@ def main_menu():
         big_text.text("7", 70, 150)     
 
         tick_fps()
-        pygame.display.flip()
+        update_display()
 
     work = True    
 
@@ -155,7 +158,7 @@ def options(x_c = 540.0, y_c = 347.5):
     global work
     surfM = UI.SurfaceM(e, Surface.d)
     surfM.set_object(x_c, y_c, (350, 250))
-    surfM.moved(900, y_c)
+    surfM.change_size(900, 600, 300)
 
     def quit():
         global work
@@ -178,9 +181,11 @@ def options(x_c = 540.0, y_c = 347.5):
 
     button1 = b_c.copy()
     button1.set_button(x_c, y_c, (300, 30))
+    button1.text_change(text_change, {"effect": "True"}, "8", "9")
     
     button2 = b_c.copy()
     button2.set_button(x_c, (y_c + 35), (300, 30))
+    button2.text_change(text_change, {"music": "True"}, "8", "9")
 
     button3 = b_s.copy()
     button3.set_button(x_c, (y_c + 81), (300, 30))
@@ -188,14 +193,18 @@ def options(x_c = 540.0, y_c = 347.5):
     def button_1():
         def button(): 
             button1.button(({"effect": "True"}, {"effect": "False"}), clicks, vie)
+            button1.text_change(text_change, {"effect": "True"}, "8", "9")
+
         button1.Button(x_c, y_c, (300, 30), button)
-        button1.text_set(text_change, {"effect": "True"}, "12", "8", "9", (x_c + 25), (y_c - 0.5))
+        button1.text_set(text_change, {"effect": "True"}, "12", "8", "9")
             
     def button_2():
         def button(): 
             button2.button(({"music": "True"}, {"music": "False"}), clicks, sound)
+            button2.text_change(text_change, {"music": "True"}, "8", "9")
+
         button2.Button(x_c, (y_c + 35), (300, 30), button)
-        button2.text_set(text_change, {"music": "True"}, "10", "8", "9", (x_c + 25), (y_c + 34.5))
+        button2.text_set(text_change, {"music": "True"}, "10", "8", "9")
 
     def button_3():
         def button(): 
@@ -204,16 +213,17 @@ def options(x_c = 540.0, y_c = 347.5):
         button3.text_set(standart_text, "6", (x_c + 20), (y_c + 80.5))
 
     fon.set_alpha(150)
-    Surface.main_surface.blit(fon, (0, 0 + Surface.conf_height))
+    Surface.main_surface.blit(fon, (0 + Surface.conf_width, 0 + Surface.conf_height))
 
-    while work:           
-        e.__event_pool__(exit=quit)
+    while work:       
         event_check_button(standart_curs, click_cursor)
-        #surfM.update_pos()
-        #surfM.animation()
-   
-        surfM.surface_wait(quit)               
-        
+        e.event_pool()
+        e.K_ESCAPE(exit=quit)
+        e.MOUSEBUTTONDOWN()    
+
+        #surfM.animation_resize(surfM.update_pos())  
+        surfM.surface_wait(quit)
+
         button_1()
         button_2() 
         button_3()
@@ -221,16 +231,15 @@ def options(x_c = 540.0, y_c = 347.5):
         big_text.text("1", (x_c + 20), (y_c - 60))
         
         tick_fps()      
-        pygame.display.flip()
+        update_display()
 
     work = True
 
 def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):   
-    global game_work                
+    global game_work 
     from clients.game_client import scores, player_imgs, player_speed
     from clients.game_client import player, player_rect, img_index
     
-    ch = 0  
     pygame.init()    
 
     fon_background = Surface.ScrollingBG(bg, bg_speed1)
@@ -240,8 +249,12 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     
     set_fps(90)
 
+    #music.music_stop()
+    #game_music.create_mus_channel(sound_game)
+    ch = 0  
+
     while game_work:
-        pressed_keys = pygame.key.get_pressed()
+        pressed_keys = pygame.key.get_pressed()  
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -250,11 +263,10 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                 if event.key == K_ESCAPE:
                     #initial.UI.work = True
                     ch = 0
+                    #game_music.music_stop()
                     options()
-            if event.type == MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    clic = True
-            
+                    #music.music_play()
+        
             if event.type == CREATE_BONUS:
                 bonusies.append(create_bonus())
             
@@ -265,8 +277,8 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                 img_index += 1
                 if img_index == len(player_imgs):
                     img_index = 0
-                player = player_imgs[img_index]
-        
+                player = player_imgs[img_index] 
+             
         background()
         Surface.d.blit(BASEFONT.render(str(scores), True, BLACK), (Surface.d.get_width() - 30, 0))
         Surface.d.blit(player, (player_rect))
@@ -281,7 +293,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
 
             if player_rect.colliderect(enemy[1]):
                 game_work = False
-                music.music_all(sound_menu)
+                #music.music_all(sound_menu)
         
         for bonus in bonusies:             
             bonus[1] = bonus[1].move(-bonus[2], 2)
@@ -301,13 +313,13 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                     
            #except: None
         
-        if pressed_keys [K_DOWN] and not player_rect.bottom >= height:
+        if pressed_keys [K_DOWN] and not player_rect.bottom >= Surface.height:
             player_rect = player_rect.move(0, player_speed)
         
         if pressed_keys [K_UP] and not player_rect.top <= 0:
             player_rect = player_rect.move(0, -player_speed)
-          
-        if pressed_keys [K_RIGHT] and not player_rect.right >= width:
+
+        if pressed_keys [K_RIGHT] and not player_rect.right >= Surface.width:
             player_rect = player_rect.move(player_speed, 0)
          
         if pressed_keys [K_LEFT]and not player_rect.left <= 0:
@@ -322,15 +334,18 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             ch =+ 1
             
             invisible_cursor()
+            #game_music.music_play()
             music.music_all(sound_game)
         
         main_surface_fps = GAME_TEXT.render(str(int(FPS.get_fps())), True, (RED))
         Surface.d.blit(main_surface_fps, (10, 10))
         tick_fps()
-        pygame.display.update()
+        update_display()
     
     game_work = True
     clean_bon_and_en()
+    #game_music.music_stop()
+    #music.music_play()
     music.music_all(sound_menu)
     standart_curs() 
     visible_cursor() 
@@ -398,7 +413,9 @@ def language_get():
         background()
         event_check_button(standart_curs, click_cursor)
 
-        e.__event_pool__(exit, return_exit)
+        e.event_pool()
+        e.K_ESCAPE(exit, return_exit)
+        e.MOUSEBUTTONDOWN()
         
         button_1()
         button_2()
@@ -408,8 +425,8 @@ def language_get():
         big_text.text("2", 70, 150)        
             
         tick_fps()
-        pygame.display.update()
-    
+        update_display()
+
     work = True
 
 def level():
@@ -495,7 +512,9 @@ def level():
         background()
         event_check_button(standart_curs, click_cursor)
         
-        e.__event_pool__(exit, return_exit)
+        e.event_pool()
+        e.K_ESCAPE(exit, return_exit)
+        e.MOUSEBUTTONDOWN()
 
         button_1()
         button_2()
@@ -506,8 +525,8 @@ def level():
         big_text.text("11", 70, 150)
             
         tick_fps()
-        pygame.display.update()
-    
+        update_display()
+
     work = True
 
 if __name__ == "__main__":
