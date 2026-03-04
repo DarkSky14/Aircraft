@@ -7,18 +7,21 @@ if __name__ == "__main__":
     import Text
     import animation
     import surface as Surface
-else:
+else:   
     import clients.Frontend.UI as UI
     import clients.Frontend.Text as Text
     import clients.Frontend.animation as animation
     import clients.Frontend.surface as Surface
 
 class Button(animation.AnimationMove):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface):       
+    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, size_config = 0):       
         self.event = event
         self.button_list = button_list
         self.surface = surface
         self.draw_button = UI.MyDrawObject
+        self.size_config = size_config
+        #print(size_config)
+        animation.AnimationMove.__init__(self, self.size_config)
     
     @abstractmethod
     def button(self):
@@ -26,26 +29,48 @@ class Button(animation.AnimationMove):
     
     @abstractmethod
     def copy(self):
-        pass
+        return Button(self.event, self.button_list, self.surface, self.size_config)
 
     @abstractmethod
-    def text_set(self):
+    def get_text(self):
         pass
 
     def __copy_button__(self):
         return self.x, self.y, self.size
         
     def set_button(self, x, y, size):
-        self.x, self.y = x, y
+        self.x, self.y = x * self.size_config, y * self.size_config
         self.size = size
+        self.size_x, self.size_y = size    
+        self.size_x *= self.size_config
+        self.size_y *= self.size_config
+        
         self.x_true, self.y_true, self.size_true = self.__copy_button__()
         return self.x, self.y, self.size
+    
+    def get_position(self):
+        return self.x, self.y
+    
+    def get_x_pos(self):
+        return self.x
+    
+    def get_y_pos(self):
+        return self.y
+    
+    def get_size(self):
+        return self.size_x, self.size_y 
+    
+    def get_size_x(self):
+        return self.size_x
+    
+    def get_size_y(self):
+        return self.size_y
 
     def Button(self, x, y, size, function1):      
         mx, my = pygame.mouse.get_pos() 
         
         button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
-                 
+        
         if button.rect.collidepoint(mx - Surface.conf_width, my - Surface.conf_height) == True:
             self.button_list.append(".")
             button.draw_object((205, 200, 200), 15, 10)
@@ -53,66 +78,36 @@ class Button(animation.AnimationMove):
             if self.event.click:
                 button.draw_object((205, 200, 200), 3, 10)
                 function1()
+                self.event.click = False
+            elif not self.event.click:
+                pass
 
         button.draw_object((205, 200, 200), 3, 10)
 
 
-class ButtonBased(Button):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, config):
-        super().__init__(event, button_list, surface)
+class ModuleButton(Button, Text.ModuleText):
+    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, config, class_text: Text.Text, size_config = 0):
+        Button.__init__(self, event, button_list, surface, size_config)
+        Text.ModuleText.__init__(self, class_text)
         self.config = config
 
     def copy(self):
-        return ButtonBased(self.event, self.button_list, self.surface, self.config)
+        return ModuleButton(self.event, self.button_list, self.surface, self.config, self.class_text, self.size_config)
+
+    def check_config(self, text, effect_click = None):
+        return self.config.check(text, effect_click)
     
-    def text_set(self, textm: Text.AllText, base_key, x = None, y = None, color: tuple = (0, 0, 0)):
-        textm.text(base_key, self.x + 15, self.y + 2, color)
+    def write_in_config(self, text):
+        self.config.write(text)
     
-    def button(self, effect_click = None, function_open = None):
-        self.config.check({"effect": "True"}, effect_click)
-        function_open() # type: ignore
-
-
-class ButtonChecked(Button):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, config):
-        super().__init__(event, button_list, surface)
-        self.config = config
-
-    def copy(self):
-        return ButtonChecked(self.event, self.button_list, self.surface, self.config)
+    def button_click(self):
+        return self.event.click
     
-    def text_change(self, textm: Text.ModuleText, change, change_x, change_y):
-        textm.change_key(change, change_x, change_y)
+    def text_change(self, change, change_x, change_y):
+        self.set_change_text(change, change_x, change_y)
+
+    def get_text_self(self, base_key, color: tuple = (0, 0, 0)):
+        self.get_set_text(base_key, self.x + 15, self.y + 2, color)
     
-    def text_set(self, textm: Text.ModuleText, change, base_key, change_x, change_y,  color: tuple = (0, 0, 0)):
-        textm.text(change, base_key, change_x, change_y, self.x + 15, self.y + 2, color)
-
-    def button(self, text, effect_click = None, function_open = None):
-        self.text = text
-        self.config.check({"effect": "True"}, effect_click)
-        if self.config.check(text[0]) == True:
-            self.config.write(text[1])
-            function_open() # type: ignore
-        elif self.config.check(text[1]) == True:
-            self.config.write(text[0])
-            function_open()  # type: ignore
-
-
-class ButtonLang(Button):
-    def __init__(self, event, button_list: list, surface: pygame.surface.Surface, config):
-        super().__init__(event, button_list, surface)
-        self.config = config
-
-    def copy(self):
-        return ButtonLang(self.event, self.button_list, self.surface, self.config)
-    
-    def text_set(self, textm: Text.AllText, base_key, x = None, y = None, color: tuple = (0, 0, 0)):
-        textm.text(base_key, self.x + 15, self.y + 2, color)
-
-    def button(self, text: dict, language: dict|None, effect_click = None):
-        self.config.check({"effect": "True"}, effect_click)
-        if self.config.check(text) == False:
-            self.config.write(text)
-            Language.language = (language)
-        else: pass
-    
+    def get_text(self, text_class: Text.ModuleText, base_key, color: tuple = (0, 0, 0)):
+        text_class.get_set_text(base_key, self.x + 15, self.y + 2, color)

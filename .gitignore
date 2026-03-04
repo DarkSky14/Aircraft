@@ -1,6 +1,7 @@
-clients/*__pycache__
-library/data
-library/data/config.json
-clients/*__pycache__
+*__pycache__
+clients/*__pycache__/
+clients/Backend/*__pycache__/
+clients/Frontend/*__pycache__/
 output
-__pycache__/
+library/log/
+library/*data/

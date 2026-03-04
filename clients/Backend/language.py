@@ -1,5 +1,9 @@
-import clients.Backend._lib_ as my_json
-import clients.Backend.logged as log
+if __name__ == "__main__":
+    import _lib_ as my_json
+    from logged import log
+else:
+    import clients.Backend._lib_ as my_json
+    from clients.Backend.logged import log
 
 English = {
     0:'Start',
@@ -93,11 +97,13 @@ class LanguageSetter(LanguageCreater):
 ENG = LanguageCreater("EN", "library/lang", "english.json")
 ENG.set_lang(my_json.JsonReader)
 ENGLISH = ENG.get_lang()
-log.log.log({"INITIALIAZE_LANGUAGE": ENG.get_name()})
+log.debug({"INITIALIAZE_LANGUAGE": ENG.get_name()})
 
 UKR = LanguageCreater("UA", "library/lang", "ukrainian.json")
 UKR.set_lang(my_json.JsonReader)
 UKRAINIAN = UKR.get_lang()
-log.log.log({"INITIALIAZE_LANGUAGE": UKR.get_name()})
+log.debug({"INITIALIAZE_LANGUAGE": UKR.get_name()})
 
 language = LanguageSetter(my_json.config).language_set(ENG, UKR)
+
+log.info("LANGUAGE LOADED...")

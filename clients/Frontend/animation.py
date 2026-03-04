@@ -1,8 +1,8 @@
 is_move = True
 
 class AnimationMove:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, size_config) -> None:
+        self.size_config = size_config
 
     def moved(self, pixel_x = None, pixel_y = None, millisecounds: int = 0): # type: ignore #
         global is_move
@@ -18,14 +18,18 @@ class AnimationMove:
             if pixel_x == None:
                 self.move_to_x = 0
                 self.pixel_x = self.x
+                self.pixel_x = round(self.pixel_x)
             else:
-                self.move_to_x = ((pixel_x - self.x_true) / times)
+                self.move_to_x = ((pixel_x - self.x_true) / times) * self.size_config
+                self.move_to_x = round(self.move_to_x)
 
             if pixel_y == None:
                 self.move_to_y = 0
                 self.pixel_y = self.y
+                self.pixel_y = round(self.pixel_y)
             else:
-                self.move_to_y = ((pixel_y - self.y_true) / times)
+                self.move_to_y = ((pixel_y - self.y_true) / times) * self.size_config
+                self.move_to_y = round(self.move_to_y)
         
         else:
             self.pixel_x = self.x
@@ -45,8 +49,8 @@ class AnimationMove:
             #return True
 
 class Resizable:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, size_config) -> None:
+        self.size_config = size_config
 
     def change_size(self, pixel_x_size = None, pixel_y_size = None, millisecounds = 0): # type: ignore
         global is_move
@@ -77,8 +81,8 @@ class Resizable:
             self.move_to_y_size = 0
     
     def animation_resize(self, func = None):
-        self.size_x = (self.size_x + self.move_to_x_size)
-        self.size_y = (self.size_y + self.move_to_y_size)
+        self.size_x = (self.size_x + self.move_to_x_size) ^ self.size_config
+        self.size_y = (self.size_y + self.move_to_y_size) ^ self.size_config
         self.size = self.size_x, self.size_y
         if round(self.size_x) == self.pixel_x_size and round(self.size_y) == self.pixel_y_size:
             self.move_to_x_size = 0
@@ -86,7 +90,10 @@ class Resizable:
             self.size = self.size_x, self.size_y
             self.pixel_x_size = None
             self.pixel_y_size = None
-            func  # type: ignore
+            if func is None:
+                pass
+            else: 
+                func()
             del func 
 
     def add_func_resize(self, func): 

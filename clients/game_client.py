@@ -2,6 +2,11 @@ import pygame
 import random
 from os import listdir
 
+if __name__ == "__main__":    
+    from Frontend import surface as Surface
+else:
+    import clients.Frontend.surface as Surface
+
 FPS = pygame.time.Clock()
 
 IMGS_PATH = 'library/player'
@@ -18,12 +23,6 @@ pygame.time.set_timer(CREATE_ENEMY2, 3000)
 pygame.time.set_timer(CREATE_ENEMY3, 2000)
 pygame.time.set_timer(CHANGE_IMG, 125)
 pygame.time.set_timer(CREATE_BONUS, 2500)
-
-
-width, height = 1373, 767
-screen = width, height
-
-pygame.init()
 
 player_imgs = [pygame.image.load(IMGS_PATH + '/' + file).convert_alpha() for file in listdir(IMGS_PATH)]
 player = player_imgs[0]
@@ -43,7 +42,7 @@ max_score1=30
 max_score2=300
 max_score3=1500 
 
-bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), screen)
+bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), Surface.screen)
 bgX = 0
 bgX2 = bg.get_width()
 
@@ -51,7 +50,7 @@ bgX2 = bg.get_width()
 enemy = pygame.image.load('library/pictures/enemy.png')
 def create_enemy(speed_w1, speed_w2):
     global enemy
-    enemy_rect = pygame.Rect(width, random.randint(0,height), *enemy.get_size())
+    enemy_rect = pygame.Rect(Surface.width, random.randint(0, int(Surface.height)), *enemy.get_size())
     enemy_speed = random.randint(speed_w1, speed_w2)
     return[enemy, enemy_rect, enemy_speed]
 
@@ -59,7 +58,7 @@ def create_enemy(speed_w1, speed_w2):
 bonus = pygame.image.load('library/pictures/bonus.jpg ')
 def create_bonus():
     global bonus
-    bonus_rect = pygame.Rect(random.randint(0, width), -1000, *bonus.get_size())    
+    bonus_rect = pygame.Rect(random.randint(0, int(Surface.width)), -1000, *bonus.get_size())    
     bonus_speed = (0)
     return [bonus, bonus_rect, bonus_speed]
 

@@ -3,11 +3,9 @@ import os
 from abc import ABC, abstractmethod
 
 if __name__ == "__main__":
-    import logged as log
+    from logged import log
 else: 
-    import clients.Backend.logged as log
-
-logging = log.log
+    from clients.Backend.logged import log
 
 
 class _DLib: #Correct
@@ -136,14 +134,14 @@ class JsonWorker(JsonReader, JsonWriter, CheckedDict, _DLib):
                 return data
             
         except FileNotFoundError as fnfe: 
-            logging.log_error("File not found, creating new file...", fnfe)
+            log.exception({"File not found, creating new file...": fnfe})
             self.writer(self._dict)
 
         except json.decoder.JSONDecodeError as jde:
-            logging.log_error("File void or crash, recording...", jde)
+            log.exception({"File void or crash, recording...": jde})
             self.writer(self._dict)
         except:
-            logging.critical_error("Undefined error...")
+            log.critical("Undefined error...", stack_info=True)
 
     def writer(self, args: dict, encoding = "utf-8"):
         data = self._dict.copy()
@@ -155,8 +153,6 @@ class JsonWorker(JsonReader, JsonWriter, CheckedDict, _DLib):
         with open((self._url + "/" + self._file), "w", encoding = encoding) as file:
             json.dump(data, file, indent = 4) 
          
-
-logging.log("_lib_ module loaded")
 
 config = JsonWorker(
     "config",
@@ -170,11 +166,11 @@ config = JsonWorker(
     "config.json"
 )
 config.reader()
-logging.log({"INITIALIAZE_CONFIG": config.get_dict()})
+log.debug({"INITIALIAZE_CONFIG": config.get_dict()})
 
 temp = JsonWorker(
     "temporary_options",
     "none",
     {"musicID": "None"}
 )
-logging.log({"INITIALIAZE_TEMP": temp.get_dict()})
+log.debug({"INITIALIAZE_TEMP": temp.get_dict()})
