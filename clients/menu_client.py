@@ -3,11 +3,12 @@ __author__ = 'Chinho'
 
 import pygame.font
 from pygame import init
-import clients.module.music as mus
 if __name__ == "__main__":    
-    import clients.module.Surface as Surface
+    import module.Surface as Surface
+    import module.music as mus
 else:
     import clients.module.Surface as Surface
+    import clients.module.music as mus
 
 def get_version():
     return __version__
