@@ -32,19 +32,17 @@ pygame.display.set_icon(icon)
 
 BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
 
-def on_music():
+def on_music() -> bool:
     if my_json.config.check({"effect": "True"}) == True:
-        is_music = True
+        return True
     else:
-        is_music = False
-    return is_music
+        return False
 
 is_music = on_music()
 
 def sound_scroll():
     if is_music == True:
         scroll()
-    #my_json.config.check({"effect": "True"}, scroll)
         
 fon_background = Surface.ScrollingBG(bg, bg_speed)
 
@@ -66,7 +64,6 @@ e = Event.EventControl()
 big_text = Text.ModuleText(Text.big_text)
 standart_text = Text.ModuleText(Text.standart_text)
 
-#sub_surface = Surface.SubSurface(350, 250).surface(Surface.d, 50, 240)
 button_modified = Button.ModuleButton(e, Surface.d, my_json.config, standart_text, Surface.procent)
 
 music = mus.Music(my_json.config, my_json.temp, 0.1)
@@ -258,9 +255,10 @@ def options(x_c = 540.0, y_c = 347.5):
     def initialize():
         e.event_pool()    
         e.mouse_get()
-        if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            e.set_key(0)
-            quit()  
+        if e.comparison_type(KEYDOWN):
+            if e.comparison_key(K_ESCAPE):
+                e.set_key(0)
+                quit()  
 
         #surfM.update_pos()
         #surfM.animation_resize()
