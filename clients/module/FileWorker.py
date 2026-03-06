@@ -59,6 +59,7 @@ class CheckedDict(_DLib):
             return False
             
         else: 
+            del key
             try:
                 script() #type: ignore
             except TypeError:
@@ -100,11 +101,8 @@ class JsonWorker(JsonReader, JsonWriter, CheckedDict, _DLib):
 
     def reader(self, encoding = "utf-8"):
         try: 
-            with open(self._url + "/" + self._file, "r", encoding = encoding) as file:
-                data = json.load(file)
-                self.update_dict(data)
-                log.info({f"Load {self.get_name()}": self.get_dict()})
-                return data
+            self.read(encoding)
+            log.info({f"Load {self.get_name()}": self.get_dict()})
             
         except FileNotFoundError as fnfe: 
             log.exception({"File not found, creating new file...": fnfe})

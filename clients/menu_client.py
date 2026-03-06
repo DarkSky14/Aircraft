@@ -52,14 +52,17 @@ def invisible_cursor():
 def visible_cursor():
     pygame.mouse.set_visible(1)
 
+clicks_used = mus.Sound(click_open_2)
 def clicks(): 
-    mus.Sound().create_channel(click_open_2)
+    clicks_used.create_channel()
 
+return_exit_used = mus.Sound(click_exit)
 def return_exit(): 
-    mus.Sound().create_channel(click_exit)
+    return_exit_used.create_channel()
 
+scroll_used = mus.Sound(click_aim)
 def scroll():
-    mus.Sound().create_channel(click_aim, 0.05) 
+    scroll_used.create_channel(volume=0.05)
 
 bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), Surface.screen)
 bgX = 0

@@ -2,17 +2,17 @@ import pygame.font
 
 if __name__ == "__main__": #or __name__.find("clients.Frontend.Text") != -1:
     import Surface as Surface
-    import _lib_ as _lib_
+    import FileWorker as FileWorker
     import language as language
 
 else:
     try:
         import Surface as Surface
-        import _lib_ as _lib_
+        import FileWorker as FileWorker
         import language as language
     except ImportError:
         import clients.module.Surface as Surface
-        import clients.module._lib_ as _lib_
+        import clients.module.FileWorker as FileWorker
         import clients.module.language as language
 
 
@@ -115,7 +115,7 @@ class ModuleText(Text):
 
 VERS_GAME = pygame.font.SysFont('Segou UI', round(20 * Surface.procent))
 
-text = Text(VERS_GAME, language.language, Surface.d, _lib_.config, (0,0,0))
+text = Text(VERS_GAME, language.language, Surface.d, FileWorker.config, (0,0,0))
 big_text = text.copy()
 big_text.create_font('Georgia', round(36 * Surface.procent))
 

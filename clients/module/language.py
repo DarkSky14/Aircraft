@@ -1,12 +1,12 @@
 if __name__ == "__main__":
-    import _lib_ as my_json
+    import FileWorker as lib_file
     from logged import log
 else:
     try:
-        import _lib_ as my_json
+        import FileWorker as lib_file
         from logged import log
     except ImportError:
-        import clients.module._lib_ as my_json
+        import clients.module.FileWorker as lib_file
         from clients.module.logged import log
 
 
@@ -102,12 +102,12 @@ class LanguageSetter(LanguageCreater):
 
 
 ENG = LanguageCreater("EN", "library/language", "english.json")
-ENG.set_lang(my_json.JsonReader)
+ENG.set_lang(lib_file.JsonReader)
 ENGLISH = ENG.get_lang()
 
 UKR = LanguageCreater("UA", "library/language", "ukrainian.json")
-UKR.set_lang(my_json.JsonReader)
+UKR.set_lang(lib_file.JsonReader)
 UKRAINIAN = UKR.get_lang()
 
-language = LanguageSetter(my_json.config).language_set(ENG, UKR)
+language = LanguageSetter(lib_file.config).language_set(ENG, UKR)
 log.info("LANGUAGE LOADED...")
