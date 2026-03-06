@@ -4,7 +4,7 @@ import pygame
 #config.absolute_import.set_import("base")
 
 import clients.module.language as Language
-import clients.module._lib_ as my_json
+import clients.module.FileWorker as lib_file
 import clients.module.event as Event
 import clients.module.logged as Log
 
@@ -33,7 +33,7 @@ pygame.display.set_icon(icon)
 BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
 
 def on_music() -> bool:
-    if my_json.config.check({"effect": "True"}) == True:
+    if lib_file.config.check({"effect": "True"}) == True:
         return True
     else:
         return False
@@ -64,11 +64,12 @@ e = Event.EventControl()
 big_text = Text.ModuleText(Text.big_text)
 standart_text = Text.ModuleText(Text.standart_text)
 
-button_modified = Button.ModuleButton(e, Surface.d, my_json.config, standart_text, Surface.procent)
+button_modified = Button.ModuleButton(e, Surface.d, lib_file.config, standart_text, Surface.procent)
 
-music = mus.Music(my_json.config, my_json.temp, 0.1)
-#game_music = mus.Music(my_json.config, my_json.temp, 0.1)
+music = mus.Music(lib_file.config, lib_file.temp, sound_menu, 0.1)
+#game_music = mus.Music(lib_file.config, lib_file.temp, sound_game, 0.1)
 music.music_all(sound_menu)
+#music.music_get().load(sound_menu, "music_menu")
 
 game_work = True
 work = True
@@ -304,8 +305,8 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     
     set_fps(90)
 
-    #music.music_stop()
-    #game_music.create_mus_channel(sound_game)
+    #music.music_stop(400)
+    #game_music.create_mus_channel()
     ch = 0  
 
     while game_work:
@@ -317,9 +318,11 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     ch = 0
-                    #game_music.music_stop()
+                    #game_music.music_get().pause()
+                    #music.create_mus_channel()
                     work = True
                     options()
+                    #game_music.music_unpause()
                     #music.music_play()
         
             if event.type == CREATE_BONUS:
@@ -349,7 +352,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
 
             if player_rect.colliderect(enemy[1]):
                 game_work = False
-                #music.music_all(sound_menu)
+                music.music_all(sound_menu)
         
         for bonus in bonusies:             
             bonus[1] = bonus[1].move(-bonus[2], 2)
@@ -382,15 +385,15 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             player_rect = player_rect.move(-player_speed, 0)
             
         if scores >= max_score:
-            if my_json.config.check(level, invisible_cursor) == False:
-                my_json.config.write(level)
+            if lib_file.config.check(level, invisible_cursor) == False:
+                lib_file.config.write(level)
             game_work = False
 
         if ch == 0 and game_work != False:
             ch =+ 1
             
             invisible_cursor()
-            #game_music.music_play()
+            #music.music_get().stop()
             music.music_all(sound_game)
         
         get_fps(GAME_TEXT, RED, (10,10))
@@ -400,8 +403,8 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     game_work = True
     clean_bon_and_en()
     #game_music.music_stop()
-    #music.music_play()
     music.music_all(sound_menu)
+    #music.music_play()
     standart_curs() 
     visible_cursor() 
 
@@ -474,7 +477,7 @@ def language_get():
         e.event_pool()
         e.mouse_get()
         if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            my_json.config.check({"effect": "True"}, return_exit)
+            lib_file.config.check({"effect": "True"}, return_exit)
             e.set_key(0)
             exit()
 
@@ -542,7 +545,7 @@ def level():
             def lvl2(): 
                 sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
         
-            my_json.config.check({"level": 2}, lvl2)
+            lib_file.config.check({"level": 2}, lvl2)
 
         def button(): 
             button2.check_config({"effect": "True"}, clicks)
@@ -558,7 +561,7 @@ def level():
             def lvl3(): 
                 sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
         
-            my_json.config.check({"level": 3}, lvl3)
+            lib_file.config.check({"level": 3}, lvl3)
         
         def button(): 
             button3.check_config({"effect": "True"}, clicks)
@@ -584,7 +587,7 @@ def level():
         e.event_pool()
         e.mouse_get()
         if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            my_json.config.check({"effect": "True"}, return_exit)
+            lib_file.config.check({"effect": "True"}, return_exit)
             e.set_key(0)
             exit()
 
