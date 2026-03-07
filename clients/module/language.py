@@ -91,7 +91,7 @@ class LanguageSetter(LanguageCreater):
 
         for arg in args:
             check = {"language": arg.get_name()}
-            if self.config.check(check) == True: 
+            if self.config.check(self.config.get_data(), check) == True: 
                 self._lang = arg.get_lang()
                 return self._lang 
             else:

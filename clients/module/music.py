@@ -54,13 +54,13 @@ class Music:
     def music_all(self, name_track, loops=-1, start=0, fade_ms=100):    
         arg = self.temp.get_value("musicID")
  
-        if self.config.check({"music": "False"}) == True: 
+        if self.config.check(self.config.get_data(), {"music": "False"}): 
             if self.music.get_busy() == True:
                 self.music.pause()
                        
         else:               
             if self.music.get_busy() == False:
-                if self.temp.check({"musicID": "None"}) == True:
+                if self.temp.check(self.config.get_data(), {"musicID": "None"}):
                     self.music_load(name_track)
                     self.create_mus_channel(loops, start, fade_ms)
                     self.temp.update_dict({"musicID": name_track})

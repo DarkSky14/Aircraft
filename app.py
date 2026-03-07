@@ -33,7 +33,7 @@ pygame.display.set_icon(icon)
 BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
 
 def on_music() -> bool:
-    if lib_file.config.check({"effect": "True"}) == True:
+    if lib_file.config.check(lib_file.config.get_data(), {"effect": "True"}) == True:
         return True
     else:
         return False
@@ -385,7 +385,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             player_rect = player_rect.move(-player_speed, 0)
             
         if scores >= max_score:
-            if lib_file.config.check(level, invisible_cursor) == False:
+            if lib_file.config.check(lib_file.config.get_data(), level, invisible_cursor) == False:
                 lib_file.config.write(level)
             game_work = False
 
@@ -477,7 +477,7 @@ def language_get():
         e.event_pool()
         e.mouse_get()
         if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            lib_file.config.check({"effect": "True"}, return_exit)
+            lib_file.config.check(lib_file.config.get_data(), {"effect": "True"}, return_exit)
             e.set_key(0)
             exit()
 
@@ -544,8 +544,8 @@ def level():
         def l2():            
             def lvl2(): 
                 sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
-        
-            lib_file.config.check({"level": 2}, lvl2)
+
+            lib_file.config.check(lib_file.config.get_data(), {"level": 2}, lvl2)
 
         def button(): 
             button2.check_config({"effect": "True"}, clicks)
@@ -560,8 +560,8 @@ def level():
         def l3(): 
             def lvl3(): 
                 sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
-        
-            lib_file.config.check({"level": 3}, lvl3)
+            
+            lib_file.config.check(lib_file.config.get_data(), {"level": 3}, lvl3)
         
         def button(): 
             button3.check_config({"effect": "True"}, clicks)
@@ -587,7 +587,7 @@ def level():
         e.event_pool()
         e.mouse_get()
         if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            lib_file.config.check({"effect": "True"}, return_exit)
+            lib_file.config.check(lib_file.config.get_data(), {"effect": "True"}, return_exit)
             e.set_key(0)
             exit()
 
