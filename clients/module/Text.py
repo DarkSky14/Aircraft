@@ -103,11 +103,11 @@ class ModuleText(Text):
         self.lang = self.class_text.get_language()
     
     def set_change_text(self, change, change_x, change_y):
-        if self.config.check(change) == True:
+        if self.config.check(self.config.get_data(), change) == True:
             self.chosen = self.lang.get(change_x, f"{change_x}")
 
-        elif self.config.check(change) == False:
-            self.chosen = self.lang.get(change_y, f"{change_y}")      
+        elif self.config.check(self.config.get_data(), change) == False:
+            self.chosen = self.lang.get(change_y, f"{change_y}")
 
     def get_set_text(self, base_key, x_text, y_text, color: tuple = (0, 0, 0)):
         self.text = self.lang.get(base_key, f"{base_key}")

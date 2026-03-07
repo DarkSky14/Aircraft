@@ -85,7 +85,7 @@ class ModuleButton(Button, Text.ModuleText):
         return ModuleButton(self.event, self.surface, self.config, self.class_text, self.size_config)
 
     def check_config(self, text, effect_click = None):
-        return self.config.check(text, effect_click)
+        return self.config.check(self.config.get_data(), text, effect_click)
     
     def write_in_config(self, text):
         self.config.write(text)
