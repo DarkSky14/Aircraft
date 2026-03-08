@@ -24,13 +24,19 @@ from clients.menu_client import *
 from clients.game_client import * 
 
 # Setup pygame/window -----------------------------
+Log.log.info("Setup icon window...")
 icon = pygame.transform.scale(pygame.image.load('library/Aircraft.ico').convert(), Surface.screen)
+Log.log.info("Icon window setup complete.")
+Log.log.info("Setup background image options...")
 fon = pygame.transform.scale(pygame.image.load('library/pictures/fon_.png').convert(), Surface.screen)
+Log.log.info("Background image options setup complete.")
 
 pygame.display.set_caption('Aircraft',"Aircraft")
 pygame.display.set_icon(icon) 
 
+Log.log.info("Load base font...")
 BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
+Log.log.info("Base font successfully loaded.")
 
 def on_music() -> bool:
     if lib_file.config.check(lib_file.config.get_data(), {"effect": "True"}) == True:
@@ -170,7 +176,7 @@ def main_menu():
 
     work = True    
 
-def options(x_c = 540.0, y_c = 347.5):
+def options(x_c = (536.5*Surface.procent), y_c = (255.5*Surface.procent)):
     global work
     surfM = UI.SurfaceM(e, Surface.d, size_config=Surface.procent)
     surfM.set_object_size(x_c * Surface.procent, y_c * Surface.procent, (350, 250))
@@ -613,4 +619,6 @@ def level():
     work = True
 
 if __name__ == "__main__":
+    Log.log.info("Successful start...")
     main_menu()
+    Log.log.info("Successful stop.")
