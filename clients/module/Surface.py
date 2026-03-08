@@ -50,8 +50,9 @@ class StandartSurface(_ClassSurface):
 
 
 class AdjustmentSurface(_ClassSurface):
-    def __init__(self, width: int = 0, height: int = 0):
-        super().__init__(width, height)
+    def __init__(self):
+        pass
+        #super().__init__(width, height)
     
     def surface(self, mode = pygame.WINDOWMAXIMIZED) -> pygame.Surface:
         screen = screeninfo.get_monitors()
@@ -151,7 +152,7 @@ class ScrollingBG:
  
 init()
 
-main_surface = AdjustmentSurface(960, 544).surface() # 960, 544 StandartSurface(960, 544) #
+main_surface = AdjustmentSurface().surface() # 960, 544 StandartSurface(960, 544) #
 e = AdjustmentSubSurface(1373, 761)# Original size 300x168
 d = e.surface(main_surface)
 main_surface.fill((0, 0, 0))

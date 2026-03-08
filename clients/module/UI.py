@@ -77,7 +77,7 @@ class SurfaceM(animation.AnimationMove, animation.Resizable):
         self.b_radius = self.size_y / 2
 
     def surface_wait(self, exit): 
-        surface = self.sub_surface.draw_object((100, 100, 100), round(self.b_radius), 30)
+        surface = self.sub_surface.draw_object((100, 100, 100), round(self.b_radius), round(30*self.size_config), round(40*self.size_config))
 
         #if surface.collidepoint((self.event.mx - Surface.conf_width, self.event.my - Surface.conf_height)) == False:
          #   self.event.set_choose_button(1)
