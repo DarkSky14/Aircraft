@@ -178,8 +178,10 @@ def main_menu():
 
 def options(x_c = (536.5*Surface.procent), y_c = (255.5*Surface.procent)):
     global work
+    x_size = 350 * Surface.procent
+    y_size = 250 * Surface.procent
     surfM = UI.SurfaceM(e, Surface.d, size_config=Surface.procent)
-    surfM.set_object_size(x_c * Surface.procent, y_c * Surface.procent, (350, 250))
+    surfM.set_object_size(x_c, y_c, (x_size, y_size))
     surfM.change_size(900, 500, 300)
     surfM.set_click(False)
     x_c = surfM.get_x_pos()

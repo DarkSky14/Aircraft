@@ -45,11 +45,7 @@ class SurfaceM(animation.AnimationMove, animation.Resizable):
     def set_object_size(self, x, y, size):
         self.x, self.y = x * self.size_config, y * self.size_config
         self.size_x, self.size_y = size   
-        self.size_x *= self.size_config
-        self.size_y *= self.size_config
-        self.size = self.size_x, self.size_y
-        #self.x_true, self.y_true, self.size_true = self.__copy_object__()
-        #self.size_x_true, self.size_y_true = self.size_true
+        self.size = size
         self.b_radius = self.size_y / 2
         self.sub_surface = MyDrawObject(self.x, self.y, self.size, self.surface)#25 90
         return self.x, self.y, self.size
