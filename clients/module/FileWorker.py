@@ -65,20 +65,9 @@ class _DLib(Lib):
 
 class CheckedDict:
     @staticmethod
-    def check(data: dict, args: dict, script = None):
+    def check(data: dict, args: dict):
         key = list(args.keys()).pop()
-        log.info((f"Args: {args} data:", {key: f"{data.get(key)}"}))
-
-        if args != {key: f"{data.get(key)}"}:
-            return False
-            
-        else: 
-            del key
-            try:
-                script() #type: ignore
-            except TypeError:
-                script  #type: ignore
-            return True       
+        return args == {key: f"{data.get(key)}"}   
 
 
 class JsonReader(_DLib):
@@ -107,9 +96,22 @@ class JsonWriter(_DLib):
             json.dump(data, file, indent = 4) 
 
 
-class JsonWorker(JsonReader, JsonWriter, CheckedDict, _DLib):
+class JsonWorker(JsonReader, JsonWriter, _DLib):
     def __init__(self, name: str, url: str, data: dict, file: str = "None"):
         _DLib.__init__(self, name, url, data, file)
+
+    def check(self, args: dict, script = None):
+        ifel = CheckedDict.check(self.get_data(), args)
+        if ifel == True:
+            if script != None:
+                script() #type: ignore
+            return True
+        
+        elif ifel == False:
+            return False
+        else:
+            log.error("Undefined error...", {self.get_data(): args}, stack_info=True)
+            return None
 
     def reader(self, encoding = "utf-8"):
         try: 
