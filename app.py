@@ -17,7 +17,7 @@ import clients.module.button as Button
 from pygame import (
     QUIT, K_DOWN, K_UP, 
     K_RIGHT, K_LEFT, K_ESCAPE,
-    KEYDOWN
+    KEYDOWN, MOUSEBUTTONDOWN
 )
 
 from clients.menu_client import *
@@ -151,8 +151,14 @@ def main_menu():
     set_fps(60)
 
     def initialize():
-        e.event_pool()
-        e.mouse_get()
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
 
         background() 
         
@@ -161,8 +167,7 @@ def main_menu():
         button_3()   
         button_4() 
 
-        version_game() 
-        e.MOUSEBUTTONDOWN()
+        version_game()
         e.event_button_check(standart_curs, click_cursor, sound_scroll)
         big_text.get_set_text("7", 70 * Surface.procent, 150 * Surface.procent)     
 
@@ -176,12 +181,12 @@ def main_menu():
 
     work = True    
 
-def options(x_c = (536.5*Surface.procent), y_c = (255.5*Surface.procent)):
+def options(x_c = (536.5), y_c = (255.5)):
     global work
     x_size = 350 * Surface.procent
     y_size = 250 * Surface.procent
     surfM = UI.SurfaceM(e, Surface.d, size_config=Surface.procent)
-    surfM.set_object_size(x_c, y_c, (x_size, y_size))
+    surfM.set_object_size(x_c*Surface.procent, y_c*Surface.procent, (x_size, y_size))
     surfM.change_size(900, 500, 300)
     surfM.set_click(False)
     x_c = surfM.get_x_pos()
@@ -262,12 +267,19 @@ def options(x_c = (536.5*Surface.procent), y_c = (255.5*Surface.procent)):
     visible_cursor()  
     
     def initialize():
-        e.event_pool()    
-        e.mouse_get()
-        if e.comparison_type(KEYDOWN):
-            if e.comparison_key(K_ESCAPE):
-                e.set_key(0)
-                quit()  
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
+            
+            if e.comparison_type(KEYDOWN):
+                if e.comparison_key(K_ESCAPE):
+                    e.set_key(0)
+                    quit()  
 
         #surfM.update_pos()
         #surfM.animation_resize()
@@ -281,8 +293,7 @@ def options(x_c = (536.5*Surface.procent), y_c = (255.5*Surface.procent)):
 
         button3.Button(button_3)
         button3.get_text_self("6")
-
-        e.MOUSEBUTTONDOWN()  
+ 
         e.event_button_check(standart_curs, click_cursor, sound_scroll)
         big_text.get_set_text("1", (x_c) + 45 * Surface.procent, (y_c) + 25 * Surface.procent)
         
@@ -482,12 +493,19 @@ def language_get():
     set_fps(60)
 
     def initialiaze():
-        e.event_pool()
-        e.mouse_get()
-        if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            lib_file.config.check({"effect": "True"}, return_exit)
-            e.set_key(0)
-            exit()
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
+            
+            if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
+                lib_file.config.check({"effect": "True"}, return_exit)
+                e.set_key(0)
+                exit()
 
         background()
         
@@ -592,12 +610,19 @@ def level():
     set_fps(60)
 
     def initialiaze(): 
-        e.event_pool()
-        e.mouse_get()
-        if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            lib_file.config.check({"effect": "True"}, return_exit)
-            e.set_key(0)
-            exit()
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
+            
+            if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
+                lib_file.config.check({"effect": "True"}, return_exit)
+                e.set_key(0)
+                exit()
 
         background()
 
