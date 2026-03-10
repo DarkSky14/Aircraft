@@ -1,8 +1,6 @@
 import pygame.event, pygame.time
-import sys
 from pygame import (
-    QUIT, KEYDOWN, K_ESCAPE,
-    MOUSEBUTTONDOWN, MOUSEBUTTONUP, K_UP, K_DOWN
+    MOUSEBUTTONDOWN
 )
 
 class EventControl:

@@ -26,9 +26,6 @@ LIME = (100, 250, 100)
 
 init()
 
-def vie(): 
-    pass
-
 log.info("Load font...")
 STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * Surface.procent), 0, 0) #Arial
 BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * Surface.procent))

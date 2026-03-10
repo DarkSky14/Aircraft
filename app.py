@@ -194,13 +194,10 @@ def options(x_c = (536.5), y_c = (255.5)):
 
     def quit():
         global work
-        surfM.set_click(False)
         work = False
-        surfM.set_click(False)
         
     def exit():
         global game_work
-        clean_bon_and_en() 
         game_work = False  
         quit()
     
@@ -220,8 +217,6 @@ def options(x_c = (536.5), y_c = (255.5)):
     
     def button_1():
         global is_music
-        #if button1.button_click():
-        #    pass    
         if button1.check_config({"effect": "True"}, clicks):
             button1.write_in_config({"effect": "False"})
             is_music = False
@@ -312,8 +307,8 @@ def options(x_c = (536.5), y_c = (255.5)):
 
 def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):   
     global game_work, work 
-    from clients.game_client import scores, player_imgs, player_speed
-    from clients.game_client import player, player_rect, img_index
+    from clients.game_client import player_imgs, player_speed
+    from clients.game_client import player, player_rect
     
     pygame.init()    
 
@@ -324,9 +319,20 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     
     set_fps(90)
 
+    img_index = 0
+    scores = 0 
+    bonusies = []
+    enemies = []
+
+
+    def clean_bon_and_en():
+        """Delete all bonusies and enemies"""
+        bonusies.clear()
+        enemies.clear()
+
     #music.music_stop(400)
     #game_music.create_mus_channel()
-    ch = 0  
+    check_first_while = 0  
 
     while game_work:
         pressed_keys = pygame.key.get_pressed()  
@@ -336,7 +342,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    ch = 0
+                    check_first_while = 0
                     #game_music.music_get().pause()
                     #music.create_mus_channel()
                     work = True
@@ -408,8 +414,8 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                 lib_file.config.write(level)
             game_work = False
 
-        if ch == 0 and game_work != False:
-            ch =+ 1
+        if check_first_while == 0 and game_work != False:
+            check_first_while =+ 1
             
             invisible_cursor()
             #music.music_get().stop()
@@ -571,7 +577,8 @@ def level():
             def lvl2(): 
                 sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
 
-            lib_file.config.check({"level": 2}, lvl2)
+            if lib_file.config.get_value("level") >= 2:
+                lvl2()
 
         def button(): 
             button2.check_config({"effect": "True"}, clicks)
@@ -587,7 +594,8 @@ def level():
             def lvl3(): 
                 sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
             
-            lib_file.config.check({"level": 3}, lvl3)
+            if lib_file.config.get_value("level") >= 3:
+                lvl3()
         
         def button(): 
             button3.check_config({"effect": "True"}, clicks)

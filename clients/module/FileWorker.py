@@ -54,7 +54,7 @@ class _DLib(Lib):
         self._file = file
     
     def get_value(self, argID: str):
-        return dict.get(self._dict, argID)
+        return dict.get(self._dict, argID, 0)
 
     def update_dict(self, new_dict: dict):
         self._dict.update(new_dict)
@@ -68,6 +68,14 @@ class CheckedDict:
     def check(data: dict, args: dict):
         key = list(args.keys()).pop()
         return args == {key: f"{data.get(key)}"}   
+    
+    #@staticmethod
+    #def return_value(data: dict, value: str, default = 0):
+    #    return dict.get(data, value, default)
+    
+    #@staticmethod
+    #def return_key(args: dict):
+    #    return list(args.keys()).pop()
 
 
 class JsonReader(_DLib):
