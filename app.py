@@ -57,7 +57,7 @@ def background():
     fon_background.draw(Surface.d)
  
 def update_display():
-    pygame.display.update(round(Surface.conf_width), round(Surface.conf_height), Surface.width, Surface.height)
+    pygame.display.update(Surface.conf_width, Surface.conf_height, Surface.width, Surface.height)
 
 def get_fps(font: pygame.font.Font = BASEFONT, color: tuple = (200, 200, 200), coordinate: tuple = (3,3)):
     main_surface_fps = font.render(str(int(FPS.get_fps())), True, (color))
@@ -84,6 +84,7 @@ def main_menu():
     global work
 
     def exit():     
+        Log.log.info("Successful stop.")
         pygame.quit()
         sys.exit()
 
@@ -656,4 +657,3 @@ def level():
 if __name__ == "__main__":
     Log.log.info("Successful start...")
     main_menu()
-    Log.log.info("Successful stop.")
