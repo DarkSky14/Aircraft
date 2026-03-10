@@ -35,11 +35,6 @@ player_rect = player.get_rect()
 player_speed = 2
 
 
-img_index = 0
-scores = 0 
-bonusies = []
-enemies = []
-
 sw1, sh1 = 0, 3
 sw2, sh2 = 1, 4
 sw3, sh3 = 3, 7
@@ -69,12 +64,6 @@ def create_bonus():
     bonus_speed = (0)
     return [bonus, bonus_rect, bonus_speed]
 log.info("Bonus image successfully loaded.")
-
-
-def clean_bon_and_en():
-    """Delete all bonusies and enemies"""
-    enemies.clear()
-    bonusies.clear()
 
 fps = 0
 
