@@ -32,7 +32,7 @@ def vie():
 log.info("Load font...")
 STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * Surface.procent), 0, 0) #Arial
 BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * Surface.procent))
-VERS_GAME = pygame.font.SysFont('Segou UI', round(20 * Surface.procent))
+VERS_GAME = pygame.font.SysFont(None, round(20 * Surface.procent))
 GAME_TEXT = pygame.font.SysFont("Consolas", round(30 * Surface.procent))
 log.info("Font (4) successfully loaded.")
 
@@ -44,17 +44,17 @@ click_aim = ("library/effect/nice click aim.mp3")
 sound_menu = ('library/music/Menu1 - peace.mp3')
 sound_game = ('library/music/01897.mp3')
 
-def click_cursor(): 
-    pygame.mouse.set_system_cursor(11)
+def click_cursor():
+    pygame.mouse.set_cursor(11)
 
 def standart_curs():
-    pygame.mouse.set_system_cursor(0)
+    pygame.mouse.set_cursor(0)
 
 def invisible_cursor():
-    pygame.mouse.set_visible(0)
+    pygame.mouse.set_visible(False)
 
 def visible_cursor():
-    pygame.mouse.set_visible(1)
+    pygame.mouse.set_visible(True)
 
 log.info("Load sounds...")
 clicks_used = mus.Sound(click_open_2)

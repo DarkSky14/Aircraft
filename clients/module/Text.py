@@ -63,7 +63,7 @@ class Text(Font): #Correct
         self.surface.blit(textobj, textrect, special_flags=special_flags)
     
     def draw_text(self, text, x, y, color: tuple = (0,0,0)):
-        textobj = self.font.render(text, 1, color)
+        textobj = self.font.render(text, True, color)
         textrect = textobj.get_rect()
         textrect.topleft = (x, y)
         self.surface.blit(textobj, textrect)   
@@ -113,7 +113,7 @@ class ModuleText(Text):
         self.text = self.lang.get(base_key, f"{base_key}")
         self.draw_text("{} {}".format(self.text, self.chosen), x_text, y_text, color)
 
-VERS_GAME = pygame.font.SysFont('Segou UI', round(20 * Surface.procent))
+VERS_GAME = pygame.font.SysFont(None, round(20 * Surface.procent))
 
 text = Text(VERS_GAME, language.language, Surface.d, FileWorker.config, (0,0,0))
 big_text = text.copy()
