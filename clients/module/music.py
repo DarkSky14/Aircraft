@@ -37,7 +37,8 @@ class Music:
 
     def music_unpause(self):
         self.music.set_pos(self.archive)
-        self.create_mus_channel()
+        self.music.set_pos(self.archive)
+        self.music.play(-1, self.archive, 100)
     
     def music_load(self, address):
         self.adress = address

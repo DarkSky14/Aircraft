@@ -2,13 +2,10 @@ from pygame import init
 import pygame.display
 import screeninfo
 from abc import abstractmethod
-if __name__ == "__main__":
+try:
+    from clients.module.logged import log
+except ImportError:
     from logged import log
-else:
-    try:
-        from clients.module.logged import log
-    except ImportError:
-        from logged import log
 
 class _ClassSurface:
     def __init__(self, width: int = 0, height: int = 0):

@@ -1,19 +1,14 @@
 import pygame.font
 
-if __name__ == "__main__": #or __name__.find("clients.Frontend.Text") != -1:
+
+try:
     import Surface as Surface
     import FileWorker as FileWorker
     import language as language
-
-else:
-    try:
-        import Surface as Surface
-        import FileWorker as FileWorker
-        import language as language
-    except ImportError:
-        import clients.module.Surface as Surface
-        import clients.module.FileWorker as FileWorker
-        import clients.module.language as language
+except ImportError:
+    import clients.module.Surface as Surface
+    import clients.module.FileWorker as FileWorker
+    import clients.module.language as language
 
 
 class Font:

@@ -1,13 +1,10 @@
 import json
 import os
 
-if __name__ == "__main__":
+try:
+    from clients.module.logged import log
+except ImportError:
     from logged import log
-else: 
-    try:
-        from clients.module.logged import log
-    except ImportError:
-        from logged import log
 
 
 class Lib:

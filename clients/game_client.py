@@ -28,7 +28,7 @@ pygame.time.set_timer(CREATE_BONUS, 2500)
 
 log.info("Start load player images...")
 player_img = [pygame.image.load(IMGS_PATH + '/' + file).convert_alpha() for file in listdir(IMGS_PATH)]
-player_imgs = [pygame.transform.scale(player_img, (round(player_img.get_width() * Surface.procent), round(player_img.get_height() * Surface.procent))) for player_img in player_img]
+player_imgs = [pygame.transform.scale(player_img, ((player_img.get_width() * Surface.procent), (player_img.get_height() * Surface.procent))) for player_img in player_img]
 log.info("Player images successfully load.")
 player = player_imgs[0]
 player_rect = player.get_rect()
@@ -46,7 +46,7 @@ max_score3=1500
 
 log.info("Start load enemy image...")
 enemy_png = pygame.image.load('library/pictures/enemy.png')
-enemy = pygame.transform.scale(enemy_png, (round(enemy_png.get_width() * Surface.procent), round(enemy_png.get_height() * Surface.procent)))
+enemy = pygame.transform.scale(enemy_png, ((enemy_png.get_width() * Surface.procent), (enemy_png.get_height() * Surface.procent)))
 def create_enemy(speed_w1, speed_w2):
     global enemy
     enemy_rect = pygame.Rect(Surface.width, random.randint(0, int(Surface.height)), *enemy.get_size())
@@ -57,7 +57,7 @@ log.info("Enemy image successfully loaded.")
 
 log.info("Start load bonus image...")
 bonus_jpg = pygame.image.load('library/pictures/bonus.jpg ')
-bonus = pygame.transform.scale(bonus_jpg, (round(bonus_jpg.get_width() * Surface.procent), round(bonus_jpg.get_height() * Surface.procent)))
+bonus = pygame.transform.scale(bonus_jpg, ((bonus_jpg.get_width() * Surface.procent), (bonus_jpg.get_height() * Surface.procent)))
 def create_bonus():
     global bonus
     bonus_rect = pygame.Rect(random.randint(0, int(Surface.width)), -1000, *bonus.get_size())    
