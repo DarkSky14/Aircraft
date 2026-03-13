@@ -1,23 +1,18 @@
-#import clients.Backend.language as Language
+from pygame.locals import MOUSEBUTTONDOWN
 import pygame.surface
 from abc import abstractmethod
 
-if __name__ == "__main__":
+
+try:
     import UI
     import Text
     import UI_module.animation as animation
     import Surface as Surface
-else:   
-    try:
-        import UI
-        import Text
-        import UI_module.animation as animation
-        import Surface as Surface
-    except ImportError:
-        import clients.module.UI as UI
-        import clients.module.Text as Text
-        import clients.module.UI_module.animation as animation
-        import clients.module.Surface as Surface
+except ImportError:
+    import clients.module.UI as UI
+    import clients.module.Text as Text
+    import clients.module.UI_module.animation as animation
+    import clients.module.Surface as Surface
 
 class Button(animation.AnimationMove):
     def __init__(self, event, surface: pygame.surface.Surface, size_config:int|float = 0):       
@@ -110,7 +105,7 @@ class ModuleButton(Button, Text.ModuleText):
             self.event.set_choose_button(1)
             self.event.set_choose_fake_button(1)
 
-            if self.event.get_click() == True:
+            if self.event.comparison_type(MOUSEBUTTONDOWN) and self.event.get_click() == True:
                 button.draw_object((205, 200, 200), 3, 10)
                 self.event.set_choose_button(0)
                 self.event.set_click(False)

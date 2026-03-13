@@ -1,9 +1,9 @@
 [project]
-name = "aircraft"
+name = "Aircraft"
 version = "0.2.5"
 description = "game"
 authors = [
-    {name = "Chinho",email = "lesykmykola91@gmail.com"}
+    {name = "Chinho"}
 ]
 readme = "README.md"
 requires-python = ">=3.13"

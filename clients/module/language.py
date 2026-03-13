@@ -1,13 +1,10 @@
-if __name__ == "__main__":
+
+try:
     import FileWorker as lib_file
     from logged import log
-else:
-    try:
-        import FileWorker as lib_file
-        from logged import log
-    except ImportError:
-        import clients.module.FileWorker as lib_file
-        from clients.module.logged import log
+except ImportError:
+    import clients.module.FileWorker as lib_file
+    from clients.module.logged import log
 
 
 English = {
