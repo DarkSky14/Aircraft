@@ -1,7 +1,6 @@
 import sys
 import pygame
-#import clients.module.config.config as config
-#config.absolute_import.set_import("base")
+
 
 import clients.module.language as Language
 import clients.module.FileWorker as lib_file
@@ -17,7 +16,7 @@ import clients.module.button as Button
 from pygame import (
     QUIT, K_DOWN, K_UP, 
     K_RIGHT, K_LEFT, K_ESCAPE,
-    KEYDOWN, MOUSEBUTTONDOWN
+    KEYDOWN
 )
 
 from clients.menu_client import *
@@ -25,10 +24,12 @@ from clients.game_client import *
 
 # Setup pygame/window -----------------------------
 Log.log.info("Setup icon window...")
-icon = pygame.transform.scale(pygame.image.load('library/Aircraft.ico').convert(), Surface.screen)
+icon_obj = pygame.image.load('library/Aircraft.ico').convert()
+icon = pygame.transform.scale(icon_obj, Surface.screen)
 Log.log.info("Icon window setup complete.")
 Log.log.info("Setup background image options...")
-fon = pygame.transform.scale(pygame.image.load('library/pictures/fon_.png').convert(), Surface.screen)
+fon_obj = pygame.image.load('library/pictures/fon_.png').convert()
+fon = pygame.transform.scale(fon_obj, Surface.screen)
 Log.log.info("Background image options setup complete.")
 
 pygame.display.set_caption('Aircraft',"Aircraft")
