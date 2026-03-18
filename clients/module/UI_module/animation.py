@@ -52,7 +52,9 @@ class AnimationMove:
             self._move_to_y = 0
             self.x_true = self.x
             self.y_true = self.y
-            func  # type: ignore
+            if func != None:
+                func()
+                del func 
 
 class Resizable:
     def __init__(self, size_config) -> None:
@@ -96,11 +98,9 @@ class Resizable:
             self.size = self.size_x, self.size_y
             self.pixel_x_size = None
             self.pixel_y_size = None
-            if func is None:
-                pass
-            else: 
+            if func != None:
                 func()
-            del func 
+                del func 
 
     def add_func_resize(self, func): 
         print("void")

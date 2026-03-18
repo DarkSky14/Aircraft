@@ -1,10 +1,9 @@
 import sys
 import pygame
-#import clients.module.config.config as config
-#config.absolute_import.set_import("base")
+
 
 import clients.module.language as Language
-import clients.module._lib_ as my_json
+import clients.module.FileWorker as lib_file
 import clients.module.event as Event
 import clients.module.logged as Log
 
@@ -24,27 +23,33 @@ from clients.menu_client import *
 from clients.game_client import * 
 
 # Setup pygame/window -----------------------------
-icon = pygame.transform.scale(pygame.image.load('library/Aircraft.ico').convert(), Surface.screen)
-fon = pygame.transform.scale(pygame.image.load('library/pictures/fon_.png').convert(), Surface.screen)
+Log.log.info("Setup icon window...")
+icon_obj = pygame.image.load('library/Aircraft.ico').convert()
+icon = pygame.transform.scale(icon_obj, Surface.screen)
+Log.log.info("Icon window setup complete.")
+Log.log.info("Setup background image options...")
+fon_obj = pygame.image.load('library/pictures/fon_.png').convert()
+fon = pygame.transform.scale(fon_obj, Surface.screen)
+Log.log.info("Background image options setup complete.")
 
 pygame.display.set_caption('Aircraft',"Aircraft")
 pygame.display.set_icon(icon) 
 
+Log.log.info("Load base font...")
 BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
+Log.log.info("Base font successfully loaded.")
 
-def on_music():
-    if my_json.config.check({"effect": "True"}) == True:
-        is_music = True
+def on_music() -> bool:
+    if lib_file.config.check({"effect": "True"}) == True:
+        return True
     else:
-        is_music = False
-    return is_music
+        return False
 
 is_music = on_music()
 
 def sound_scroll():
     if is_music == True:
         scroll()
-    #my_json.config.check({"effect": "True"}, scroll)
         
 fon_background = Surface.ScrollingBG(bg, bg_speed)
 
@@ -53,7 +58,7 @@ def background():
     fon_background.draw(Surface.d)
  
 def update_display():
-    pygame.display.update(round(Surface.conf_width), round(Surface.conf_height), Surface.width, Surface.height)
+    pygame.display.update(Surface.conf_width, Surface.conf_height, Surface.width, Surface.height)
 
 def get_fps(font: pygame.font.Font = BASEFONT, color: tuple = (200, 200, 200), coordinate: tuple = (3,3)):
     main_surface_fps = font.render(str(int(FPS.get_fps())), True, (color))
@@ -66,12 +71,12 @@ e = Event.EventControl()
 big_text = Text.ModuleText(Text.big_text)
 standart_text = Text.ModuleText(Text.standart_text)
 
-#sub_surface = Surface.SubSurface(350, 250).surface(Surface.d, 50, 240)
-button_modified = Button.ModuleButton(e, Surface.d, my_json.config, standart_text, Surface.procent)
+button_modified = Button.ModuleButton(e, Surface.d, lib_file.config, standart_text, Surface.procent)
 
-music = mus.Music(my_json.config, my_json.temp, 0.1)
-#game_music = mus.Music(my_json.config, my_json.temp, 0.1)
+music = mus.Music(lib_file.config, lib_file.temp, sound_menu, 0.1)
+#game_music = mus.Music(lib_file.config, lib_file.temp, sound_game, 0.1)
 music.music_all(sound_menu)
+#music.music_get().load(sound_menu, "music_menu")
 
 game_work = True
 work = True
@@ -80,6 +85,7 @@ def main_menu():
     global work
 
     def exit():     
+        Log.log.info("Successful stop.")
         pygame.quit()
         sys.exit()
 
@@ -147,8 +153,14 @@ def main_menu():
     set_fps(60)
 
     def initialize():
-        e.event_pool()
-        e.mouse_get()
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
 
         background() 
         
@@ -157,8 +169,7 @@ def main_menu():
         button_3()   
         button_4() 
 
-        version_game() 
-        e.MOUSEBUTTONDOWN()
+        version_game()
         e.event_button_check(standart_curs, click_cursor, sound_scroll)
         big_text.get_set_text("7", 70 * Surface.procent, 150 * Surface.procent)     
 
@@ -172,10 +183,12 @@ def main_menu():
 
     work = True    
 
-def options(x_c = 540.0, y_c = 347.5):
+def options(x_c = (536.5), y_c = (255.5)):
     global work
+    x_size = 350 * Surface.procent
+    y_size = 250 * Surface.procent
     surfM = UI.SurfaceM(e, Surface.d, size_config=Surface.procent)
-    surfM.set_object_size(x_c * Surface.procent, y_c * Surface.procent, (350, 250))
+    surfM.set_object_size(x_c*Surface.procent, y_c*Surface.procent, (x_size, y_size))
     surfM.change_size(900, 500, 300)
     surfM.set_click(False)
     x_c = surfM.get_x_pos()
@@ -183,13 +196,10 @@ def options(x_c = 540.0, y_c = 347.5):
 
     def quit():
         global work
-        surfM.set_click(False)
         work = False
-        surfM.set_click(False)
         
     def exit():
         global game_work
-        clean_bon_and_en() 
         game_work = False  
         quit()
     
@@ -209,8 +219,6 @@ def options(x_c = 540.0, y_c = 347.5):
     
     def button_1():
         global is_music
-        #if button1.button_click():
-        #    pass    
         if button1.check_config({"effect": "True"}, clicks):
             button1.write_in_config({"effect": "False"})
             is_music = False
@@ -256,11 +264,19 @@ def options(x_c = 540.0, y_c = 347.5):
     visible_cursor()  
     
     def initialize():
-        e.event_pool()    
-        e.mouse_get()
-        if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            e.set_key(0)
-            quit()  
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
+            
+            if e.comparison_type(KEYDOWN):
+                if e.comparison_key(K_ESCAPE):
+                    e.set_key(0)
+                    quit()  
 
         #surfM.update_pos()
         #surfM.animation_resize()
@@ -274,8 +290,7 @@ def options(x_c = 540.0, y_c = 347.5):
 
         button3.Button(button_3)
         button3.get_text_self("6")
-
-        e.MOUSEBUTTONDOWN()  
+ 
         e.event_button_check(standart_curs, click_cursor, sound_scroll)
         big_text.get_set_text("1", (x_c) + 45 * Surface.procent, (y_c) + 25 * Surface.procent)
         
@@ -294,8 +309,8 @@ def options(x_c = 540.0, y_c = 347.5):
 
 def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):   
     global game_work, work 
-    from clients.game_client import scores, player_imgs, player_speed
-    from clients.game_client import player, player_rect, img_index
+    from clients.game_client import player_imgs, player_speed
+    from clients.game_client import player, player_rect
     
     pygame.init()    
 
@@ -306,9 +321,20 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     
     set_fps(90)
 
-    #music.music_stop()
-    #game_music.create_mus_channel(sound_game)
-    ch = 0  
+    img_index = 0
+    scores = 0 
+    bonusies = []
+    enemies = []
+
+
+    def clean_bon_and_en():
+        """Delete all bonusies and enemies"""
+        bonusies.clear()
+        enemies.clear()
+
+    #music.music_stop(400)
+    #game_music.create_mus_channel()
+    check_first_while = 0  
 
     while game_work:
         pressed_keys = pygame.key.get_pressed()  
@@ -318,10 +344,12 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                 sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
-                    ch = 0
-                    #game_music.music_stop()
+                    check_first_while = 0
+                    #game_music.music_get().pause()
+                    #music.create_mus_channel()
                     work = True
                     options()
+                    #game_music.music_unpause()
                     #music.music_play()
         
             if event.type == CREATE_BONUS:
@@ -351,7 +379,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
 
             if player_rect.colliderect(enemy[1]):
                 game_work = False
-                #music.music_all(sound_menu)
+                music.music_all(sound_menu)
         
         for bonus in bonusies:             
             bonus[1] = bonus[1].move(-bonus[2], 2)
@@ -384,15 +412,15 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             player_rect = player_rect.move(-player_speed, 0)
             
         if scores >= max_score:
-            if my_json.config.check(level, invisible_cursor) == False:
-                my_json.config.write(level)
+            if lib_file.config.check(level, invisible_cursor) == False:
+                lib_file.config.write(level)
             game_work = False
 
-        if ch == 0 and game_work != False:
-            ch =+ 1
+        if check_first_while == 0 and game_work != False:
+            check_first_while =+ 1
             
             invisible_cursor()
-            #game_music.music_play()
+            #music.music_get().stop()
             music.music_all(sound_game)
         
         get_fps(GAME_TEXT, RED, (10,10))
@@ -402,8 +430,8 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     game_work = True
     clean_bon_and_en()
     #game_music.music_stop()
-    #music.music_play()
     music.music_all(sound_menu)
+    #music.music_play()
     standart_curs() 
     visible_cursor() 
 
@@ -473,12 +501,19 @@ def language_get():
     set_fps(60)
 
     def initialiaze():
-        e.event_pool()
-        e.mouse_get()
-        if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            my_json.config.check({"effect": "True"}, return_exit)
-            e.set_key(0)
-            exit()
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
+            
+            if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
+                lib_file.config.check({"effect": "True"}, return_exit)
+                e.set_key(0)
+                exit()
 
         background()
         
@@ -543,8 +578,9 @@ def level():
         def l2():            
             def lvl2(): 
                 sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
-        
-            my_json.config.check({"level": 2}, lvl2)
+
+            if lib_file.config.get_value("level") >= 2:
+                lvl2()
 
         def button(): 
             button2.check_config({"effect": "True"}, clicks)
@@ -559,8 +595,9 @@ def level():
         def l3(): 
             def lvl3(): 
                 sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
-        
-            my_json.config.check({"level": 3}, lvl3)
+            
+            if lib_file.config.get_value("level") >= 3:
+                lvl3()
         
         def button(): 
             button3.check_config({"effect": "True"}, clicks)
@@ -583,12 +620,19 @@ def level():
     set_fps(60)
 
     def initialiaze(): 
-        e.event_pool()
-        e.mouse_get()
-        if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-            my_json.config.check({"effect": "True"}, return_exit)
-            e.set_key(0)
-            exit()
+        for event in pygame.event.get():
+            e.event = event
+            if e.event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+
+            e.mouse_get()
+            e.MOUSEBUTTONDOWN() 
+            
+            if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
+                lib_file.config.check({"effect": "True"}, return_exit)
+                e.set_key(0)
+                exit()
 
         background()
 
@@ -612,4 +656,5 @@ def level():
     work = True
 
 if __name__ == "__main__":
+    Log.log.info("Successful start...")
     main_menu()

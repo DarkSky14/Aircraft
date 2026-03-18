@@ -1,13 +1,10 @@
-if __name__ == "__main__":
-    import _lib_ as my_json
+
+try:
+    import FileWorker as lib_file
     from logged import log
-else:
-    try:
-        import _lib_ as my_json
-        from logged import log
-    except ImportError:
-        import clients.module._lib_ as my_json
-        from clients.module.logged import log
+except ImportError:
+    import clients.module.FileWorker as lib_file
+    from clients.module.logged import log
 
 
 English = {
@@ -67,17 +64,15 @@ class LanguageCreater:
         self._file = file
     
     def get_lang(self):
-        return self._lang if self._lang != {} else print("Null dict")
+        return self._lang if self._lang != {} else {0: ""}
     
-    def set_lang(self, reader) -> dict[int, str]:
+    def set_lang(self, reader):
         work = reader(self._name, self._url, self._lang, self._file) 
         try:
             self._lang = work.read()
             log.debug({"LANGUAGE LOADED:": self._name})
         except FileNotFoundError:
             log.error({"LANGUAGE_LOAD_ERROR": self._file})
-            self._lang = {0: ""}
-        return self._lang 
     
     def get_name(self):
         return self._name
@@ -90,12 +85,12 @@ class LanguageSetter(LanguageCreater):
 
     def language_set(self, *args) -> dict[int, str]:
         language = self._basic
-    
+
         for arg in args:
             check = {"language": arg.get_name()}
             if self.config.check(check) == True: 
                 self._lang = arg.get_lang()
-                return self._lang  
+                return self._lang 
             else:
                 continue
                 
@@ -104,13 +99,12 @@ class LanguageSetter(LanguageCreater):
 
 
 ENG = LanguageCreater("EN", "library/language", "english.json")
-ENG.set_lang(my_json.JsonReader)
+ENG.set_lang(lib_file.JsonReader)
 ENGLISH = ENG.get_lang()
 
 UKR = LanguageCreater("UA", "library/language", "ukrainian.json")
-UKR.set_lang(my_json.JsonReader)
+UKR.set_lang(lib_file.JsonReader)
 UKRAINIAN = UKR.get_lang()
 
-language = LanguageSetter(my_json.config).language_set(ENG, UKR)
-
+language = LanguageSetter(lib_file.config).language_set(ENG, UKR)
 log.info("LANGUAGE LOADED...")

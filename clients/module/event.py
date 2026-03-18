@@ -1,8 +1,6 @@
 import pygame.event, pygame.time
-import sys
 from pygame import (
-    QUIT, KEYDOWN, K_ESCAPE,
-    MOUSEBUTTONDOWN, MOUSEBUTTONUP, K_UP, K_DOWN
+    MOUSEBUTTONDOWN
 )
 
 class EventControl:
@@ -17,16 +15,13 @@ class EventControl:
     def event_pool(self):         
         for event in pygame.event.get():
             self.event = event
-            if self.event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-    
+
     def mouse_get(self):
         self.mx, self.my = pygame.mouse.get_pos() 
 
     def MOUSEBUTTONDOWN(self):
             self.set_click(False)
-            if self.event.type == MOUSEBUTTONDOWN and self.choose_button == 1:
+            if self.comparison_type(MOUSEBUTTONDOWN) and self.choose_button == 1:
                 self.set_choose_button(0) 
                 now = pygame.time.get_ticks()  
                 if now > self.debounce_ms + self._last_click_time:                
@@ -65,7 +60,4 @@ class EventControl:
     
     def set_key(self, event_key):
         self.event.key = event_key
-    
-    def set_type(self, event_type):
-        self.event.type = event_type
     

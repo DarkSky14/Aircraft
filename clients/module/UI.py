@@ -1,18 +1,15 @@
+from pygame import MOUSEBUTTONDOWN
 import pygame.draw, pygame.surface
 
-if __name__ == "__main__":
+
+try:
     import Surface as Surface
     import button as butt
     import UI_module.animation as animation
-else:
-    try:
-        import Surface as Surface
-        import button as butt
-        import UI_module.animation as animation
-    except ImportError:
-        import clients.module.Surface as Surface
-        import clients.module.button as butt
-        import clients.module.UI_module.animation as animation
+except ImportError:
+    import clients.module.Surface as Surface
+    import clients.module.button as butt
+    import clients.module.UI_module.animation as animation
      
 
 class MyDrawObject: #Correct
@@ -45,11 +42,7 @@ class SurfaceM(animation.AnimationMove, animation.Resizable):
     def set_object_size(self, x, y, size):
         self.x, self.y = x * self.size_config, y * self.size_config
         self.size_x, self.size_y = size   
-        self.size_x *= self.size_config
-        self.size_y *= self.size_config
-        self.size = self.size_x, self.size_y
-        #self.x_true, self.y_true, self.size_true = self.__copy_object__()
-        #self.size_x_true, self.size_y_true = self.size_true
+        self.size = size
         self.b_radius = self.size_y / 2
         self.sub_surface = MyDrawObject(self.x, self.y, self.size, self.surface)#25 90
         return self.x, self.y, self.size
@@ -77,14 +70,14 @@ class SurfaceM(animation.AnimationMove, animation.Resizable):
         self.b_radius = self.size_y / 2
 
     def surface_wait(self, exit): 
-        surface = self.sub_surface.draw_object((100, 100, 100), round(self.b_radius), 30)
+        surface = self.sub_surface.draw_object((100, 100, 100), round(self.b_radius), round(30*self.size_config), round(40*self.size_config))
 
-        #if surface.collidepoint((self.event.mx - Surface.conf_width, self.event.my - Surface.conf_height)) == False:
-         #   self.event.set_choose_button(1)
-          #  if self.event.comparison_type(pygame.MOUSEBUTTONDOWN) == True and self.event.get_click() == True:
-           #     self.event.set_choose_button(0)
-            #    self.event.set_click(False)
-             #   exit()   
+        if surface.collidepoint((self.event.mx - Surface.conf_width, self.event.my - Surface.conf_height)) == False:
+            self.event.set_choose_button(1)
+            if self.event.comparison_type(MOUSEBUTTONDOWN) and self.event.get_click() == True:
+                self.event.set_choose_button(0)
+                self.event.set_click(False)
+                exit()   
     
     def set_click(self, click):
         self.event.set_click(click)

@@ -1,0 +1,20 @@
+[project]
+name = "Aircraft"
+version = "0.2.5"
+description = "game"
+authors = [
+    {name = "Chinho"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pygame-ce (>=2.5.7,<3.0.0)",
+    "screeninfo (>=0.8.1,<0.9.0)"
+]
+
+[tool.poetry.dependencies]
+python = "^3.13"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
