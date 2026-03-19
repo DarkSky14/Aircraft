@@ -1,6 +1,5 @@
 from pygame import init
 import pygame.display
-import screeninfo
 from abc import abstractmethod
 try:
     from clients.module.logged import log
@@ -52,11 +51,9 @@ class AdjustmentSurface(_ClassSurface):
         #super().__init__(width, height)
     
     def surface(self, mode = pygame.WINDOWMAXIMIZED) -> pygame.Surface:
-        screen = screeninfo.get_monitors()
-        for s in screen:
-            self.width = s.width
-            self.height = s.height
-            self.screen = self.width, self.height
+        info = pygame.display.Info()
+        self.width, self.height = info.current_w, info.current_h
+        self.screen = self.width, self.height
 
         flags = pygame.DOUBLEBUF | pygame.HWSURFACE 
         mode_work = pygame.display.mode_ok((self.width, self.height), flags)
