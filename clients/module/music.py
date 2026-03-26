@@ -32,13 +32,18 @@ class Music:
         return self.music
     
     def music_pause(self):
-        self.archive = self.music.get_pos()
+        self.archive = (self.music.get_pos() / 1000) + self.archive
         self.music.pause()
 
-    def music_unpause(self):
-        self.music.set_pos(self.archive)
-        self.music.set_pos(self.archive)
-        self.music.play(-1, self.archive, 100)
+    def set_position(self, pos = 0):
+        self.archive = pos
+
+    def music_unpause(self, loops=-1, fade_ms=100):
+        if self.config.check({"music": "True"}): 
+            self.music.set_volume(self.volume)
+            self.music.play(loops, self.archive, fade_ms)
+        else:
+            self.set_position()
     
     def music_load(self, address):
         self.adress = address
@@ -61,13 +66,9 @@ class Music:
                        
         else:               
             if self.music.get_busy() == False:
-                if self.temp.check({"musicID": "None"}):
-                    self.music_load(name_track)
-                    self.create_mus_channel(loops, start, fade_ms)
-                    self.temp.update_dict({"musicID": name_track})
-
-                else:
-                    self.music.unpause()                
+                self.music_load(name_track)
+                self.create_mus_channel(loops, start, fade_ms)
+                self.temp.update_dict({"musicID": name_track})           
             
             elif self.music.get_busy() == True:
                 if arg != name_track:

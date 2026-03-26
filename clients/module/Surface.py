@@ -29,8 +29,7 @@ class _ClassSurface:
 class StandartSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
-        self.screen = self.width, self.height
-    
+
     def surface(self, mode = pygame.WINDOWMAXIMIZED) -> pygame.Surface:
         flags = pygame.DOUBLEBUF | pygame.HWSURFACE 
         mode_work = pygame.display.mode_ok((self.width, self.height), flags)
@@ -48,7 +47,6 @@ class StandartSurface(_ClassSurface):
 class AdjustmentSurface(_ClassSurface):
     def __init__(self):
         pass
-        #super().__init__(width, height)
     
     def surface(self, mode = pygame.WINDOWMAXIMIZED) -> pygame.Surface:
         info = pygame.display.Info()

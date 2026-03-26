@@ -1,7 +1,6 @@
 import sys
 import pygame
 
-
 import clients.module.language as Language
 import clients.module.FileWorker as lib_file
 import clients.module.event as Event
@@ -12,7 +11,6 @@ pygame.init()
 import clients.module.Surface as Surface
 import clients.module.Text as Text
 import clients.module.UI as UI
-import clients.module.button as Button
 from pygame import (
     QUIT, K_DOWN, K_UP, 
     K_RIGHT, K_LEFT, K_ESCAPE,
@@ -71,12 +69,10 @@ e = Event.EventControl()
 big_text = Text.ModuleText(Text.big_text)
 standart_text = Text.ModuleText(Text.standart_text)
 
-button_modified = Button.ModuleButton(e, Surface.d, lib_file.config, standart_text, Surface.procent)
+button_modified = UI.ModuleButton(e, Surface.d, lib_file.config, standart_text, Surface.procent)
 
 music = mus.Music(lib_file.config, lib_file.temp, sound_menu, 0.1)
-#game_music = mus.Music(lib_file.config, lib_file.temp, sound_game, 0.1)
 music.music_all(sound_menu)
-#music.music_get().load(sound_menu, "music_menu")
 
 game_work = True
 work = True
@@ -93,21 +89,21 @@ def main_menu():
     #sub_surface.draw_object((100, 100, 100), 300, 10)
 
     button1 = button_modified.copy()
-    button1.set_button((-300 * Surface.procent), (220 * Surface.procent), (300, 30))
+    button1.set_object((-300 * Surface.procent), (220 * Surface.procent), (300, 30))
     button1.moved(50, None, 300) 
     
     button2 = button_modified.copy()
-    button2.set_button((-300 * Surface.procent), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object((-300 * Surface.procent), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.moved(50, None, 300) 
 
     button3 = button_modified.copy()
-    button3.set_button((-300 * Surface.procent), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button3.set_object((-300 * Surface.procent), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
     button3.moved(50, None, 300) 
 
     button4 = button_modified.copy()
-    button4.set_button((-300 * Surface.procent), (button3.get_y_pos() + button3.get_size_y() + (25 * Surface.procent)), (300, 30))
+    button4.set_object((-300 * Surface.procent), (button3.get_y_pos() + button3.get_size_y() + (25 * Surface.procent)), (300, 30))
     button4.moved(50, None, 300) 
-        
+
     def button_1():
         def button(): 
             button1.check_config({"effect": "True"}, clicks)
@@ -155,7 +151,8 @@ def main_menu():
     def initialize():
         for event in pygame.event.get():
             e.event = event
-            if e.event.type == QUIT:
+
+            if e.comparison_type(QUIT):
                 pygame.quit()
                 sys.exit()
 
@@ -177,7 +174,6 @@ def main_menu():
         tick_fps()
         update_display()
 
-
     while work:   
         initialize()    
 
@@ -187,10 +183,11 @@ def options(x_c = (536.5), y_c = (255.5)):
     global work
     x_size = 350 * Surface.procent
     y_size = 250 * Surface.procent
+
     surfM = UI.SurfaceM(e, Surface.d, size_config=Surface.procent)
-    surfM.set_object_size(x_c*Surface.procent, y_c*Surface.procent, (x_size, y_size))
-    surfM.change_size(900, 500, 300)
-    surfM.set_click(False)
+
+    surfM.set_object(x_c*Surface.procent, y_c*Surface.procent, (x_size, y_size))
+
     x_c = surfM.get_x_pos()
     y_c = surfM.get_y_pos()
 
@@ -207,15 +204,15 @@ def options(x_c = (536.5), y_c = (255.5)):
         music.music_all(sound_menu)
 
     button1 = button_modified.copy()
-    button1.set_button((x_c) + (23 * Surface.procent), (y_c) + 85 * Surface.procent, (300, 30))
+    button1.set_object((x_c) + (23 * Surface.procent), (y_c) + 85 * Surface.procent, (300, 30))
     button1.text_change({"effect": "True"}, "8", "9")
     
     button2 = button_modified.copy()
-    button2.set_button(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.text_change({"music": "True"}, "8", "9")
 
     button3 = button_modified.copy()
-    button3.set_button(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (20 * Surface.procent)), (300, 30))
+    button3.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (20 * Surface.procent)), (300, 30))
     
     def button_1():
         global is_music
@@ -280,7 +277,7 @@ def options(x_c = (536.5), y_c = (255.5)):
 
         #surfM.update_pos()
         #surfM.animation_resize()
-        surfM.surface_wait(quit) 
+        surfM.main_work(quit) 
 
         button1.Button(button_1)
         button1.get_text_self("12")
@@ -311,8 +308,6 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     global game_work, work 
     from clients.game_client import player_imgs, player_speed
     from clients.game_client import player, player_rect
-    
-    pygame.init()    
 
     fon_background = Surface.ScrollingBG(bg, bg_speed1)
     def background():
@@ -332,8 +327,6 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
         bonusies.clear()
         enemies.clear()
 
-    #music.music_stop(400)
-    #game_music.create_mus_channel()
     check_first_while = 0  
 
     while game_work:
@@ -345,12 +338,10 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     check_first_while = 0
-                    #game_music.music_get().pause()
-                    #music.create_mus_channel()
+                    music.music_pause()
+                    music.music_load(sound_menu)
                     work = True
                     options()
-                    #game_music.music_unpause()
-                    #music.music_play()
         
             if event.type == CREATE_BONUS:
                 bonusies.append(create_bonus())
@@ -420,8 +411,8 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
             check_first_while =+ 1
             
             invisible_cursor()
-            #music.music_get().stop()
-            music.music_all(sound_game)
+            music.music_load(sound_game)
+            music.music_unpause()
         
         get_fps(GAME_TEXT, RED, (10,10))
         tick_fps()
@@ -429,15 +420,14 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     
     game_work = True
     clean_bon_and_en()
-    #game_music.music_stop()
+    music.set_position()
     music.music_all(sound_menu)
-    #music.music_play()
     standart_curs() 
     visible_cursor() 
 
 def language_get(): 
     global work
-    surfM = UI.SurfaceM(e, Surface.main_surface)
+    #surfM = UI.SurfaceM(e, Surface.main_surface)
     s = 35
 
     def update_text():
@@ -450,15 +440,15 @@ def language_get():
         work = False
     
     button1 = button_modified.copy()
-    button1.set_button((-300) * Surface.procent, (220) * Surface.procent, (300, 30))
+    button1.set_object((-300) * Surface.procent, (220) * Surface.procent, (300, 30))
     button1.moved(50, None, 300)
     
     button2 = button_modified.copy()
-    button2.set_button(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.moved(50, None, 300)
 
     button4 = button_modified.copy()
-    button4.set_button(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (30 * Surface.procent)), (300, 30))
+    button4.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (30 * Surface.procent)), (300, 30))
     button4.moved(50, None, 300)
 
     def button_1():
@@ -546,19 +536,19 @@ def level():
         work = False
         
     button1 = button_modified.copy()
-    button1.set_button(-300 * Surface.procent, 220 * Surface.procent, (300, 30))
+    button1.set_object(-300 * Surface.procent, 220 * Surface.procent, (300, 30))
     button1.moved(50, None, 300) 
     
     button2 = button_modified.copy()
-    button2.set_button(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
     button2.moved(50, None, 300) 
 
     button3 = button_modified.copy()
-    button3.set_button(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button3.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
     button3.moved(50, None, 300) 
 
     button4 = button_modified.copy()
-    button4.set_button(button3.get_x_pos(), (button3.get_y_pos() + button3.get_size_y() + (30 * Surface.procent)), (300, 30))
+    button4.set_object(button3.get_x_pos(), (button3.get_y_pos() + button3.get_size_y() + (30 * Surface.procent)), (300, 30))
     button4.moved(50, None, 300) 
 
     def button_1():

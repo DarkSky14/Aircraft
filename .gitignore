@@ -8,3 +8,4 @@ library/*data/
 options.py
 buildozer.spec
 .vscode*/
+*.idea
