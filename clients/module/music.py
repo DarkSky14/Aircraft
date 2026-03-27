@@ -1,8 +1,8 @@
-import pygame.mixer, pygame.mixer_music
+from pygame import mixer, mixer_music
 
 class Sound:
     def __init__(self, address) -> None:
-        self.sound = pygame.mixer
+        self.sound = mixer
         self.load = self.sound.Sound(address)
         
     def create_channel(self, volume = 0.01, loops=0, maxtime=0, fade_ms=0):
@@ -17,7 +17,7 @@ class Sound:
 
 class Music:
     def __init__(self, config, temp, address, volume: float = 0.01) -> None:
-        self.music = pygame.mixer_music
+        self.music = mixer_music
         self.volume = volume
         self.config = config
         self.adress = address

@@ -4,13 +4,10 @@ __author__ = 'Chinho'
 import pygame.font
 from pygame import init
 if __name__ == "__main__":    
-    import module.Surface as Surface
-    import module.music as mus
-    from module.logged import log
+    from module import procent, width, d, height, screen, log
 else:
-    import clients.module.Surface as Surface
     import clients.module.music as mus
-    from clients.module.logged import log
+    from clients.module import procent, width, d, height, screen, log
 
 def get_version():
     return __version__
@@ -27,10 +24,10 @@ LIME = (100, 250, 100)
 init()
 
 log.info("Load font...")
-STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * Surface.procent), 0, 0) #Arial
-BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * Surface.procent))
-VERS_GAME = pygame.font.SysFont(None, round(20 * Surface.procent))
-GAME_TEXT = pygame.font.SysFont("Consolas", round(30 * Surface.procent))
+STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * procent), 0, 0) #Arial
+BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * procent))
+VERS_GAME = pygame.font.SysFont(None, round(20 * procent))
+GAME_TEXT = pygame.font.SysFont("Consolas", round(30 * procent))
 log.info("Font (4) successfully loaded.")
 
 click_open_2 = ('library/effect/click_open2.mp3')
@@ -68,7 +65,7 @@ def scroll():
 log.info("Sounds (3) successfully loaded.")
 
 log.info("Start load background image...")
-bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), Surface.screen)
+bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), screen)
 log.info("Background image successfully loaded.")
 bgX = 0
 bgX2 = bg.get_width()  
@@ -76,7 +73,7 @@ bg_speed = 1
 bg_speed1 = 2 
 
 def version_game():
-    Surface.d.blit(
+    d.blit(
         VERS_GAME.render(str(get_version()), True, BLACK), 
-        (Surface.width - (33 * Surface.procent), Surface.height - (14 * Surface.procent))
+        (width - (33 * procent), height - (14 * procent))
     )

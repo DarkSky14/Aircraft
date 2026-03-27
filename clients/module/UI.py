@@ -3,13 +3,11 @@ import pygame.draw, pygame.surface
 
 
 try:
-    import Surface as Surface
-    import Text as Text
-    import UI_module.animation as animation
+    from Text import Text, ModuleText
+    from UI_module.animation import AnimationMove
 except ImportError:
-    import clients.module.Surface as Surface
-    import clients.module.Text as Text
-    import clients.module.UI_module.animation as animation
+    from clients.module.Text import Text, ModuleText
+    from clients.module.UI_module.animation import AnimationMove
      
 
 class MyDrawObject: #Correct
@@ -27,12 +25,12 @@ class MyDrawObject: #Correct
         return self.rect
 
 
-class Button(animation.AnimationMove):
+class Button(AnimationMove):
     def __init__(self, event, surface: pygame.surface.Surface, size_config:int|float = 0):       
         self.event = event
         self.surface = surface
         self.size_config = size_config
-        animation.AnimationMove.__init__(self, self.size_config)
+        AnimationMove.__init__(self, self.size_config)
     
     #@abstractmethod
     def copy(self):
@@ -75,10 +73,10 @@ class Button(animation.AnimationMove):
         return self.size_y
 
 
-class ModuleButton(Button, Text.ModuleText):
-    def __init__(self, event, surface: pygame.surface.Surface, config, class_text: Text.Text, size_config:int|float = 0):
+class ModuleButton(Button, ModuleText):
+    def __init__(self, event, surface: pygame.surface.Surface, config, class_text: Text, size_config:int|float = 0):
         Button.__init__(self, event, surface, size_config)
-        Text.ModuleText.__init__(self, class_text)
+        ModuleText.__init__(self, class_text)
         self.config = config
 
     def copy(self):
@@ -96,13 +94,13 @@ class ModuleButton(Button, Text.ModuleText):
     def get_text_self(self, base_key, color: tuple = (0, 0, 0)):
         self.get_set_text(base_key, self.x + 15, self.y + 2, color)
     
-    def get_text(self, text_class: Text.ModuleText, base_key, color: tuple = (0, 0, 0)):
+    def get_text(self, text_class: ModuleText, base_key, color: tuple = (0, 0, 0)):
         text_class.get_set_text(base_key, self.x + 15, self.y + 2, color)
 
     def Button(self, function1):           
         button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
         
-        if button.rect.collidepoint(self.event.mx - Surface.conf_width, self.event.my - Surface.conf_height) == True:
+        if button.rect.collidepoint(self.event.mx, self.event.my) == True:
             button.draw_object((205, 200, 200), self.b_radius, 10)
             self.event.set_choose_button(1)
             self.event.set_choose_fake_button(1)
@@ -142,7 +140,7 @@ class SurfaceM(Button):
         #surface = self.sub_surface(self.x, self.y, self.size, self.surface) #type: ignore
         #surface.draw_object((100, 100, 100), round(self.b_radius), round(30*self.size_config), round(40*self.size_config))
 
-        if surface.collidepoint((self.event.mx - Surface.conf_width, self.event.my - Surface.conf_height)) == False:
+        if surface.collidepoint((self.event.mx, self.event.my)) == False:
             self.event.set_choose_button(1)
             if self.event.comparison_type(MOUSEBUTTONDOWN) and self.event.get_click() == True:
                 self.event.set_choose_button(0)

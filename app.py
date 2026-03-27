@@ -1,16 +1,8 @@
-import sys
+from sys import exit
+from clients.module import *
+from clients.module.Surface import ScrollingBG
 import pygame
 
-import clients.module.language as Language
-import clients.module.FileWorker as lib_file
-import clients.module.event as Event
-import clients.module.logged as Log
-
-pygame.init()
-
-import clients.module.Surface as Surface
-import clients.module.Text as Text
-import clients.module.UI as UI
 from pygame import (
     QUIT, K_DOWN, K_UP, 
     K_RIGHT, K_LEFT, K_ESCAPE,
@@ -21,24 +13,24 @@ from clients.menu_client import *
 from clients.game_client import * 
 
 # Setup pygame/window -----------------------------
-Log.log.info("Setup icon window...")
+log.info("Setup icon window...")
 icon_obj = pygame.image.load('library/Aircraft.ico').convert()
-icon = pygame.transform.scale(icon_obj, Surface.screen)
-Log.log.info("Icon window setup complete.")
-Log.log.info("Setup background image options...")
+icon = pygame.transform.scale(icon_obj, screen)
+log.info("Icon window setup complete.")
+log.info("Setup background image options...")
 fon_obj = pygame.image.load('library/pictures/fon_.png').convert()
-fon = pygame.transform.scale(fon_obj, Surface.screen)
-Log.log.info("Background image options setup complete.")
+fon = pygame.transform.scale(fon_obj, screen)
+log.info("Background image options setup complete.")
 
 pygame.display.set_caption('Aircraft',"Aircraft")
 pygame.display.set_icon(icon) 
 
-Log.log.info("Load base font...")
-BASEFONT = pygame.font.SysFont("Calibri", round(20 * Surface.procent))
-Log.log.info("Base font successfully loaded.")
+log.info("Load base font...")
+BASEFONT = pygame.font.SysFont("Calibri", round(20 * procent))
+log.info("Base font successfully loaded.")
 
 def on_music() -> bool:
-    if lib_file.config.check({"effect": "True"}) == True:
+    if config.check({"effect": "True"}) == True:
         return True
     else:
         return False
@@ -49,29 +41,24 @@ def sound_scroll():
     if is_music == True:
         scroll()
         
-fon_background = Surface.ScrollingBG(bg, bg_speed)
+fon_background = ScrollingBG(bg, bg_speed)
 
 def background():
     fon_background.update()
-    fon_background.draw(Surface.d)
+    fon_background.draw(d)
  
 def update_display():
-    pygame.display.update(Surface.conf_width, Surface.conf_height, Surface.width, Surface.height)
+    pygame.display.update(conf_width, conf_height, width, height)
 
 def get_fps(font: pygame.font.Font = BASEFONT, color: tuple = (200, 200, 200), coordinate: tuple = (3,3)):
     main_surface_fps = font.render(str(int(FPS.get_fps())), True, (color))
     rect_obgect = main_surface_fps.get_rect()
     rect_obgect.topleft = coordinate
-    Surface.d.blit(main_surface_fps, rect_obgect)
+    d.blit(main_surface_fps, rect_obgect)
 
-e = Event.EventControl()
+button_modified = ModuleButton(GLOBAL_EVENT, d, config, standart_text, procent)
 
-big_text = Text.ModuleText(Text.big_text)
-standart_text = Text.ModuleText(Text.standart_text)
-
-button_modified = UI.ModuleButton(e, Surface.d, lib_file.config, standart_text, Surface.procent)
-
-music = mus.Music(lib_file.config, lib_file.temp, sound_menu, 0.1)
+music = mus.Music(config, temp, sound_menu, 0.1)
 music.music_all(sound_menu)
 
 game_work = True
@@ -80,28 +67,28 @@ work = True
 def main_menu():
     global work
 
-    def exit():     
-        Log.log.info("Successful stop.")
+    def exitGame():     
+        log.info("Successful stop.")
         pygame.quit()
-        sys.exit()
+        exit()
 
     #sub_surface = initial.UI.MyDrawObject(50, 240, (350, 250), initial.d)
     #sub_surface.draw_object((100, 100, 100), 300, 10)
 
     button1 = button_modified.copy()
-    button1.set_object((-300 * Surface.procent), (220 * Surface.procent), (300, 30))
+    button1.set_object((-300 * procent), (220 * procent), (300, 30))
     button1.moved(50, None, 300) 
     
     button2 = button_modified.copy()
-    button2.set_object((-300 * Surface.procent), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object((-300 * procent), (button1.get_y_pos() + button1.get_size_y() + (10 * procent)), (300, 30))
     button2.moved(50, None, 300) 
 
     button3 = button_modified.copy()
-    button3.set_object((-300 * Surface.procent), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button3.set_object((-300 * procent), (button2.get_y_pos() + button2.get_size_y() + (10 * procent)), (300, 30))
     button3.moved(50, None, 300) 
 
     button4 = button_modified.copy()
-    button4.set_object((-300 * Surface.procent), (button3.get_y_pos() + button3.get_size_y() + (25 * Surface.procent)), (300, 30))
+    button4.set_object((-300 * procent), (button3.get_y_pos() + button3.get_size_y() + (25 * procent)), (300, 30))
     button4.moved(50, None, 300) 
 
     def button_1():
@@ -140,7 +127,7 @@ def main_menu():
     def button_4():
         def button(): 
             button4.check_config({"effect": "True"}, return_exit)
-            exit()
+            exitGame()
 
         button4.Button(button)
         button4.animation()
@@ -150,14 +137,14 @@ def main_menu():
 
     def initialize():
         for event in pygame.event.get():
-            e.event = event
+            GLOBAL_EVENT.event = event
 
-            if e.comparison_type(QUIT):
+            if GLOBAL_EVENT.comparison_type(QUIT):
                 pygame.quit()
-                sys.exit()
+                exit()
 
-            e.mouse_get()
-            e.MOUSEBUTTONDOWN() 
+            GLOBAL_EVENT.mouse_get()
+            GLOBAL_EVENT.MOUSEBUTTONDOWN() 
 
         background() 
         
@@ -167,10 +154,10 @@ def main_menu():
         button_4() 
 
         version_game()
-        e.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("7", 70 * Surface.procent, 150 * Surface.procent)     
+        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
+        big_text.get_set_text("7", 70 * procent, 150 * procent)     
 
-        get_fps(coordinate=(3, Surface.height - (20 * Surface.procent)))
+        get_fps(coordinate=(3, height - (20 * procent)))
         tick_fps()
         update_display()
 
@@ -181,38 +168,38 @@ def main_menu():
 
 def options(x_c = (536.5), y_c = (255.5)):
     global work
-    x_size = 350 * Surface.procent
-    y_size = 250 * Surface.procent
+    x_size = 350 * procent
+    y_size = 250 * procent
 
-    surfM = UI.SurfaceM(e, Surface.d, size_config=Surface.procent)
+    surfM = SurfaceM(GLOBAL_EVENT, d, size_config=procent)
 
-    surfM.set_object(x_c*Surface.procent, y_c*Surface.procent, (x_size, y_size))
+    surfM.set_object(x_c*procent, y_c*procent, (x_size, y_size))
 
     x_c = surfM.get_x_pos()
     y_c = surfM.get_y_pos()
 
-    def quit():
+    def quitOPTIONS():
         global work
         work = False
         
-    def exit():
+    def exitOPTIONS():
         global game_work
         game_work = False  
-        quit()
+        quitOPTIONS()
     
     def sound():
         music.music_all(sound_menu)
 
     button1 = button_modified.copy()
-    button1.set_object((x_c) + (23 * Surface.procent), (y_c) + 85 * Surface.procent, (300, 30))
+    button1.set_object((x_c) + (23 * procent), (y_c) + 85 * procent, (300, 30))
     button1.text_change({"effect": "True"}, "8", "9")
     
     button2 = button_modified.copy()
-    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * procent)), (300, 30))
     button2.text_change({"music": "True"}, "8", "9")
 
     button3 = button_modified.copy()
-    button3.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (20 * Surface.procent)), (300, 30))
+    button3.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (20 * procent)), (300, 30))
     
     def button_1():
         global is_music
@@ -226,7 +213,7 @@ def options(x_c = (536.5), y_c = (255.5)):
 
         else:
             button1.write_in_config({"effect": "True"})
-            Log.log.error("Error in config file, missing 'effect' key. Default value 'True' was set.")
+            log.error("Error in config file, missing 'effect' key. Default value 'True' was set.")
             is_music = True
             
         button1.text_change({"effect": "True"}, "8", "9")     
@@ -244,14 +231,14 @@ def options(x_c = (536.5), y_c = (255.5)):
         
         else:
             button2.write_in_config({"music": "True"})
-            Log.log.error("Error in config file, missing 'music' key. Default value 'True' was set.")
+            log.error("Error in config file, missing 'music' key. Default value 'True' was set.")
             sound()
 
         button2.text_change({"music": "True"}, "8", "9")
 
     def button_3(): 
         button3.check_config({"effect": "True"}, return_exit)
-        exit()
+        exitOPTIONS()
 
     fon.set_alpha(20)
     anim_time_fon = 0
@@ -262,22 +249,22 @@ def options(x_c = (536.5), y_c = (255.5)):
     
     def initialize():
         for event in pygame.event.get():
-            e.event = event
-            if e.event.type == QUIT:
+            GLOBAL_EVENT.event = event
+            if GLOBAL_EVENT.event.type == QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
 
-            e.mouse_get()
-            e.MOUSEBUTTONDOWN() 
+            GLOBAL_EVENT.mouse_get()
+            GLOBAL_EVENT.MOUSEBUTTONDOWN() 
             
-            if e.comparison_type(KEYDOWN):
-                if e.comparison_key(K_ESCAPE):
-                    e.set_key(0)
-                    quit()  
+            if GLOBAL_EVENT.comparison_type(KEYDOWN):
+                if GLOBAL_EVENT.comparison_key(K_ESCAPE):
+                    GLOBAL_EVENT.set_key(0)
+                    quitOPTIONS()  
 
         #surfM.update_pos()
         #surfM.animation_resize()
-        surfM.main_work(quit) 
+        surfM.main_work(quitOPTIONS) 
 
         button1.Button(button_1)
         button1.get_text_self("12")
@@ -288,8 +275,8 @@ def options(x_c = (536.5), y_c = (255.5)):
         button3.Button(button_3)
         button3.get_text_self("6")
  
-        e.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("1", (x_c) + 45 * Surface.procent, (y_c) + 25 * Surface.procent)
+        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
+        big_text.get_set_text("1", (x_c) + 45 * procent, (y_c) + 25 * procent)
         
         #get_fps(coordinate=(3, Surface.height - 20))
         tick_fps()      
@@ -298,7 +285,7 @@ def options(x_c = (536.5), y_c = (255.5)):
     while work:       
         if anim_time_fon <= 180:
             anim_time_fon += 20
-            Surface.main_surface.blit(fon, (0 + Surface.conf_width, 0 + Surface.conf_height))
+            main_surface.blit(fon, (0 + conf_width, 0 + conf_height))
 
         initialize()
         
@@ -309,10 +296,10 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     from clients.game_client import player_imgs, player_speed
     from clients.game_client import player, player_rect
 
-    fon_background = Surface.ScrollingBG(bg, bg_speed1)
+    fon_background = ScrollingBG(bg, bg_speed1)
     def background():
         fon_background.update()
-        fon_background.draw(Surface.d)
+        fon_background.draw(d)
     
     set_fps(90)
 
@@ -334,7 +321,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
-                sys.exit()
+                exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     check_first_while = 0
@@ -357,13 +344,13 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
         
              
         background()
-        Surface.d.blit(BASEFONT.render(str(scores), True, BLACK), (Surface.d.get_width() - 30, 0))
-        Surface.d.blit(player, (player_rect))
+        d.blit(BASEFONT.render(str(scores), True, BLACK), (d.get_width() - 30, 0))
+        d.blit(player, (player_rect))
         version_game()
         
         for enemy in enemies:
             enemy[1] = enemy[1].move(-enemy[2], 0)
-            Surface.d.blit(enemy[0], enemy[1])
+            d.blit(enemy[0], enemy[1])
         
             if enemy[1].left < -200:
                 enemies.pop(enemies.index(enemy))
@@ -374,9 +361,9 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
         
         for bonus in bonusies:             
             bonus[1] = bonus[1].move(-bonus[2], 2)
-            Surface.d.blit(bonus[0], bonus[1])
+            d.blit(bonus[0], bonus[1])
         
-            if bonus[1].bottom > (Surface.height + 300):
+            if bonus[1].bottom > (height + 300):
                 bonusies.pop(bonusies.index(bonus))
         
             if player_rect.colliderect(bonus[1]):
@@ -390,21 +377,21 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
                     
            #except: None
         
-        if pressed_keys [K_DOWN] and not player_rect.bottom >= Surface.height:
+        if pressed_keys [K_DOWN] and not player_rect.bottom >= height:
             player_rect = player_rect.move(0, player_speed)
         
         if pressed_keys [K_UP] and not player_rect.top <= 0:
             player_rect = player_rect.move(0, -player_speed)
 
-        if pressed_keys [K_RIGHT] and not player_rect.right >= Surface.width:
+        if pressed_keys [K_RIGHT] and not player_rect.right >= width:
             player_rect = player_rect.move(player_speed, 0)
          
         if pressed_keys [K_LEFT]and not player_rect.left <= 0:
             player_rect = player_rect.move(-player_speed, 0)
             
         if scores >= max_score:
-            if lib_file.config.check(level, invisible_cursor) == False:
-                lib_file.config.write(level)
+            if config.check(level, invisible_cursor) == False:
+                config.write(level)
             game_work = False
 
         if check_first_while == 0 and game_work != False:
@@ -431,32 +418,34 @@ def language_get():
     s = 35
 
     def update_text():
-        standart_text.set_language(Language.language)
-        big_text.set_language(Language.language)
-        button_modified.set_language(Language.language)
+        global language
+        standart_text.set_language(language)
+        big_text.set_language(language)
+        button_modified.set_language(language)
          
-    def exit():
+    def exitLANGUAGE():
         global work
         work = False
     
     button1 = button_modified.copy()
-    button1.set_object((-300) * Surface.procent, (220) * Surface.procent, (300, 30))
+    button1.set_object((-300) * procent, (220) * procent, (300, 30))
     button1.moved(50, None, 300)
     
     button2 = button_modified.copy()
-    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * procent)), (300, 30))
     button2.moved(50, None, 300)
 
     button4 = button_modified.copy()
-    button4.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (30 * Surface.procent)), (300, 30))
+    button4.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (30 * procent)), (300, 30))
     button4.moved(50, None, 300)
 
     def button_1():
         def button(): 
+            global language
             button1.check_config({"effect": "True"}, clicks)
             if button1.check_config({"language": "EN"}) == False:
                 button1.write_in_config({"language": "EN"})
-                Language.language = (Language.ENGLISH)
+                language = (ENGLISH)
                 update_text()
 
         button1.animation()
@@ -465,10 +454,11 @@ def language_get():
 
     def button_2():
         def button(): 
+            global language
             button2.check_config({"effect": "True"}, clicks)
             if button2.check_config({"language": "UA"}) == False:
                 button2.write_in_config({"language": "UA"})
-                Language.language = (Language.UKRAINIAN)
+                language = (UKRAINIAN)
                 update_text()
 
         button2.animation()
@@ -477,12 +467,12 @@ def language_get():
 
     def button_3():
         #surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
-        Text.standart_text.draw_text('Русский', 75, (221 + s*2), (0, 0, 0))
+        standart_text.draw_text('Русский', 75, (221 + s*2), (0, 0, 0))
 
     def button_4():
         def button(): 
             button4.check_config({"effect": "True"}, return_exit)
-            exit()
+            exitLANGUAGE()
 
         button4.animation()
         button4.Button(button)
@@ -492,18 +482,18 @@ def language_get():
 
     def initialiaze():
         for event in pygame.event.get():
-            e.event = event
-            if e.event.type == QUIT:
+            GLOBAL_EVENT.event = event
+            if GLOBAL_EVENT.event.type == QUIT:
                 pygame.quit()
-                sys.exit()
-
-            e.mouse_get()
-            e.MOUSEBUTTONDOWN() 
-            
-            if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-                lib_file.config.check({"effect": "True"}, return_exit)
-                e.set_key(0)
                 exit()
+
+            GLOBAL_EVENT.mouse_get()
+            GLOBAL_EVENT.MOUSEBUTTONDOWN() 
+            
+            if GLOBAL_EVENT.comparison_type(KEYDOWN) and GLOBAL_EVENT.comparison_key(K_ESCAPE):
+                config.check({"effect": "True"}, return_exit)
+                GLOBAL_EVENT.set_key(0)
+                exitLANGUAGE()
 
         background()
         
@@ -512,11 +502,11 @@ def language_get():
         button_4()    
         
         version_game()
-        e.MOUSEBUTTONDOWN()
-        e.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("2", 70 * Surface.procent, 150 * Surface.procent)        
+        GLOBAL_EVENT.MOUSEBUTTONDOWN()
+        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
+        big_text.get_set_text("2", 70 * procent, 150 * procent)        
         
-        get_fps(coordinate=(3, Surface.height - (20 * Surface.procent)))
+        get_fps(coordinate=(3, height - (20 * procent)))
         tick_fps()
         update_display()
 
@@ -531,24 +521,24 @@ def level():
     from clients.game_client import sw2, sh2, CREATE_ENEMY2, max_score2
     from clients.game_client import sw3, sh3, CREATE_ENEMY3, max_score3
 
-    def exit():
+    def exitLEVEL():
         global work
         work = False
         
     button1 = button_modified.copy()
-    button1.set_object(-300 * Surface.procent, 220 * Surface.procent, (300, 30))
+    button1.set_object(-300 * procent, 220 * procent, (300, 30))
     button1.moved(50, None, 300) 
     
     button2 = button_modified.copy()
-    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button2.set_object(button1.get_x_pos(), (button1.get_y_pos() + button1.get_size_y() + (10 * procent)), (300, 30))
     button2.moved(50, None, 300) 
 
     button3 = button_modified.copy()
-    button3.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (10 * Surface.procent)), (300, 30))
+    button3.set_object(button2.get_x_pos(), (button2.get_y_pos() + button2.get_size_y() + (10 * procent)), (300, 30))
     button3.moved(50, None, 300) 
 
     button4 = button_modified.copy()
-    button4.set_object(button3.get_x_pos(), (button3.get_y_pos() + button3.get_size_y() + (30 * Surface.procent)), (300, 30))
+    button4.set_object(button3.get_x_pos(), (button3.get_y_pos() + button3.get_size_y() + (30 * procent)), (300, 30))
     button4.moved(50, None, 300) 
 
     def button_1():
@@ -569,7 +559,7 @@ def level():
             def lvl2(): 
                 sourse(sw2, sh2, CREATE_ENEMY2, max_score2, {"level": 3})
 
-            if lib_file.config.get_value("level") >= 2:
+            if config.get_value("level") >= 2:
                 lvl2()
 
         def button(): 
@@ -586,7 +576,7 @@ def level():
             def lvl3(): 
                 sourse(sw3, sh3, CREATE_ENEMY3, max_score3, {"level": 3.1})
             
-            if lib_file.config.get_value("level") >= 3:
+            if config.get_value("level") >= 3:
                 lvl3()
         
         def button(): 
@@ -601,7 +591,7 @@ def level():
     def button_4():
         def button():
             button4.check_config({"effect": "True"}, return_exit) 
-            exit()
+            exitLEVEL()
         
         button4.animation()
         button4.Button(button)
@@ -611,18 +601,18 @@ def level():
 
     def initialiaze(): 
         for event in pygame.event.get():
-            e.event = event
-            if e.event.type == QUIT:
+            GLOBAL_EVENT.event = event
+            if GLOBAL_EVENT.event.type == QUIT:
                 pygame.quit()
-                sys.exit()
-
-            e.mouse_get()
-            e.MOUSEBUTTONDOWN() 
-            
-            if e.comparison_type(KEYDOWN) and e.comparison_key(K_ESCAPE):
-                lib_file.config.check({"effect": "True"}, return_exit)
-                e.set_key(0)
                 exit()
+
+            GLOBAL_EVENT.mouse_get()
+            GLOBAL_EVENT.MOUSEBUTTONDOWN() 
+            
+            if GLOBAL_EVENT.comparison_type(KEYDOWN) and GLOBAL_EVENT.comparison_key(K_ESCAPE):
+                config.check({"effect": "True"}, return_exit)
+                GLOBAL_EVENT.set_key(0)
+                exitLEVEL()
 
         background()
 
@@ -632,11 +622,11 @@ def level():
         button_4()
             
         version_game()
-        e.MOUSEBUTTONDOWN()
-        e.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("11", 70 * Surface.procent, 150 * Surface.procent)
+        GLOBAL_EVENT.MOUSEBUTTONDOWN()
+        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
+        big_text.get_set_text("11", 70 * procent, 150 * procent)
         
-        get_fps(coordinate=(3, Surface.height - (20 * Surface.procent)))
+        get_fps(coordinate=(3, height - (20 * procent)))
         tick_fps()
         update_display()
 
@@ -646,5 +636,5 @@ def level():
     work = True
 
 if __name__ == "__main__":
-    Log.log.info("Successful start...")
+    log.info("Successful start...")
     main_menu()
