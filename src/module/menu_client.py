@@ -3,11 +3,13 @@ __author__ = 'Chinho'
 
 import pygame.font
 from pygame import init
-if __name__ == "__main__":    
-    from module import procent, width, d, height, screen, log
+
+if __name__ == "__main__":   
+    import music as mus 
+    from module import procent, width, d, height, screen, log, fix_import, VERS_GAME
 else:
-    import clients.module.music as mus
-    from clients.module import procent, width, d, height, screen, log
+    import module.music as mus
+    from module import procent, width, d, height, screen, log, fix_import, VERS_GAME
 
 def get_version():
     return __version__
@@ -23,20 +25,14 @@ LIME = (100, 250, 100)
 
 init()
 
-log.info("Load font...")
-STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * procent), 0, 0) #Arial
-BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * procent))
-VERS_GAME = pygame.font.SysFont(None, round(20 * procent))
-GAME_TEXT = pygame.font.SysFont("Consolas", round(30 * procent))
-log.info("Font (4) successfully loaded.")
 
-click_open_2 = ('library/effect/click_open2.mp3')
-click_open_1 = ('library/effect/click_open1.mp3')
-click_exit = ('library/effect/click_exit1.mp3')
-effect_game = ('library/effect/sound3.mp3')
-click_aim = ("library/effect/nice click aim.mp3")
-sound_menu = ('library/music/Menu1 - peace.mp3')
-sound_game = ('library/music/01897.mp3')
+click_open_2 = (fix_import + 'library/effect/click_open2.mp3')
+click_open_1 = (fix_import + 'library/effect/click_open1.mp3')
+click_exit = (fix_import + 'library/effect/click_exit1.mp3')
+effect_game = (fix_import + 'library/effect/sound3.mp3')
+click_aim = (fix_import + "library/effect/nice click aim.mp3")
+sound_menu = (fix_import + 'library/music/Menu1 - peace.mp3')
+sound_game = (fix_import + 'library/music/01897.mp3')
 
 def click_cursor():
     pygame.mouse.set_cursor(11)
@@ -65,7 +61,7 @@ def scroll():
 log.info("Sounds (3) successfully loaded.")
 
 log.info("Start load background image...")
-bg = pygame.transform.scale(pygame.image.load('library/pictures/background.png').convert(), screen)
+bg = pygame.transform.scale(pygame.image.load(fix_import + 'library/pictures/background.png').convert(), screen)
 log.info("Background image successfully loaded.")
 bgX = 0
 bgX2 = bg.get_width()  

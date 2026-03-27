@@ -6,8 +6,8 @@ try:
     from Text import Text, ModuleText
     from UI_module.animation import AnimationMove
 except ImportError:
-    from clients.module.Text import Text, ModuleText
-    from clients.module.UI_module.animation import AnimationMove
+    from module.Text import Text, ModuleText
+    from module.UI_module.animation import AnimationMove
      
 
 class MyDrawObject: #Correct

@@ -2,7 +2,7 @@ import json
 from os import makedirs
 
 try:
-    from clients.module.logged import log
+    from module.logged import log
 except ImportError:
     from logged import log
 

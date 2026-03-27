@@ -1,9 +1,9 @@
 from pygame import Surface, DOUBLEBUF, WINDOWMAXIMIZED, HWSURFACE, display, surface
 from abc import abstractmethod
 try:
-    from clients.module.logged import log
-except ImportError:
     from logged import log
+except ImportError:
+    from module.logged import log
 
 class _ClassSurface:
     def __init__(self, width: int = 0, height: int = 0):

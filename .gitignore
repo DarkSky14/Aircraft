@@ -1,11 +1,7 @@
 *__pycache__
-clients/*__pycache__/
-clients/Backend/*__pycache__/
-clients/Frontend/*__pycache__/
-output
-library/Logs/
-library/*data/
-options.py
+*output
+*Logs
+*data
 buildozer.spec
 .vscode*/
 *.idea

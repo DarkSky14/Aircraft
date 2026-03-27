@@ -2,14 +2,14 @@ import pygame
 from random import randint
 from os import listdir
 
-if __name__ == "__main__":    
-    from module import procent, width, height, log
-else:
-    from clients.module import procent, width, height, log
+#if __name__ == "__main__":    
+from module import procent, width, height, log, fix_import, d, BASE_FONT
+    #else:
+    #from clients.module import procent, width, height, log, fix_import, d, BASE_FONT
 
 FPS = pygame.time.Clock()
 
-IMGS_PATH = 'library/player'
+IMGS_PATH = fix_import + 'library/player'
 
 CREATE_ENEMY1 = pygame.USEREVENT + 2
 CREATE_ENEMY2 = pygame.USEREVENT + 2
@@ -43,7 +43,7 @@ max_score3=1500
 
 
 log.info("Start load enemy image...")
-enemy_png = pygame.image.load('library/pictures/enemy.png')
+enemy_png = pygame.image.load(fix_import + 'library/pictures/enemy.png')
 enemy = pygame.transform.scale(enemy_png, ((enemy_png.get_width() * procent), (enemy_png.get_height() * procent)))
 def create_enemy(speed_w1, speed_w2):
     global enemy
@@ -54,7 +54,7 @@ log.info("Enemy image successfully loaded.")
 
 
 log.info("Start load bonus image...")
-bonus_jpg = pygame.image.load('library/pictures/bonus.jpg ')
+bonus_jpg = pygame.image.load(fix_import + 'library/pictures/bonus.jpg ')
 bonus = pygame.transform.scale(bonus_jpg, ((bonus_jpg.get_width() * procent), (bonus_jpg.get_height() * procent)))
 def create_bonus():
     global bonus
@@ -76,3 +76,9 @@ def set_fps(tick = None):
 def tick_fps():
     global fps
     FPS.tick(fps)
+
+def get_fps(font: pygame.font.Font = BASE_FONT, color: tuple = (200, 200, 200), coordinate: tuple = (3,3)):
+    main_surface_fps = font.render(str(int(FPS.get_fps())), True, (color))
+    rect_obgect = main_surface_fps.get_rect()
+    rect_obgect.topleft = coordinate
+    d.blit(main_surface_fps, rect_obgect)

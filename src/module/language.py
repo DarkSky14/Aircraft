@@ -2,7 +2,7 @@
 try:
     from logged import log
 except ImportError:
-    from clients.module.logged import log
+    from module.logged import log
 
 
 English = {
