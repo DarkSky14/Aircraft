@@ -1,4 +1,3 @@
-
 try:
     from logged import log
 except ImportError:
@@ -6,20 +5,20 @@ except ImportError:
 
 
 English = {
-    0:'Start',
-    1:'Options', 
-    2:'Language', 
-    3:'Level 1', 
-    4:'Level 2', 
-    5:'Level 3',
-    6:'Exit',
-    7:'Main Menu',
-    8:'On', 
-    9:'Off', 
-    10:'Music:', 
-    11:'Level', 
-    12:'Effect:'
-    }
+    "0": "Start",
+    "1": "Options",
+    "2": "Language",
+    "3": "Level 1",
+    "4": "Level 2",
+    "5": "Level 3",
+    "6": "Exit",
+    "7": "Main Menu",
+    "8": "On",
+    "9": "Off",
+    "10": "Music:",
+    "11": "Level",
+    "12": "Effect:",
+}
 
 Українська = {
     "0": "Розпочати",
@@ -32,10 +31,10 @@ English = {
     "7": "Головне Меню",
     "8": "Ввімкнуто",
     "9": "Вимкнуто",
-    "10": "Музикy:", 
+    "10": "Музикy:",
     "11": "Рівні",
-    "12": "Ефекти:"
-    }
+    "12": "Ефекти:",
+}
 
 Русский = {
     "0": "Начать",
@@ -46,32 +45,32 @@ English = {
     "5": "Уровень 3",
     "6": "Выход",
     "7": "Главное Меню",
-    "8": "Включить", 
+    "8": "Включить",
     "9": "Выключить",
     "10": "Музыка:",
     "11": "Уровни",
-    "12": "Еффекты:"
-    }
+    "12": "Еффекты:",
+}
 
 
 class LanguageCreater:
-    def __init__(self, name: str, url: str, file: str = "None"):  
+    def __init__(self, name: str, url: str, file: str = "None"):
         self._name = name
         self._url = url
         self._lang = {}
         self._file = file
-    
+
     def get_lang(self):
         return self._lang if self._lang != {} else {0: ""}
-    
+
     def set_lang(self, reader):
-        work = reader(self._name, self._url, self._lang, self._file) 
+        work = reader(self._name, self._url, self._lang, self._file)
         try:
             self._lang = work.read()
             log.debug({"LANGUAGE LOADED:": self._name})
         except FileNotFoundError:
             log.error({"LANGUAGE_LOAD_ERROR": self._file})
-    
+
     def get_name(self):
         return self._name
 
@@ -81,17 +80,16 @@ class LanguageSetter(LanguageCreater):
         self.config = config
         self._basic = English
 
-    def language_set(self, *args) -> dict[int, str]:
+    def language_set(self, *args) -> dict[str, str]:
         language = self._basic
 
         for arg in args:
             check = {"language": arg.get_name()}
-            if self.config.check(check) == True: 
+            if self.config.check(check):
                 self._lang = arg.get_lang()
-                return self._lang 
+                return self._lang
             else:
                 continue
-                
-        self._lang = language
-        return language  
 
+        self._lang = language
+        return language

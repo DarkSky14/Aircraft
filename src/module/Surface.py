@@ -1,16 +1,18 @@
 from pygame import Surface, DOUBLEBUF, WINDOWMAXIMIZED, HWSURFACE, display, surface
 from abc import abstractmethod
+
 try:
     from logged import log
 except ImportError:
     from module.logged import log
+
 
 class _ClassSurface:
     def __init__(self, width: int = 0, height: int = 0):
         self.width = width
         self.height = height
         self.screen = self.width, self.height
-    
+
     @abstractmethod
     def surface(self) -> Surface:
         pass
@@ -29,8 +31,8 @@ class StandartSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
 
-    def surface(self, mode = WINDOWMAXIMIZED) -> Surface:
-        flags = DOUBLEBUF | HWSURFACE 
+    def surface(self, mode=WINDOWMAXIMIZED) -> Surface:
+        flags = DOUBLEBUF | HWSURFACE
         mode_work = display.mode_ok((self.width, self.height), flags)
 
         log.debug({"Mode": mode_work})
@@ -46,13 +48,13 @@ class StandartSurface(_ClassSurface):
 class AdjustmentSurface(_ClassSurface):
     def __init__(self):
         pass
-    
-    def surface(self, mode = WINDOWMAXIMIZED) -> Surface:
+
+    def surface(self, mode=WINDOWMAXIMIZED) -> Surface:
         info = display.Info()
         self.width, self.height = info.current_w, info.current_h
         self.screen = self.width, self.height
 
-        flags = DOUBLEBUF | HWSURFACE 
+        flags = DOUBLEBUF | HWSURFACE
         mode_work = display.mode_ok((self.width, self.height), flags)
 
         log.debug({"Mode": mode_work})
@@ -76,15 +78,15 @@ class SubSurface(_ClassSurface):
 class AdjustmentSubSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
-    
-    def surface(self, surface: surface.Surface):     
-        procent_width = (surface.get_width() / self.width) 
-        procent_height = (surface.get_height() / self.height) 
+
+    def surface(self, surface: surface.Surface):
+        procent_width = surface.get_width() / self.width
+        procent_height = surface.get_height() / self.height
 
         if procent_width > procent_height:
             procent = procent_height
-            size_width = self.width * procent_height 
-            size_height = surface.get_height()        
+            size_width = self.width * procent_height
+            size_height = surface.get_height()
             self._conf_width = (surface.get_width() - size_width) / 2
             self._conf_height = 0
 
@@ -104,7 +106,7 @@ class AdjustmentSubSurface(_ClassSurface):
 
         self.procent = procent
         self.screen = size_width, size_height
-        self.width = size_width     
+        self.width = size_width
         self.height = size_height
 
         log.debug({"Procent:": procent})
@@ -113,14 +115,16 @@ class AdjustmentSubSurface(_ClassSurface):
         log.debug({"Conf width:": self._conf_width})
         log.debug({"Conf height:": self._conf_height})
 
-        return surface.subsurface(self._conf_width, self._conf_height, self.width, self.height)
-    
+        return surface.subsurface(
+            self._conf_width, self._conf_height, self.width, self.height
+        )
+
     def get_conf_height(self) -> float:
         return self._conf_height
-    
+
     def get_conf_width(self) -> float:
         return self._conf_width
-    
+
     def get_procent(self) -> int | float:
         return self.procent
 
@@ -140,4 +144,3 @@ class ScrollingBG:
     def draw(self, surface: Surface):
         surface.blit(self.image, (self.x, 0))
         surface.blit(self.image, (self.width, 0))
-
