@@ -56,6 +56,7 @@ class AnimationMove:
                 func()
                 del func 
 
+
 class Resizable:
     def __init__(self, size_config) -> None:
         self.size_config = size_config
@@ -102,6 +103,3 @@ class Resizable:
                 func()
                 del func 
 
-    def add_func_resize(self, func): 
-        print("void")
-        self.func = func

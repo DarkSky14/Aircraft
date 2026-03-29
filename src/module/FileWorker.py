@@ -1,8 +1,8 @@
 import json
-import os
+from os import makedirs
 
 try:
-    from clients.module.logged import log
+    from module.logged import log
 except ImportError:
     from logged import log
 
@@ -95,7 +95,7 @@ class JsonWriter(_DLib):
         data.update(args)
 
         self._dict.update(data)
-        os.makedirs(self._url, exist_ok=True)
+        makedirs(self._url, exist_ok=True)
 
         with open((self._url + "/" + self._file), "w", encoding=encoding) as file:
             json.dump(data, file, indent = 4) 
@@ -136,23 +136,3 @@ class JsonWorker(JsonReader, JsonWriter, _DLib):
     def writer(self, args: dict, encoding = "utf-8"):
         self.write(args, encoding)
          
-
-config = JsonWorker(
-    "config",
-    "library/data",
-    {
-        "level": 1, 
-        "effect": "True", 
-        "music": "True", 
-        "language": "EN"
-    },
-    "config.json"
-)
-config.reader()
-
-temp = JsonWorker(
-    "temp",
-    "none",
-    {"musicID": "None"}
-)
-log.debug({"INITIALIAZE_TEMP": temp.get_data()})

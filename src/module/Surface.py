@@ -1,11 +1,9 @@
-from pygame import init
-import pygame.display
-import screeninfo
+from pygame import Surface, DOUBLEBUF, WINDOWMAXIMIZED, HWSURFACE, display, surface
 from abc import abstractmethod
 try:
-    from clients.module.logged import log
-except ImportError:
     from logged import log
+except ImportError:
+    from module.logged import log
 
 class _ClassSurface:
     def __init__(self, width: int = 0, height: int = 0):
@@ -14,7 +12,7 @@ class _ClassSurface:
         self.screen = self.width, self.height
     
     @abstractmethod
-    def surface(self) -> pygame.Surface:
+    def surface(self) -> Surface:
         pass
 
     def get_size_surface(self) -> tuple[int, int]:
@@ -30,52 +28,48 @@ class _ClassSurface:
 class StandartSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
-        self.screen = self.width, self.height
-    
-    def surface(self, mode = pygame.WINDOWMAXIMIZED) -> pygame.Surface:
-        flags = pygame.DOUBLEBUF | pygame.HWSURFACE 
-        mode_work = pygame.display.mode_ok((self.width, self.height), flags)
+
+    def surface(self, mode = WINDOWMAXIMIZED) -> Surface:
+        flags = DOUBLEBUF | HWSURFACE 
+        mode_work = display.mode_ok((self.width, self.height), flags)
 
         log.debug({"Mode": mode_work})
-        log.debug({"Display driver": pygame.display.get_driver()})
-        log.debug({"Video info": pygame.display.Info()})
+        log.debug({"Display driver": display.get_driver()})
+        log.debug({"Video info": display.Info()})
 
         if mode_work == 0:
-            return pygame.display.set_mode(self.screen, mode)
+            return display.set_mode(self.screen, mode)
         else:
-            return pygame.display.set_mode(self.screen, flags)
+            return display.set_mode(self.screen, flags)
 
 
 class AdjustmentSurface(_ClassSurface):
     def __init__(self):
         pass
-        #super().__init__(width, height)
     
-    def surface(self, mode = pygame.WINDOWMAXIMIZED) -> pygame.Surface:
-        screen = screeninfo.get_monitors()
-        for s in screen:
-            self.width = s.width
-            self.height = s.height
-            self.screen = self.width, self.height
+    def surface(self, mode = WINDOWMAXIMIZED) -> Surface:
+        info = display.Info()
+        self.width, self.height = info.current_w, info.current_h
+        self.screen = self.width, self.height
 
-        flags = pygame.DOUBLEBUF | pygame.HWSURFACE 
-        mode_work = pygame.display.mode_ok((self.width, self.height), flags)
+        flags = DOUBLEBUF | HWSURFACE 
+        mode_work = display.mode_ok((self.width, self.height), flags)
 
         log.debug({"Mode": mode_work})
-        log.debug({"Display driver": pygame.display.get_driver()})
-        log.debug({"Video info": pygame.display.Info()})
+        log.debug({"Display driver": display.get_driver()})
+        log.debug({"Video info": display.Info()})
 
         if mode_work == 0:
-            return pygame.display.set_mode(self.screen, mode)
+            return display.set_mode(self.screen, mode)
         else:
-            return pygame.display.set_mode(self.screen, flags)
+            return display.set_mode(self.screen, flags)
 
 
 class SubSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
 
-    def surface(self, surface: pygame.Surface, left, top):
+    def surface(self, surface: Surface, left, top):
         return surface.subsurface(left, top, self.width, self.height)
 
 
@@ -83,7 +77,7 @@ class AdjustmentSubSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         super().__init__(width, height)
     
-    def surface(self, surface: pygame.surface.Surface):     
+    def surface(self, surface: surface.Surface):     
         procent_width = (surface.get_width() / self.width) 
         procent_height = (surface.get_height() / self.height) 
 
@@ -132,7 +126,7 @@ class AdjustmentSubSurface(_ClassSurface):
 
 
 class ScrollingBG:
-    def __init__(self, image: pygame.Surface, speed: int):
+    def __init__(self, image: Surface, speed: int):
         self.image = image
         self.width = self.image.get_width()
         self.speed = speed
@@ -143,23 +137,7 @@ class ScrollingBG:
         self.x = (self.x - self.speed) % self.image.get_width()
         self.width = self.x - self.image.get_width()
 
-    def draw(self, surface: pygame.Surface):
+    def draw(self, surface: Surface):
         surface.blit(self.image, (self.x, 0))
         surface.blit(self.image, (self.width, 0))
- 
-init()
 
-main_surface = AdjustmentSurface().surface() # 960, 544 StandartSurface(960, 544) #
-e = AdjustmentSubSurface(1373, 761)# Original size 300x168
-d = e.surface(main_surface)
-main_surface.fill((0, 0, 0))
-d.fill((255, 255, 255))
-
-screen = e.get_size_surface()
-conf_width = e.get_conf_width()
-conf_height = e.get_conf_height()
-procent = e.get_procent()
-height = d.get_height()
-width =  d.get_width()
-
-log.debug({"Main surface size": screen})

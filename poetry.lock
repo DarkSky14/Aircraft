@@ -140,23 +140,11 @@ files = [
 [package.dependencies]
 pyobjc-core = ">=12.1"
 
-[[package]]
-name = "screeninfo"
-version = "0.8.1"
-description = "Fetch location and size of physical screens."
-optional = false
-python-versions = ">=3.6.2,<4.0.0"
-groups = ["main"]
-files = [
-    {file = "screeninfo-0.8.1-py3-none-any.whl", hash = "sha256:e97d6b173856edcfa3bd282f81deb528188aff14b11ec3e195584e7641be733c"},
-    {file = "screeninfo-0.8.1.tar.gz", hash = "sha256:9983076bcc7e34402a1a9e4d7dabf3729411fd2abb3f3b4be7eba73519cd2ed1"},
-]
-
 [package.dependencies]
 Cython = {version = "*", markers = "sys_platform == \"darwin\""}
 pyobjc-framework-Cocoa = {version = "*", markers = "sys_platform == \"darwin\""}
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.13"
+python-versions = ">=3.10"
 content-hash = "348d0a285963c9f274108ee0c6b02a0b33938b90c7cdf8c6222581d2fee63fe6"

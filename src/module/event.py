@@ -1,29 +1,32 @@
-import pygame.event, pygame.time
 from pygame import (
-    MOUSEBUTTONDOWN
+    MOUSEBUTTONDOWN, event, time, mouse
 )
 
 class EventControl:
-    def __init__(self, debounce_ms = 200):
+    def __init__(self, debounce_ms = 200, config_width: float = 0, config_height: float = 0):
         self.debounce_ms = debounce_ms
         self._last_click_time = 0
         self.click = False   
         self.choose_button = 0
         self.fake_choose_button = 0
         self.wait_button = 0
+        self.config_width = config_width
+        self.config_height = config_height
         
     def event_pool(self):         
-        for event in pygame.event.get():
-            self.event = event
+        for eventpool in event.get():
+            self.event = eventpool
 
     def mouse_get(self):
-        self.mx, self.my = pygame.mouse.get_pos() 
+        self.mx, self.my = mouse.get_pos() 
+        self.mx -= self.config_width
+        self.my -= self.config_height
 
     def MOUSEBUTTONDOWN(self):
             self.set_click(False)
             if self.comparison_type(MOUSEBUTTONDOWN) and self.choose_button == 1:
                 self.set_choose_button(0) 
-                now = pygame.time.get_ticks()  
+                now = time.get_ticks()  
                 if now > self.debounce_ms + self._last_click_time:                
                     self._last_click_time = now
                     self.set_click(True)      

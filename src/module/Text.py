@@ -1,16 +1,5 @@
 import pygame.font
 
-
-try:
-    import Surface as Surface
-    import FileWorker as FileWorker
-    import language as language
-except ImportError:
-    import clients.module.Surface as Surface
-    import clients.module.FileWorker as FileWorker
-    import clients.module.language as language
-
-
 class Font:
     def __init__(self) -> None:
         pass
@@ -107,12 +96,3 @@ class ModuleText(Text):
     def get_set_text(self, base_key, x_text, y_text, color: tuple = (0, 0, 0)):
         self.text = self.lang.get(base_key, f"{base_key}")
         self.draw_text("{} {}".format(self.text, self.chosen), x_text, y_text, color)
-
-VERS_GAME = pygame.font.SysFont(None, round(20 * Surface.procent))
-
-text = Text(VERS_GAME, language.language, Surface.d, FileWorker.config, (0,0,0))
-big_text = text.copy()
-big_text.create_font('Georgia', round(36 * Surface.procent))
-
-standart_text = text.copy()
-standart_text.create_font('Georgia', round(21 * Surface.procent))
