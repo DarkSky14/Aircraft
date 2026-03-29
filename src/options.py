@@ -59,17 +59,17 @@ def options(x_c = (536.5), y_c = (255.5)):
         global is_music
         if button1.check_config({"effect": "True"}, clicks):
             button1.write_in_config({"effect": "False"})
-            is_music = False
+            module.is_music = False
 
         elif button1.check_config({"effect": "False"}):
             button1.write_in_config({"effect": "True"})
-            is_music = True
+            module.is_music = True
 
         else:
             button1.write_in_config({"effect": "True"})
             log.error("Error in config file, missing 'effect' key. Default value 'True' was set.")
-            is_music = True
-            
+            module.is_music = True
+
         button1.text_change({"effect": "True"}, "8", "9")     
 
     def button_2():
