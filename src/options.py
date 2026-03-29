@@ -100,6 +100,9 @@ def options(x_c = (536.5), y_c = (255.5)):
     version_game()
     sound()
     visible_cursor()  
+
+    GLOBAL_EVENT.mouse_get()
+    GLOBAL_EVENT.event_pool()
     
     def initialize():
         for event in pygame.event.get():
