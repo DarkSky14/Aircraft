@@ -13,6 +13,7 @@ Version
 - Problems in clear RAM.
 
 **Bugfixes**
+- Music-related fixes. 
 - Fixed a bug that occurred when exiting Settings by pressing a button, and which affected entering the game.
 
 # V 0.2.6
