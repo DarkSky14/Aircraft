@@ -1,9 +1,9 @@
 import pygame
-from pygame import font, init
+from pygame import init
 
 def _debag():
     try:
-        with open("clients/module/correct_start.py") as correct:
+        with open("module/correct_start.py") as correct:
             correct.close()
         return ""
     except:
@@ -46,15 +46,15 @@ work = True
 
 
 main_surface = AdjustmentSurface().surface() # 960, 544 StandartSurface(960, 544) #
-GLOBAL_EVENT = AdjustmentSubSurface(1373, 761)# Original size 300x168
-d = GLOBAL_EVENT.surface(main_surface)
+sub_surface = AdjustmentSubSurface(1373, 761)# Original size 300x168
+d = sub_surface.surface(main_surface)
 main_surface.fill((0, 0, 0))
 d.fill((255, 255, 255))
 
-screen = GLOBAL_EVENT.get_size_surface()
-conf_width = GLOBAL_EVENT.get_conf_width()
-conf_height = GLOBAL_EVENT.get_conf_height()
-procent = GLOBAL_EVENT.get_procent()
+screen = sub_surface.get_size_surface()
+conf_width = sub_surface.get_conf_width()
+conf_height = sub_surface.get_conf_height()
+procent = sub_surface.get_procent()
 height = d.get_height()
 width =  d.get_width()
 

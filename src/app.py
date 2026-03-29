@@ -1,16 +1,23 @@
 from sys import exit
 
-from module import *
+from module import ( 
+    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    update_display, big_text, sound_scroll, log, fix_import, procent,
+    height, screen
+)
+
 import pygame
 
 from pygame import QUIT
 
-from module.menu_client import *
-from module.game_client import * 
+from module.menu_client import (
+    clicks, return_exit, version_game, standart_curs, click_cursor
+)
 
-from options import options
-from languageUI import language_get
-from level import level
+from module.game_client import (
+    set_fps, get_fps, tick_fps
+)
+
 
 # Setup pygame/window -----------------------------
 log.info("Setup icon window...")
@@ -52,6 +59,7 @@ def main_menu():
     def button_1():
         def button(): 
             button1.check_config({"effect": "True"}, clicks)
+            from level import level
             level()
             #button1.moved(-300, None, 0)
             #button1.animation(level())               
@@ -64,6 +72,7 @@ def main_menu():
     def button_2():
         def button(): 
             button2.check_config({"effect": "True"}, clicks)
+            from options import options
             options(25, 150)
             #button2.moved(50, None, 0) 
             #button2.animation(opti())
@@ -75,6 +84,7 @@ def main_menu():
     def button_3():
         def button(): 
             button3.check_config({"effect": "True"}, clicks)
+            from languageUI import language_get
             language_get()
 
         button3.Button(button)

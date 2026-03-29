@@ -1,15 +1,12 @@
 __version__ = '0.2.6'
 __author__ = 'Chinho'
 
-import pygame.font
-from pygame import init
-
 if __name__ == "__main__":   
     import music as mus 
-    from module import procent, width, d, height, screen, log, fix_import, VERS_GAME
+    from module import procent, width, d, height, screen, log, fix_import, VERS_GAME, pygame
 else:
     import module.music as mus
-    from module import procent, width, d, height, screen, log, fix_import, VERS_GAME
+    from module import procent, width, d, height, screen, log, fix_import, VERS_GAME, pygame
 
 def get_version():
     return __version__
@@ -22,9 +19,6 @@ WHITE = ((255,255,255))
 RED = (250, 0, 0)
 GREEN = (0, 255, 0)
 LIME = (100, 250, 100)
-
-init()
-
 
 click_open_2 = (fix_import + 'library/effect/click_open2.mp3')
 click_open_1 = (fix_import + 'library/effect/click_open1.mp3')

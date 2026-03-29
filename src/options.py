@@ -1,4 +1,8 @@
-from module import *
+from module import (
+    button_modified, GLOBAL_EVENT, work, screen, music, SurfaceM,
+    update_display, big_text, sound_scroll, procent, pygame,
+    main_surface, conf_height, conf_width, fix_import, d, log
+)
 import module
 
 from module.menu_client import (
@@ -8,7 +12,7 @@ from module.menu_client import (
 from pygame import (
     QUIT, K_ESCAPE, KEYDOWN
 )
-from module.game_client import * 
+from module.game_client import set_fps, tick_fps
 
 
 fon_obj = pygame.image.load(fix_import + 'library/pictures/fon_.png').convert()

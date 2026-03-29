@@ -1,4 +1,8 @@
-from module import *
+from module import (
+    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    update_display, big_text, sound_scroll, procent, height,
+    config, pygame
+)
 
 from module.menu_client import (
     clicks, return_exit, version_game, 
@@ -11,7 +15,7 @@ from pygame import (
     QUIT, K_ESCAPE, KEYDOWN
 )
 
-from module.game_client import * 
+from module.game_client import set_fps, get_fps, tick_fps
 
 def level():
     global work

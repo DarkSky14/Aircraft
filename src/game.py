@@ -1,4 +1,6 @@
-from module import *
+from module import (ScrollingBG, music, config, GAME_TEXT, bg,
+    update_display, d, pygame, height, width, BASE_FONT
+)
 
 import module
 
@@ -12,8 +14,13 @@ from pygame import (
     KEYDOWN
 )
 
-from module.menu_client import *
-from module.game_client import * 
+from module.menu_client import (sound_game, sound_menu, bg_speed1,
+    BLACK, RED, invisible_cursor, visible_cursor
+)
+from module.game_client import (set_fps, CREATE_BONUS, CHANGE_IMG,
+    create_bonus, create_enemy, get_fps, tick_fps
+)
+
 from options import options
 
 
@@ -139,4 +146,5 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
     visible_cursor() 
 
 if __name__ == "__main__":
+    from module.game_client import sw1, sh1, CREATE_ENEMY1, max_score1 
     sourse(sw1, sh1, CREATE_ENEMY1, max_score1, {"level": 2}) 
