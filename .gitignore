@@ -1,0 +1,7 @@
+*__pycache__
+*output
+*Logs
+*data
+buildozer.spec
+.vscode*/
+*.idea
