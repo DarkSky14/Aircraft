@@ -48,6 +48,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level = {str: int}):
         enemies.clear()
 
     check_first_while = 0  
+    module.game_work = True
 
     while module.game_work:
         pressed_keys = pygame.key.get_pressed()  
