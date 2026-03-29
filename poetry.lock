@@ -146,5 +146,5 @@ pyobjc-framework-Cocoa = {version = "*", markers = "sys_platform == \"darwin\""}
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.13"
+python-versions = ">=3.10"
 content-hash = "348d0a285963c9f274108ee0c6b02a0b33938b90c7cdf8c6222581d2fee63fe6"

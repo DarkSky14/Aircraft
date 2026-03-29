@@ -1,10 +1,10 @@
 version = 1
 revision = 3
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 
 [[package]]
-name = "aircraft"
-version = "0.2.5"
+name = "Aircraft"
+version = "0.2.7"
 source = { editable = "." }
 dependencies = [
     { name = "pygame-ce" },
