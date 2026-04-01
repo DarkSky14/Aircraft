@@ -16,6 +16,10 @@ from module.menu_client import (
 
 from module.game_client import set_fps, get_fps, tick_fps
 
+from level import level
+from options import options
+from languageUI import language_get
+
 
 # Setup pygame/window -----------------------------
 log.info("Setup icon window...")
@@ -27,94 +31,93 @@ log.info("Setup background image options...")
 pygame.display.set_caption("Aircraft", "Aircraft")
 pygame.display.set_icon(icon)
 
+def exitGame():
+    log.info("Successful stop.")
+    pygame.quit()
+    exit()
+
+
+_button1_ = button_modified.copy()
+_button1_.set_object((-300 * procent), (220 * procent), (300, 30))
+
+_button2_ = button_modified.copy()
+_button2_.set_object(
+    (-300 * procent),
+    (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * procent)),
+    (300, 30),
+)
+
+_button3_ = button_modified.copy()
+_button3_.set_object(
+    (-300 * procent),
+    (_button2_.get_y_pos() + _button2_.get_size_y() + (10 * procent)),
+    (300, 30),
+)
+
+_button4_ = button_modified.copy()
+_button4_.set_object(
+    (-300 * procent),
+    (_button3_.get_y_pos() + _button3_.get_size_y() + (25 * procent)),
+    (300, 30),
+)
+
+
+def _button_hide():
+    _button1_.moved(-300, None, 0)
+    _button2_.moved(-300, None, 0)
+    _button3_.moved(-300, None, 0)
+    _button4_.moved(-300, None, 0)
+
+
+def _button_get():
+    _button1_.moved(50, None, 300)
+    _button2_.moved(50, None, 300)
+    _button3_.moved(50, None, 300)
+    _button4_.moved(50, None, 300)
+
+
+def _button_1_callback_():
+    _button1_.check_config({"effect": "True"}, clicks)
+    level()
+
+def _button_2_callback_():
+    _button2_.check_config({"effect": "True"}, clicks)
+    options(25, 150)
+
+def _button_3_callback_():
+    _button3_.check_config({"effect": "True"}, clicks)
+    language_get()
+
+def _button_4_callback_():
+    _button4_.check_config({"effect": "True"}, return_exit)
+    exitGame()
+
+_button_get()
 
 def main_menu():
     global work
 
-    def exitGame():
-        log.info("Successful stop.")
-        pygame.quit()
-        exit()
-
-    # sub_surface = initial.UI.MyDrawObject(50, 240, (350, 250), initial.d)
-    # sub_surface.draw_object((100, 100, 100), 300, 10)
-
-    button1 = button_modified.copy()
-    button1.set_object((-300 * procent), (220 * procent), (300, 30))
-    button1.moved(50, None, 300)
-
-    button2 = button_modified.copy()
-    button2.set_object(
-        (-300 * procent),
-        (button1.get_y_pos() + button1.get_size_y() + (10 * procent)),
-        (300, 30),
-    )
-    button2.moved(50, None, 300)
-
-    button3 = button_modified.copy()
-    button3.set_object(
-        (-300 * procent),
-        (button2.get_y_pos() + button2.get_size_y() + (10 * procent)),
-        (300, 30),
-    )
-    button3.moved(50, None, 300)
-
-    button4 = button_modified.copy()
-    button4.set_object(
-        (-300 * procent),
-        (button3.get_y_pos() + button3.get_size_y() + (25 * procent)),
-        (300, 30),
-    )
-    button4.moved(50, None, 300)
-
-    def button_1():
-        def button():
-            button1.check_config({"effect": "True"}, clicks)
-            from level import level
-
-            level()
-            # button1.moved(-300, None, 0)
-            # button1.animation(level())
-            # button1.moved(50, None, 300)
-
-        button1.Button(button)
-        button1.animation()
-        button1.get_text(standart_text, "0")
-
-    def button_2():
-        def button():
-            button2.check_config({"effect": "True"}, clicks)
-            from options import options
-
-            options(25, 150)
-            # button2.moved(50, None, 0)
-            # button2.animation(opti())
-
-        button2.Button(button)
-        button2.animation()
-        button2.get_text(standart_text, "1")
-
-    def button_3():
-        def button():
-            button3.check_config({"effect": "True"}, clicks)
-            from languageUI import language_get
-
-            language_get()
-
-        button3.Button(button)
-        button3.animation()
-        button3.get_text(standart_text, "2")
-
-    def button_4():
-        def button():
-            button4.check_config({"effect": "True"}, return_exit)
-            exitGame()
-
-        button4.Button(button)
-        button4.animation()
-        button4.get_text(standart_text, "6")
-
     set_fps(60)
+
+    def button_call1():
+        _button1_.Button(_button_1_callback_)
+        _button1_.animation()
+        _button1_.get_text(standart_text, "0")
+    
+    def button_call2():
+        _button2_.Button(_button_2_callback_)
+        _button2_.animation()
+        _button2_.get_text(standart_text, "1")
+
+    def button_call3():
+        _button3_.Button(_button_3_callback_)
+        _button3_.animation()
+        _button3_.get_text(standart_text, "2")
+
+    def button_call4():
+        _button4_.Button(_button_4_callback_)
+        _button4_.animation()
+        _button4_.get_text(standart_text, "6")
 
     def initialize():
         for event in pygame.event.get():
@@ -129,10 +132,10 @@ def main_menu():
 
         background()
 
-        button_1()
-        button_2()
-        button_3()
-        button_4()
+        button_call1()
+        button_call2()
+        button_call3()
+        button_call4()
 
         version_game()
         GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)

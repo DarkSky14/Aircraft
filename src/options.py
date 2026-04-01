@@ -1,7 +1,7 @@
 from module import (
     button_modified, GLOBAL_EVENT, work, screen, music, update_display, 
     big_text, sound_scroll, procent, pygame, main_surface, conf_height,
-    conf_width, fix_import, d, log
+    conf_width, fix_import, d, log, config
 )
 import module
 from module.UI import SurfaceM
@@ -18,29 +18,29 @@ fon_obj = pygame.image.load(fix_import + "library/pictures/fon_.png").convert()
 fon = pygame.transform.scale(fon_obj, screen)
 log.info("Background image options setup complete.")
 
+_surfM_ = SurfaceM(GLOBAL_EVENT, d, size_config=procent)
+
+def quitOPTIONS():
+    global work
+    work = False
+
+def exitOPTIONS():
+    module.game_work = False
+    quitOPTIONS()
+
+def sound():
+    music.music_all(sound_menu)
+
 
 def options(x_c=(536.5), y_c=(255.5)):
     global work
     x_size = 350 * procent
     y_size = 250 * procent
 
-    surfM = SurfaceM(GLOBAL_EVENT, d, size_config=procent)
+    _surfM_.set_object(x_c * procent, y_c * procent, (x_size, y_size))
 
-    surfM.set_object(x_c * procent, y_c * procent, (x_size, y_size))
-
-    x_c = surfM.get_x_pos()
-    y_c = surfM.get_y_pos()
-
-    def quitOPTIONS():
-        global work
-        work = False
-
-    def exitOPTIONS():
-        module.game_work = False
-        quitOPTIONS()
-
-    def sound():
-        music.music_all(sound_menu)
+    x_c = _surfM_.get_x_pos()
+    y_c = _surfM_.get_y_pos()
 
     button1 = button_modified.copy()
     button1.set_object((x_c) + (23 * procent), (y_c) + 85 * procent, (300, 30))
@@ -131,7 +131,7 @@ def options(x_c=(536.5), y_c=(255.5)):
 
         # surfM.update_pos()
         # surfM.animation_resize()
-        surfM.main_work(quitOPTIONS)
+        _surfM_.main_work(quitOPTIONS)
 
         button1.Button(button_1)
         button1.get_text_self("12")

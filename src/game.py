@@ -1,6 +1,6 @@
 from module import (
-    ScrollingBG, music, config, GAME_TEXT, bg, update_display, d, 
-    pygame, height, width, BASE_FONT
+    ScrollingBG, music, config, GAME_TEXT, bg, update_display, d,
+    pygame, height, width, BASE_FONT, GLOBAL_EVENT
 )
 
 import module
@@ -40,6 +40,9 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
     bonusies = []
     enemies = []
 
+    last_score_render = -1
+    score_text_cache = BASE_FONT.render("0", True, BLACK)
+
     def clean_bon_and_en():
         """Delete all bonusies and enemies"""
         bonusies.clear()
@@ -75,51 +78,55 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
                 player = player_imgs[img_index]
 
         background()
-        d.blit(BASE_FONT.render(str(scores), True, BLACK), (d.get_width() - 30, 0))
+
+        if scores != last_score_render:
+            score_text_cache = BASE_FONT.render(str(scores), True, BLACK)
+            last_score_render = scores
+        d.blit(score_text_cache, (d.get_width() - 30, 0))
+
         d.blit(player, (player_rect))
         version_game()
 
+        enemies_to_keep = []
         for enemy in enemies:
-            enemy[1] = enemy[1].move(-enemy[2], 0)
+            enemy[1].x -= enemy[2]
             d.blit(enemy[0], enemy[1])
 
-            if enemy[1].left < -200:
-                enemies.pop(enemies.index(enemy))
+            if enemy[1].left >= -200: 
+                if player_rect.colliderect(enemy[1]):
+                    module.game_work = False
+                    music.music_pause()
+                    music.music_load(sound_menu)
+                else:
+                    enemies_to_keep.append(enemy)
+        enemies.clear()
+        enemies.extend(enemies_to_keep)
 
-            if player_rect.colliderect(enemy[1]):
-                module.game_work = False
-                music.music_pause()
-                music.music_load(sound_menu)
-
+        bonuses_to_keep = []
         for bonus in bonusies:
-            bonus[1] = bonus[1].move(-bonus[2], 2)
+            bonus[1].x -= bonus[2]
+            bonus[1].y += 2
             d.blit(bonus[0], bonus[1])
 
-            if bonus[1].bottom > (height + 300):
-                bonusies.pop(bonusies.index(bonus))
-
-            if player_rect.colliderect(bonus[1]):
-                bonusies.pop(bonusies.index(bonus))
-                scores += 1
-
-            # try:
-            #   if bonus[1].colliderect(enemy[1]):
-            #      bonusies.pop(bonusies.index(bonus))
-            #     enemies.pop(enemies.index(enemy))
-
-        # except: None
+            if bonus[1].bottom <= (height + 300):  # Keep if visible
+                if player_rect.colliderect(bonus[1]):
+                    scores += 1
+                else:
+                    bonuses_to_keep.append(bonus)
+        bonusies.clear()
+        bonusies.extend(bonuses_to_keep)
 
         if pressed_keys[K_DOWN] and not player_rect.bottom >= height:
-            player_rect = player_rect.move(0, player_speed)
+            player_rect.y += player_speed
 
         if pressed_keys[K_UP] and not player_rect.top <= 0:
-            player_rect = player_rect.move(0, -player_speed)
+            player_rect.y -= player_speed
 
         if pressed_keys[K_RIGHT] and not player_rect.right >= width:
-            player_rect = player_rect.move(player_speed, 0)
+            player_rect.x += player_speed
 
         if pressed_keys[K_LEFT] and not player_rect.left <= 0:
-            player_rect = player_rect.move(-player_speed, 0)
+            player_rect.x -= player_speed
 
         if scores >= max_score:
             if not config.check(level, invisible_cursor):

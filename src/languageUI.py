@@ -12,79 +12,81 @@ from pygame import QUIT, K_ESCAPE, KEYDOWN
 from module.game_client import set_fps, get_fps, tick_fps
 
 
+def exitLANGUAGE():
+    global work
+    work = False
+
+def update_text():
+    global language
+    standart_text.set_language(language)
+    big_text.set_language(language)
+    button_modified.set_language(language)
+
+
+_button1_ = button_modified.copy()
+_button1_.set_object((-300 * procent), (220 * procent), (300, 30))
+
+_button2_ = button_modified.copy()
+_button2_.set_object(
+    (-300 * procent),
+    (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * procent)),
+    (300, 30),
+)
+
+_button4_ = button_modified.copy()
+_button4_.set_object(
+    (-300 * procent),
+    (_button2_.get_y_pos() + _button2_.get_size_y() + (30 * procent)),
+    (300, 30),
+)
+
+def _button1_callback_():
+    global language
+    _button1_.check_config({"effect": "True"}, clicks)
+    if not _button1_.check_config({"language": "EN"}):
+        _button1_.write_in_config({"language": "EN"})
+        language = ENGLISH
+        update_text()
+
+def _button2_callback_():
+    global language
+    _button2_.check_config({"effect": "True"}, clicks)
+    if not _button2_.check_config({"language": "UA"}):
+        _button2_.write_in_config({"language": "UA"})
+        language = UKRAINIAN
+        update_text()
+        update_text()
+
+def _button_4_callback_():
+    _button4_.check_config({"effect": "True"}, return_exit)
+    exitLANGUAGE()
+
 def language_get():
     global work
     # surfM = UI.SurfaceM(e, Surface.main_surface)
-    s = 35
 
-    def update_text():
-        global language
-        standart_text.set_language(language)
-        big_text.set_language(language)
-        button_modified.set_language(language)
-
-    def exitLANGUAGE():
-        global work
-        work = False
-
-    button1 = button_modified.copy()
-    button1.set_object((-300) * procent, (220) * procent, (300, 30))
-    button1.moved(50, None, 300)
-
-    button2 = button_modified.copy()
-    button2.set_object(
-        button1.get_x_pos(),
-        (button1.get_y_pos() + button1.get_size_y() + (10 * procent)),
-        (300, 30),
-    )
-    button2.moved(50, None, 300)
-
-    button4 = button_modified.copy()
-    button4.set_object(
-        button2.get_x_pos(),
-        (button2.get_y_pos() + button2.get_size_y() + (30 * procent)),
-        (300, 30),
-    )
-    button4.moved(50, None, 300)
+    _button1_.moved(50, None, 300)
+    _button2_.moved(50, None, 300)
+    _button4_.moved(50, None, 300)
 
     def button_1():
-        def button():
-            global language
-            button1.check_config({"effect": "True"}, clicks)
-            if not button1.check_config({"language": "EN"}):
-                button1.write_in_config({"language": "EN"})
-                language = ENGLISH
-                update_text()
-
-        button1.animation()
-        button1.Button(button)
-        button1.get_text(standart_text, "English", (0, 0, 0))
+        _button1_.animation()
+        _button1_.Button(_button1_callback_)
+        _button1_.get_text(standart_text, "English", (0, 0, 0))
 
     def button_2():
-        def button():
-            global language
-            button2.check_config({"effect": "True"}, clicks)
-            if not button2.check_config({"language": "UA"}):
-                button2.write_in_config({"language": "UA"})
-                language = UKRAINIAN
-                update_text()
+        _button2_.animation()
+        _button2_.Button(_button2_callback_)
+        _button2_.get_text(standart_text, "Українська", (0, 0, 0))
 
-        button2.animation()
-        button2.Button(button)
-        button2.get_text(standart_text, "Українська", (0, 0, 0))
-
-    def button_3():
+    #def button_3():
         # surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
-        standart_text.draw_text("Русский", 75, (221 + s * 2), (0, 0, 0))
+        #standart_text.draw_text("Русский", 75, (221 * 2), (0, 0, 0))
 
     def button_4():
-        def button():
-            button4.check_config({"effect": "True"}, return_exit)
-            exitLANGUAGE()
-
-        button4.animation()
-        button4.Button(button)
-        button4.get_text(standart_text, "6")
+        _button4_.animation()
+        _button4_.Button(_button_4_callback_)
+        _button4_.get_text(standart_text, "6")
 
     set_fps(60)
 
