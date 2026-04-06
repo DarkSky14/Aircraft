@@ -12,7 +12,6 @@ from pygame import QUIT, image, transform, display, quit, event
 from level import level
 from options import options
 from languageUI import language_get
-import gc
 
 
 # Setup pygame/window -----------------------------
@@ -72,9 +71,6 @@ def _button_get():
 
 def _button_1_callback_():
     _button1_.check_config({"effect": "True"}, clicks)
-    gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
-    gc.collect()
-    print(gc.garbage)
     level()
 
 def _button_2_callback_():

@@ -1,4 +1,4 @@
-from pygame import MOUSEBUTTONDOWN, draw, surface, Rect, QUIT
+from pygame import MOUSEBUTTONDOWN, draw, surface, Rect
 
 try:
     from Text import Text, ModuleText

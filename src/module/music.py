@@ -17,62 +17,58 @@ class Sound:
 
 
 class Music:
-    def __init__(self, config, temp, address, volume: float = 0.01) -> None:
-        self.music = mixer_music
+    def __init__(self, config, address, volume: float = 0.01) -> None:
         self.volume = volume
         self.config = config
         self.adress = address
-        self.music.load(self.adress)
-        self.temp = temp
+        #self.temp = temp
         self.archive = 0
 
-    def music_stop(self, fade_ms=100):
-        self.music.fadeout(fade_ms)
-
     def music_get(self):
-        return self.music
+        """Get music object."""
+        return mixer_music
 
     def music_pause(self):
-        self.archive = (self.music.get_pos() / 1000) + self.archive
-        self.music.pause()
+        self.archive = (mixer_music.get_pos() / 1000) + self.archive
+        mixer_music.pause()
 
     def set_position(self, pos=0):
         self.archive = pos
 
     def music_unpause(self, loops=-1, fade_ms=100):
         if self.config.check({"music": "True"}):
-            self.music.set_volume(self.volume)
-            self.music.play(loops, self.archive, fade_ms)
+            mixer_music.set_volume(self.volume)
+            mixer_music.play(loops, self.archive, fade_ms)
         else:
             self.set_position()
 
     def music_load(self, address):
         self.adress = address
-        self.music.load(self.adress)
+        mixer_music.load(self.adress)
 
     def create_mus_channel(self, loops=-1, start=0, fade_ms=0):
-        self.music_load(self.adress)
-        self.music.set_volume(self.volume)
-        self.music.play(loops, start, fade_ms)
+        mixer_music.load(self.adress, self.adress)
+        mixer_music.set_volume(self.volume)
+        mixer_music.play(loops, start, fade_ms)
 
     def music_play(self):
-        self.music.play(-1, 0, 100)
+        mixer_music.play(-1, 0, 100)
 
     def music_all(self, name_track, loops=-1, start=0, fade_ms=100):
-        arg = self.temp.get_value("musicID")
+        #arg = self.temp.get_value("musicID")
 
         if self.config.check({"music": "False"}):
-            if self.music.get_busy():
-                self.music.pause()
+            if mixer_music.get_busy():
+                mixer_music.pause()
 
         else:
-            if not self.music.get_busy():
+            if not mixer_music.get_busy():
                 self.music_load(name_track)
                 self.create_mus_channel(loops, start, fade_ms)
-                self.temp.update_dict({"musicID": name_track})
+                #self.temp.update_dict({"musicID": name_track})
 
-            elif self.music.get_busy():
-                if arg != name_track:
-                    self.music_load(name_track)
-                    self.create_mus_channel(loops, start, fade_ms)
-                    self.temp.update_dict({"musicID": name_track})
+            #elif mixer_music.get_busy():
+                #if arg != name_track:
+                    #self.music_load(name_track)
+                    #self.create_mus_channel(loops, start, fade_ms)
+                    #self.temp.update_dict({"musicID": name_track})

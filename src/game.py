@@ -1,8 +1,8 @@
 from module import (
     ScrollingBG, music, config, GAME_TEXT, bg, update_display, d, log,
-    height, width, BASE_FONT, GLOBAL_EVENT, version_game, standart_curs,
+    height, width, BASE_FONT, version_game, standart_curs,
     sound_game, sound_menu, BLACK, RED, invisible_cursor, visible_cursor,
-    fix_import, procent, set_fps, get_fps, tick_fps,
+    fix_import, procent, set_fps, get_fps, tick_fps, GLOBAL_EVENT
 )
 
 import module
@@ -70,6 +70,7 @@ def sourse(
         ENEMY_TIMER = 3500
     ):
     global game_work, work, player, player_rect, player_imgs, player_speed
+    global GLOBAL_EVENT
 
     fon_background = ScrollingBG(bg, _bg_speed_)
 

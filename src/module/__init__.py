@@ -1,12 +1,6 @@
 __version__ = "0.2.8-b"
 __author__ = "Chinho"
 
-def get_version():
-    return __version__
-
-def get_author():
-    return __author__
-
 from pygame import init, font, display, mouse, transform, image, time
 
 from module.correct_start import fix_import
@@ -36,6 +30,13 @@ except ImportError:
 
     from module.Text import Text, ModuleText
     from module.UI import ModuleButton
+
+
+def get_version():
+    return __version__
+
+def get_author():
+    return __author__
 
 
 init()
@@ -158,8 +159,8 @@ config = JsonWorker(
 )
 config.reader()
 
-temp = JsonWorker("temp", "none", {"musicID": "None"})
-log.debug({"INITIALIAZE_TEMP": temp.get_data()})
+#temp = JsonWorker("temp", "none", {"musicID": "None"})
+#log.debug({"INITIALIAZE_TEMP": temp.get_data()})
 
 
 GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
@@ -218,7 +219,7 @@ def update_display():
     display.update(conf_width, conf_height, width, height)
 
 
-music = Music(config, temp, sound_menu, 0.1)
+music = Music(config, sound_menu, 0.1)
 music.music_all(sound_menu)
 
 
