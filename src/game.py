@@ -1,33 +1,77 @@
 from module import (
-    ScrollingBG, music, config, GAME_TEXT, bg, update_display, d,
-    pygame, height, width, BASE_FONT, GLOBAL_EVENT
+    ScrollingBG, music, config, GAME_TEXT, bg, update_display, d, log,
+    height, width, BASE_FONT, GLOBAL_EVENT, version_game, standart_curs,
+    sound_game, sound_menu, BLACK, RED, invisible_cursor, visible_cursor,
+    fix_import, procent, set_fps, get_fps, tick_fps,
 )
 
 import module
 
-from module.menu_client import version_game, standart_curs
-
-
-from pygame import QUIT, K_DOWN, K_UP, K_RIGHT, K_LEFT, K_ESCAPE, KEYDOWN
-
-from module.menu_client import (
-    sound_game, sound_menu, bg_speed1, BLACK, RED,
-    invisible_cursor, visible_cursor,
-)
-from module.game_client import (
-    set_fps, CREATE_BONUS, CHANGE_IMG, create_bonus, create_enemy,
-    get_fps, tick_fps,
+from pygame import (
+    QUIT, K_DOWN, K_UP, K_RIGHT, K_LEFT, K_ESCAPE, KEYDOWN, event, key,
+    USEREVENT, time, image, transform, Rect
 )
 
 from options import options
+from random import randint
+from os import listdir
+
+_bg_speed_ = 2
+
+IMGS_PATH = fix_import + "library/player"
+
+log.info("Start load player images...")
+player_img = [
+    image.load(IMGS_PATH + "/" + file).convert_alpha()
+    for file in listdir(IMGS_PATH)
+]
+player_imgs = [
+    transform.scale(
+        player_img,
+        ((player_img.get_width() * procent), (player_img.get_height() * procent)),
+    )
+    for player_img in player_img
+]
+log.info("Player images successfully load.")
+player = player_imgs[0]
+player_rect = player.get_rect()
+player_speed = 2
 
 
-def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
-    global game_work, work
-    from module.game_client import player_imgs, player_speed
-    from module.game_client import player, player_rect
+log.info("Start load enemy image...")
+_enemy_png = image.load(fix_import + "library/pictures/enemy.png")
+_enemy = transform.scale(
+    _enemy_png, ((_enemy_png.get_width() * procent), (_enemy_png.get_height() * procent))
+)
+def _create_enemy(speed_w1, speed_w2):
+    global _enemy
+    enemy_rect = Rect(width, randint(0, int(height)), *_enemy.get_size())
+    enemy_speed = randint(speed_w1, speed_w2)
+    return [_enemy, enemy_rect, enemy_speed]
+log.info("Enemy image successfully loaded.")
 
-    fon_background = ScrollingBG(bg, bg_speed1)
+
+log.info("Start load bonus image...")
+_bonus_jpg = image.load(fix_import + "library/pictures/bonus.jpg ")
+_bonus = transform.scale(
+    _bonus_jpg, ((_bonus_jpg.get_width() * procent), (_bonus_jpg.get_height() * procent))
+)
+def _create_bonus():
+    global _bonus
+    bonus_rect = Rect(randint(0, int(width)), -1000, *_bonus.get_size())
+    bonus_speed = 0
+    return [_bonus, bonus_rect, bonus_speed]
+log.info("Bonus image successfully loaded.")
+
+
+def sourse(
+        speed_w1, speed_w2, ENEMY, max_score, level={str: int}, 
+        CHANGE_IMG = (USEREVENT + 3), CREATE_BONUS = (USEREVENT + 1),
+        ENEMY_TIMER = 3500
+    ):
+    global game_work, work, player, player_rect, player_imgs, player_speed
+
+    fon_background = ScrollingBG(bg, _bg_speed_)
 
     def background():
         fon_background.update()
@@ -43,6 +87,10 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
     last_score_render = -1
     score_text_cache = BASE_FONT.render("0", True, BLACK)
 
+    time.set_timer(ENEMY, ENEMY_TIMER)
+    time.set_timer(CHANGE_IMG, 125)
+    time.set_timer(CREATE_BONUS, 2500)
+
     def clean_bon_and_en():
         """Delete all bonusies and enemies"""
         bonusies.clear()
@@ -52,26 +100,26 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
     module.game_work = True
 
     while module.game_work:
-        pressed_keys = pygame.key.get_pressed()
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
+        pressed_keys = key.get_pressed()
+        for event_ in event.get():
+            if event_.type == QUIT:
+                quit()
                 exit()
-            if event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
+            if event_.type == KEYDOWN:
+                if event_.key == K_ESCAPE:
                     check_first_while = 0
                     music.music_pause()
                     music.music_load(sound_menu)
                     work = True
                     options()
 
-            if event.type == CREATE_BONUS:
-                bonusies.append(create_bonus())
+            if event_.type == CREATE_BONUS:
+                bonusies.append(_create_bonus())
 
-            if event.type == ENEMY:
-                enemies.append(create_enemy(speed_w1, speed_w2))
+            if event_.type == ENEMY:
+                enemies.append(_create_enemy(speed_w1, speed_w2))
 
-            if event.type == CHANGE_IMG:
+            if event_.type == CHANGE_IMG:
                 img_index += 1
                 if img_index == len(player_imgs):
                     img_index = 0
@@ -79,13 +127,7 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
 
         background()
 
-        if scores != last_score_render:
-            score_text_cache = BASE_FONT.render(str(scores), True, BLACK)
-            last_score_render = scores
-        d.blit(score_text_cache, (d.get_width() - 30, 0))
-
         d.blit(player, (player_rect))
-        version_game()
 
         enemies_to_keep = []
         for enemy in enemies:
@@ -134,12 +176,18 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
             module.game_work = False
 
         if check_first_while == 0 and module.game_work:
-            check_first_while = +1
+            check_first_while =+ 1
 
             invisible_cursor()
             music.music_load(sound_game)
             music.music_unpause()
 
+        if scores != last_score_render:
+            score_text_cache = BASE_FONT.render(str(scores), True, BLACK)
+            last_score_render = scores
+
+        d.blit(score_text_cache, (d.get_width() - 30, 0))
+        version_game()
         get_fps(GAME_TEXT, RED, (10, 10))
         tick_fps()
         update_display()
@@ -153,6 +201,4 @@ def sourse(speed_w1, speed_w2, ENEMY, max_score, level={str: int}):
 
 
 if __name__ == "__main__":
-    from module.game_client import sw1, sh1, CREATE_ENEMY1, max_score1
-
-    sourse(sw1, sh1, CREATE_ENEMY1, max_score1, {"level": 2})
+    sourse(1, 3, USEREVENT + 2, 30, {"level": 2})

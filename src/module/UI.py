@@ -1,7 +1,4 @@
-from pygame import MOUSEBUTTONDOWN
-import pygame.draw
-import pygame.surface
-
+from pygame import MOUSEBUTTONDOWN, draw, surface, Rect, QUIT
 
 try:
     from Text import Text, ModuleText
@@ -13,29 +10,29 @@ except ImportError:
 
 class MyDrawObject:  # Correct
     def __init__(
-        self, left: float, top: float, size: tuple, surface: pygame.surface.Surface
+        self, left: float, top: float, size: tuple, surface: surface.Surface
     ) -> None:
         self.top = top
         self.left = left
         self.size = size
         self.surface = surface
-        self.rect = pygame.Rect((self.left, self.top), self.size)
+        self.rect = Rect((self.left, self.top), self.size)
 
     def draw_object(
         self, color: tuple, border: int = 0, border_radius: int = 0, radius: int = 50
-    ) -> pygame.Rect:
-        return pygame.draw.rect(
+    ) -> Rect:
+        return draw.rect(
             self.surface, color, self.rect, border, border_radius, 
             radius, radius, radius, radius,
         )
 
-    def get_rect(self) -> pygame.Rect:
+    def get_rect(self) -> Rect:
         return self.rect
 
 
 class Button(AnimationMove):
     def __init__(
-        self, event, surface: pygame.surface.Surface, size_config: int | float = 0
+        self, event, surface: surface.Surface, size_config: int | float = 0
     ):
         self.event = event
         self.surface = surface
@@ -85,7 +82,7 @@ class Button(AnimationMove):
 
 class ModuleButton(Button, ModuleText):
     def __init__(
-        self, event, surface: pygame.surface.Surface, config,
+        self, event, surface: surface.Surface, config,
         class_text: Text, size_config: int | float = 0,
     ):
         Button.__init__(self, event, surface, size_config)
@@ -131,7 +128,7 @@ class ModuleButton(Button, ModuleText):
 
 class SurfaceM(Button):
     def __init__(
-        self, event, surface: pygame.surface.Surface, x_move=0,
+        self, event, surface: surface.Surface, x_move=0,
         y_move=0, size_config: float = 0,
     ):
         self.x_move = x_move

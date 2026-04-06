@@ -3,37 +3,31 @@ from sys import exit
 from module import (
     button_modified, standart_text, GLOBAL_EVENT, background, work,
     update_display, big_text, sound_scroll, log, fix_import,
-    procent, height, screen
+    procent, height, screen, version_game, clicks, return_exit, 
+    standart_curs, click_cursor, set_fps, get_fps, tick_fps,
 )
 
-import pygame
-
-from pygame import QUIT
-
-from module.menu_client import (
-    clicks, return_exit, version_game, standart_curs, click_cursor,
-)
-
-from module.game_client import set_fps, get_fps, tick_fps
+from pygame import QUIT, image, transform, display, quit, event
 
 from level import level
 from options import options
 from languageUI import language_get
+import gc
 
 
 # Setup pygame/window -----------------------------
 log.info("Setup icon window...")
-icon_obj = pygame.image.load(fix_import + "library/Aircraft.ico").convert()
-icon = pygame.transform.scale(icon_obj, screen)
+icon_obj = image.load(fix_import + "library/Aircraft.ico").convert()
+icon = transform.scale(icon_obj, screen)
 log.info("Icon window setup complete.")
 log.info("Setup background image options...")
 
-pygame.display.set_caption("Aircraft", "Aircraft")
-pygame.display.set_icon(icon)
+display.set_caption("Aircraft", "Aircraft")
+display.set_icon(icon)
 
 def exitGame():
     log.info("Successful stop.")
-    pygame.quit()
+    quit()
     exit()
 
 
@@ -78,6 +72,9 @@ def _button_get():
 
 def _button_1_callback_():
     _button1_.check_config({"effect": "True"}, clicks)
+    gc.set_debug(gc.DEBUG_UNCOLLECTABLE)
+    gc.collect()
+    print(gc.garbage)
     level()
 
 def _button_2_callback_():
@@ -120,11 +117,11 @@ def main_menu():
         _button4_.get_text(standart_text, "6")
 
     def initialize():
-        for event in pygame.event.get():
-            GLOBAL_EVENT.event = event
+        for event_ in event.get():
+            GLOBAL_EVENT.event = event_
 
             if GLOBAL_EVENT.comparison_type(QUIT):
-                pygame.quit()
+                quit()
                 exit()
 
             GLOBAL_EVENT.mouse_get()

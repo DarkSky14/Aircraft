@@ -1,15 +1,11 @@
 from module import (
     button_modified, standart_text, GLOBAL_EVENT, background, work,
     update_display, big_text, sound_scroll, procent, height, ENGLISH,
-    UKRAINIAN, config, pygame,
+    UKRAINIAN, config, clicks, return_exit, version_game, standart_curs, 
+    click_cursor, set_fps, get_fps, tick_fps,
 )
 
-from module.menu_client import (
-    clicks, return_exit, version_game, standart_curs, click_cursor,
-)
-
-from pygame import QUIT, K_ESCAPE, KEYDOWN
-from module.game_client import set_fps, get_fps, tick_fps
+from pygame import QUIT, K_ESCAPE, KEYDOWN, event, quit
 
 
 def exitLANGUAGE():
@@ -91,10 +87,10 @@ def language_get():
     set_fps(60)
 
     def initialiaze():
-        for event in pygame.event.get():
-            GLOBAL_EVENT.event = event
+        for event_ in event.get():
+            GLOBAL_EVENT.event = event_
             if GLOBAL_EVENT.event.type == QUIT:
-                pygame.quit()
+                quit()
                 exit()
 
             GLOBAL_EVENT.mouse_get()

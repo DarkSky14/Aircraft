@@ -1,5 +1,4 @@
-import pygame.font
-
+from pygame import font, Surface
 
 class Font:
     def __init__(self) -> None:
@@ -7,24 +6,24 @@ class Font:
 
     def create_font(
         self, name_font, size_font, bold=False, italic=False
-    ) -> pygame.font.Font:
+    ) -> font.Font:
         self._name_font = name_font
         self._size_font = size_font
         self.bold = bold
         self.italic = italic
-        self.font = pygame.font.SysFont(
+        self.font = font.SysFont(
             self._name_font, self._size_font, self.bold, self.italic
         )
         return self.font
 
-    def set_font(self, new_font: pygame.font.Font):
+    def set_font(self, new_font: font.Font):
         self.font = new_font
 
     def set_size_font(self, new_size):
         self._size_font = new_size
 
     def update_font(self):
-        self.font = pygame.font.SysFont(
+        self.font = font.SysFont(
             self._name_font, self._size_font, self.bold, self.italic
         )
 
@@ -35,9 +34,9 @@ class Font:
 class Text(Font):  # Correct
     def __init__(
         self,
-        font: pygame.font.Font,
+        font: font.Font,
         lang: dict,
-        surface: pygame.Surface,
+        surface: Surface,
         config,
         color: tuple = (0, 0, 0),
     ):
@@ -49,7 +48,7 @@ class Text(Font):  # Correct
 
     def draw_text_full_topleft(
         self,
-        font: pygame.font.Font,
+        font: font.Font,
         text,
         x,
         y,
@@ -84,7 +83,7 @@ class Text(Font):  # Correct
     def set_language(self, new_language: dict):
         self.lang = new_language
 
-    def set_surface(self, surface: pygame.Surface):
+    def set_surface(self, surface: Surface):
         self.surface = surface
 
     def copy(self):
