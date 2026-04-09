@@ -1,4 +1,4 @@
-from pygame import MOUSEBUTTONDOWN, event, time, mouse
+from pygame import event, time, mouse, MOUSEBUTTONDOWN
 
 
 class EventControl:
@@ -13,17 +13,19 @@ class EventControl:
         self.wait_button = 0
         self.config_width = config_width
         self.config_height = config_height
+        self.mx, self.my = 0, 0
+        self.event = event.Event
 
     def event_pool(self):
-        for eventpool in event.get():
-            self.event = eventpool
+        for eventful in event.get():
+            self.event = eventful
 
     def mouse_get(self):
         self.mx, self.my = mouse.get_pos()
         self.mx -= self.config_width
         self.my -= self.config_height
 
-    def MOUSEBUTTONDOWN(self):
+    def mouse_button_down(self):
         self.set_click(False)
         if self.comparison_type(MOUSEBUTTONDOWN) and self.choose_button == 1:
             self.set_choose_button(0)
@@ -32,17 +34,17 @@ class EventControl:
                 self._last_click_time = now
                 self.set_click(True)
 
-    def event_button_check(self, standart, nostandart, sound_and_func):
+    def event_button_check(self, base_mouse, nonbase_mouse, sound_and_func):
         if self.fake_choose_button == 1 and self.wait_button == 1:
             self.fake_choose_button = 0
         elif self.fake_choose_button == 1:
             self.wait_button = 1
             self.fake_choose_button = 0
-            nostandart()
+            nonbase_mouse()
             sound_and_func()
         else:
             self.wait_button = 0
-            standart()
+            base_mouse()
 
     def set_click(self, click: bool):
         self.click = click

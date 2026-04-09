@@ -3,13 +3,12 @@ __author__ = "Chinho"
 
 from pygame import init, font, display, mouse, transform, image, time
 
-from module.correct_start import fix_import
-
 try:
+    from correct_start import fix_import
     from logged import log
     from music import Music, Sound
 
-    from language import LanguageCreater, LanguageSetter
+    from language import LanguageCreated, LanguageSetter
     from FileWorker import JsonReader, JsonWorker
 
     from Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
@@ -19,10 +18,11 @@ try:
     from UI import ModuleButton
 
 except ImportError:
+    from module.correct_start import fix_import
     from module.logged import log
     from module.music import Music, Sound
 
-    from module.language import LanguageCreater, LanguageSetter
+    from module.language import LanguageCreated, LanguageSetter
     from module.FileWorker import JsonReader, JsonWorker
 
     from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
@@ -53,10 +53,6 @@ COLOR_CASE = {
     "GREEN": (0, 255, 0),
     "LIME": (100, 250, 100),
 }
-
-game_work = True
-work = True
-
 
 click_open_2 = fix_import + "library/effect/click_open2.mp3"
 click_open_1 = fix_import + "library/effect/click_open1.mp3"
@@ -159,18 +155,15 @@ config = JsonWorker(
 )
 config.reader()
 
-#temp = JsonWorker("temp", "none", {"musicID": "None"})
-#log.debug({"INITIALIAZE_TEMP": temp.get_data()})
-
 
 GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
 
-ENG = LanguageCreater("EN", fix_import + "library/language", "english.json")
+ENG = LanguageCreated("EN", fix_import + "library/language", "english.json")
 ENG.set_lang(JsonReader)
 ENGLISH = ENG.get_lang()
 
-UKR = LanguageCreater("UA", fix_import + "library/language", "ukrainian.json")
+UKR = LanguageCreated("UA", fix_import + "library/language", "ukrainian.json")
 UKR.set_lang(JsonReader)
 UKRAINIAN = UKR.get_lang()
 
@@ -197,18 +190,8 @@ standart_text.create_font("Georgia", round(21 * procent))
 button_modified = ModuleButton(GLOBAL_EVENT, d, config, standart_text, procent)
 
 
-def on_music() -> bool:
-    if config.check({"effect": "True"}):
-        return True
-    else:
-        return False
-
-
-is_music = on_music()
-
-
 def sound_scroll():
-    if is_music:
+    if config.check({"effect": "True"}):
         scroll()
 
 
@@ -235,11 +218,11 @@ def version_game():
     )
 
 def get_fps(
-    font: font.Font = BASE_FONT,
+    font_text: font.Font = BASE_FONT,
     color: tuple = (200, 200, 200),
     coordinate: tuple = (3, 3),
 ):
-    main_surface_fps = font.render(str(int(FPS.get_fps())), True, (color))
-    rect_obgect = main_surface_fps.get_rect()
-    rect_obgect.topleft = coordinate
-    d.blit(main_surface_fps, rect_obgect)
+    main_surface_fps = font_text.render(str(int(FPS.get_fps())), True, color)
+    rect_object = main_surface_fps.get_rect()
+    rect_object.topleft = coordinate
+    d.blit(main_surface_fps, rect_object)

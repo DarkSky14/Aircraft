@@ -1,7 +1,7 @@
 import logging
 from os import makedirs
 from time import strftime
-from module.correct_start import fix_import
+from module import fix_import
 
 path_log = fix_import + "library/Logs"
 

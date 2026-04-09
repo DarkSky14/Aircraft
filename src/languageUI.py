@@ -1,16 +1,17 @@
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    button_modified, standart_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, ENGLISH,
     UKRAINIAN, config, clicks, return_exit, version_game, standart_curs, 
-    click_cursor, set_fps, get_fps, tick_fps,
+    click_cursor, set_fps, get_fps, tick_fps, language
 )
 
 from pygame import QUIT, K_ESCAPE, KEYDOWN, event, quit
 
+_work = True
 
-def exitLANGUAGE():
-    global work
-    work = False
+def exit_language():
+    global _work
+    _work = False
 
 def update_text():
     global language
@@ -55,11 +56,13 @@ def _button2_callback_():
 
 def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, return_exit)
-    exitLANGUAGE()
+    exit_language()
+
 
 def language_get():
-    global work
-    # surfM = UI.SurfaceM(e, Surface.main_surface)
+    global _work
+
+    # surf_m = UI.SurfaceM(e, Surface.main_surface)
 
     _button1_.moved(50, None, 300)
     _button2_.moved(50, None, 300)
@@ -86,23 +89,21 @@ def language_get():
 
     set_fps(60)
 
-    def initialiaze():
+    def initialize():
         for event_ in event.get():
             GLOBAL_EVENT.event = event_
             if GLOBAL_EVENT.event.type == QUIT:
                 quit()
                 exit()
 
-            GLOBAL_EVENT.mouse_get()
-            GLOBAL_EVENT.MOUSEBUTTONDOWN()
-
             if GLOBAL_EVENT.comparison_type(KEYDOWN) and GLOBAL_EVENT.comparison_key(
                 K_ESCAPE
             ):
                 config.check({"effect": "True"}, return_exit)
                 GLOBAL_EVENT.set_key(0)
-                exitLANGUAGE()
+                exit_language()
 
+        GLOBAL_EVENT.mouse_get()
         background()
 
         button_1()
@@ -110,7 +111,7 @@ def language_get():
         button_4()
 
         version_game()
-        GLOBAL_EVENT.MOUSEBUTTONDOWN()
+        GLOBAL_EVENT.mouse_button_down()
         GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
         big_text.get_set_text("2", 70 * procent, 150 * procent)
 
@@ -118,10 +119,10 @@ def language_get():
         tick_fps()
         update_display()
 
-    while work:
-        initialiaze()
+    while _work:
+        initialize()
 
-    work = True
+    _work = True
 
 
 if __name__ == "__main__":

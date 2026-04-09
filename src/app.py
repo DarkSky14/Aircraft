@@ -1,18 +1,16 @@
 from sys import exit
 
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    button_modified, standart_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, log, fix_import,
-    procent, height, screen, version_game, clicks, return_exit, 
+    procent, height, screen, version_game, clicks, return_exit,
     standart_curs, click_cursor, set_fps, get_fps, tick_fps,
 )
 
 from pygame import QUIT, image, transform, display, quit, event
-
-from level import level
 from options import options
 from languageUI import language_get
-
+from level import level
 
 # Setup pygame/window -----------------------------
 log.info("Setup icon window...")
@@ -24,11 +22,10 @@ log.info("Setup background image options...")
 display.set_caption("Aircraft", "Aircraft")
 display.set_icon(icon)
 
-def exitGame():
+def exit_game():
     log.info("Successful stop.")
     quit()
     exit()
-
 
 _button1_ = button_modified.copy()
 _button1_.set_object((-300 * procent), (220 * procent), (300, 30))
@@ -83,12 +80,13 @@ def _button_3_callback_():
 
 def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, return_exit)
-    exitGame()
+    exit_game()
 
 _button_get()
 
+
 def main_menu():
-    global work
+    work = True
 
     set_fps(60)
 
@@ -121,7 +119,7 @@ def main_menu():
                 exit()
 
             GLOBAL_EVENT.mouse_get()
-            GLOBAL_EVENT.MOUSEBUTTONDOWN()
+            GLOBAL_EVENT.mouse_button_down()
 
         background()
 
@@ -140,8 +138,6 @@ def main_menu():
 
     while work:
         initialize()
-
-    work = True
 
 
 if __name__ == "__main__":

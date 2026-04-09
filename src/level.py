@@ -1,16 +1,18 @@
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    button_modified, standart_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, config,
     clicks, return_exit, version_game, standart_curs, click_cursor,
     set_fps, get_fps, tick_fps,
 )
 
-from game import sourse
+from game import source
 from pygame import QUIT, K_ESCAPE, KEYDOWN, quit, event, USEREVENT
 
-def exitLEVEL():
-    global work
-    work = False
+_work = True
+
+def exit_level():
+    global _work
+    _work = False
 
 _button1_ = button_modified.copy()
 _button1_.set_object((-300 * procent), (220 * procent), (300, 30))
@@ -38,73 +40,71 @@ _button4_.set_object(
 
 def _button1_callback_():
     _button1_.check_config({"effect": "True"}, clicks)
-    sourse(1, 3, USEREVENT + 2, 30, {"level": 2})
+    source(1, 3, USEREVENT + 2, 30, {"level": 2})
     set_fps(60)
 
 def _button_2_callback_():
     _button2_.check_config({"effect": "True"}, clicks)
     if config.get_value("level") >= 2:
-        sourse(2, 5, USEREVENT + 3, 300, {"level": 3}, ENEMY_TIMER= 3000)
+        source(2, 5, USEREVENT + 3, 300, {"level": 3}, enemy_timer_spawn= 3000)
         set_fps(60)
 
 def _button_3_callback_():
     _button3_.check_config({"effect": "True"}, clicks)
     if config.get_value("level") >= 3:
-        sourse(3, 7, USEREVENT + 4, 1500, {"level": 3.1}, ENEMY_TIMER= 2000)
+        source(3, 7, USEREVENT + 4, 1500, {"level": 3.1}, enemy_timer_spawn= 2000)
         set_fps(60)
 
 def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, return_exit)
-    exitLEVEL()
+    exit_level()
+
+def button_1():
+    _button1_.animation()
+    _button1_.Button(_button1_callback_)
+    _button1_.get_text(standart_text, "3")
+
+def button_2():
+    _button2_.animation()
+    _button2_.Button(_button_2_callback_)
+    _button2_.get_text(standart_text, "4")
+
+def button_3():
+    _button3_.animation()
+    _button3_.Button(_button_3_callback_)
+    _button3_.get_text(standart_text, "5")
+
+def button_4():
+    _button4_.animation()
+    _button4_.Button(_button_4_callback_)
+    _button4_.get_text(standart_text, "6")
 
 
 def level():
-    global work
+    global _work
 
     _button1_.moved(50, None, 300)
     _button2_.moved(50, None, 300)
     _button3_.moved(50, None, 300)
     _button4_.moved(50, None, 300)
 
-    def button_1():
-        _button1_.animation()
-        _button1_.Button(_button1_callback_)
-        _button1_.get_text(standart_text, "3")
-
-    def button_2():
-        _button2_.animation()
-        _button2_.Button(_button_2_callback_)
-        _button2_.get_text(standart_text, "4")
-
-    def button_3():
-        _button3_.animation()
-        _button3_.Button(_button_3_callback_)
-        _button3_.get_text(standart_text, "5")
-
-    def button_4():
-        _button4_.animation()
-        _button4_.Button(_button_4_callback_)
-        _button4_.get_text(standart_text, "6")
-
     set_fps(60)
 
-    def initialiaze():
+    def initialize():
         for event_ in event.get():
             GLOBAL_EVENT.event = event_
             if GLOBAL_EVENT.event.type == QUIT:
                 quit()
                 exit()
 
-            GLOBAL_EVENT.mouse_get()
-            GLOBAL_EVENT.MOUSEBUTTONDOWN()
-
             if GLOBAL_EVENT.comparison_type(KEYDOWN) and GLOBAL_EVENT.comparison_key(
                 K_ESCAPE
             ):
                 config.check({"effect": "True"}, return_exit)
                 GLOBAL_EVENT.set_key(0)
-                exitLEVEL()
+                exit_level()
 
+        GLOBAL_EVENT.mouse_get()
         background()
 
         button_1()
@@ -113,7 +113,7 @@ def level():
         button_4()
 
         version_game()
-        GLOBAL_EVENT.MOUSEBUTTONDOWN()
+        GLOBAL_EVENT.mouse_button_down()
         GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
         big_text.get_set_text("11", 70 * procent, 150 * procent)
 
@@ -121,10 +121,10 @@ def level():
         tick_fps()
         update_display()
 
-    while work:
-        initialiaze()
+    while _work:
+        initialize()
 
-    work = True
+    _work = True
 
 
 if __name__ == "__main__":

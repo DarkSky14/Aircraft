@@ -26,8 +26,8 @@ class Lib:
     def get_file(self):
         return self._file
 
-    def get_value(self, argID: str):
-        return dict.get(self._data, argID)
+    def get_value(self, arg_id: str):
+        return dict.get(self._data, arg_id)
 
     def update_name(self, new_name: str):
         self._name = new_name
@@ -50,8 +50,8 @@ class _DLib(Lib):
         self._dict = data
         self._file = file
 
-    def get_value(self, argID: str):
-        return dict.get(self._dict, argID, 0)
+    def get_value(self, arg_id: str):
+        return dict.get(self._dict, arg_id, 0)
 
     def update_dict(self, new_dict: dict):
         self._dict.update(new_dict)
@@ -106,13 +106,13 @@ class JsonWorker(JsonReader, JsonWriter, _DLib):
         _DLib.__init__(self, name, url, data, file)
 
     def check(self, args: dict, script=None):
-        ifel = CheckedDict.check(self.get_data(), args)
-        if ifel:
+        checker = CheckedDict.check(self.get_data(), args)
+        if checker:
             if script is not None:
                 script()  # type: ignore
             return True
 
-        elif not ifel:
+        elif not checker:
             return False
         else:
             log.error("Undefined error...", {self.get_data(): args}, stack_info=True)
@@ -123,9 +123,9 @@ class JsonWorker(JsonReader, JsonWriter, _DLib):
             self.read(encoding)
             log.info({f"Load {self.get_name()}": self.get_data()})
 
-        except FileNotFoundError as fnfe:
+        except FileNotFoundError:
             log.exception(
-                {f"File {self.get_file()} not found, creating new file...": fnfe},
+                f"File {self.get_file()} not found, creating new file...",
                 stack_info=True,
             )
             self.writer(self._dict)
