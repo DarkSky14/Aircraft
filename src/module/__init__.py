@@ -54,10 +54,6 @@ COLOR_CASE = {
     "LIME": (100, 250, 100),
 }
 
-game_work = True
-work = True
-
-
 click_open_2 = fix_import + "library/effect/click_open2.mp3"
 click_open_1 = fix_import + "library/effect/click_open1.mp3"
 click_exit = fix_import + "library/effect/click_exit1.mp3"
@@ -159,9 +155,6 @@ config = JsonWorker(
 )
 config.reader()
 
-#temp = JsonWorker("temp", "none", {"musicID": "None"})
-#log.debug({"INITIALIAZE_TEMP": temp.get_data()})
-
 
 GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
@@ -197,18 +190,8 @@ standart_text.create_font("Georgia", round(21 * procent))
 button_modified = ModuleButton(GLOBAL_EVENT, d, config, standart_text, procent)
 
 
-def on_music() -> bool:
-    if config.check({"effect": "True"}):
-        return True
-    else:
-        return False
-
-
-is_music = on_music()
-
-
 def sound_scroll():
-    if is_music:
+    if config.check({"effect": "True"}):
         scroll()
 
 

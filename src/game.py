@@ -5,8 +5,6 @@ from module import (
     fix_import, procent, set_fps, get_fps, tick_fps, GLOBAL_EVENT
 )
 
-import module
-
 from pygame import (
     QUIT, K_DOWN, K_UP, K_RIGHT, K_LEFT, K_ESCAPE, KEYDOWN, event, key,
     USEREVENT, time, image, transform, Rect
@@ -98,9 +96,9 @@ def sourse(
         enemies.clear()
 
     check_first_while = 0
-    module.game_work = True
+    game_work = True
 
-    while module.game_work:
+    while game_work:
         pressed_keys = key.get_pressed()
         for event_ in event.get():
             if event_.type == QUIT:
@@ -112,7 +110,7 @@ def sourse(
                     music.music_pause()
                     music.music_load(sound_menu)
                     work = True
-                    options()
+                    game_work = options()
 
             if event_.type == CREATE_BONUS:
                 bonusies.append(_create_bonus())
@@ -137,7 +135,7 @@ def sourse(
 
             if enemy[1].left >= -200: 
                 if player_rect.colliderect(enemy[1]):
-                    module.game_work = False
+                    game_work = False
                     music.music_pause()
                     music.music_load(sound_menu)
                 else:
@@ -174,9 +172,9 @@ def sourse(
         if scores >= max_score:
             if not config.check(level, invisible_cursor):
                 config.write(level)
-            module.game_work = False
+            game_work = False
 
-        if check_first_while == 0 and module.game_work:
+        if check_first_while == 0 and game_work:
             check_first_while =+ 1
 
             invisible_cursor()
@@ -193,7 +191,6 @@ def sourse(
         tick_fps()
         update_display()
 
-    module.game_work = True
     clean_bon_and_en()
     music.set_position()
     music.music_all(sound_menu)

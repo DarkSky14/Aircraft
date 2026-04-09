@@ -1,5 +1,5 @@
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    button_modified, standart_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, config,
     clicks, return_exit, version_game, standart_curs, click_cursor,
     set_fps, get_fps, tick_fps,
@@ -60,6 +60,7 @@ def _button_4_callback_():
 
 def level():
     global work
+    work = True
 
     _button1_.moved(50, None, 300)
     _button2_.moved(50, None, 300)

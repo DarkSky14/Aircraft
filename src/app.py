@@ -1,7 +1,7 @@
 from sys import exit
 
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    button_modified, standart_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, log, fix_import,
     procent, height, screen, version_game, clicks, return_exit, 
     standart_curs, click_cursor, set_fps, get_fps, tick_fps,
@@ -87,8 +87,10 @@ def _button_4_callback_():
 
 _button_get()
 
+
 def main_menu():
     global work
+    work = True
 
     set_fps(60)
 

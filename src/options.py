@@ -1,11 +1,11 @@
 from module import (
-    button_modified, GLOBAL_EVENT, work, screen, music, update_display, 
+    button_modified, GLOBAL_EVENT, screen, music, update_display, 
     big_text, sound_scroll, procent, main_surface, conf_height,
     conf_width, fix_import, d, log, sound_menu, clicks, 
     return_exit, version_game, visible_cursor, standart_curs, 
     click_cursor, set_fps, tick_fps
 )
-import module
+
 from module.UI import SurfaceM
 
 from pygame import QUIT, K_ESCAPE, KEYDOWN, image, transform, event, quit
@@ -21,7 +21,8 @@ def quitOPTIONS():
     work = False
 
 def exitOPTIONS():
-    module.game_work = False
+    global runner
+    runner = False
     quitOPTIONS()
 
 def sound():
@@ -59,18 +60,15 @@ _button3_.set_object(
 def _button1_callback():
     if _button1_.check_config({"effect": "True"}, clicks):
         _button1_.write_in_config({"effect": "False"})
-        module.is_music = False
 
     elif _button1_.check_config({"effect": "False"}):
         _button1_.write_in_config({"effect": "True"})
-        module.is_music = True
 
     else:
         _button1_.write_in_config({"effect": "True"})
         log.error(
             "Error in config file, missing 'effect' key. Default value 'True' was set."
         )
-        module.is_music = True
 
     _button1_.text_change({"effect": "True"}, "8", "9")
 
@@ -98,8 +96,12 @@ def _button3_callback():
         _button3_.check_config({"effect": "True"}, return_exit)
         exitOPTIONS()
 
+
 def options(x_t=(536.5), y_t=(255.5)):
-    global work, _x_coord, y_coord, x_c, y_c
+    global _x_coord, y_coord, x_c, y_c, runner, work
+    work = True
+    runner = True
+    
     if x_t != _x_coord and y_t != y_coord:
         _x_coord, y_coord = x_t, y_t
 
@@ -173,7 +175,12 @@ def options(x_t=(536.5), y_t=(255.5)):
 
         initialize()
 
-    work = True
+    else:
+        work = True
+        if not runner:
+            runner = True
+            return False
+        return True
 
 
 if __name__ == "__main__":

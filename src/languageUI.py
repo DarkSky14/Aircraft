@@ -1,5 +1,5 @@
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
+    button_modified, standart_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, ENGLISH,
     UKRAINIAN, config, clicks, return_exit, version_game, standart_curs, 
     click_cursor, set_fps, get_fps, tick_fps,
@@ -57,8 +57,10 @@ def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, return_exit)
     exitLANGUAGE()
 
+
 def language_get():
     global work
+    work = True
     # surfM = UI.SurfaceM(e, Surface.main_surface)
 
     _button1_.moved(50, None, 300)
