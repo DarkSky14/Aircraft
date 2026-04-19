@@ -105,6 +105,7 @@ def level():
                 exit_level()
 
         GLOBAL_EVENT.mouse_get()
+        GLOBAL_EVENT.mouse_button_down()
         background()
 
         button_1()

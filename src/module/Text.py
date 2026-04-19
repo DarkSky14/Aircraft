@@ -46,21 +46,6 @@ class Text(Font):  # Correct
         self.config = config
         self.color = color
 
-    def draw_text_full_topleft(
-        self,
-        font: font.Font,
-        text,
-        x,
-        y,
-        antialias=True,
-        color: tuple = (0, 0, 0),
-        special_flags: int = 0,
-    ):
-        textobj = font.render(str(int(text)), antialias, color)
-        textrect = textobj.get_rect()
-        textrect.topleft = (x, y)
-        self.surface.blit(textobj, textrect, special_flags=special_flags)
-
     def draw_text(self, text, x, y, color: tuple = (0, 0, 0)):
         textobj = self.font.render(text, True, color)
         textrect = textobj.get_rect()

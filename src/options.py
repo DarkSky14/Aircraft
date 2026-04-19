@@ -14,8 +14,6 @@ _fon_obj = image.load(fix_import + "library/pictures/fon_.png").convert()
 _fon = transform.scale(_fon_obj, screen)
 log.info("Background image options setup complete.")
 
-_surfM_ = SurfaceM(GLOBAL_EVENT, d, size_config=procent)
-
 _work = True
 _runner = True
 
@@ -36,6 +34,7 @@ _x_coord, y_coord = 536.5, 255.5
 x_size = 350 * procent
 y_size = 250 * procent
 
+_surfM_ = SurfaceM(GLOBAL_EVENT, d, size_config=procent)
 _surfM_.set_object(_x_coord * procent, y_coord * procent, (x_size, y_size))
 
 x_c = _surfM_.get_x_pos()
@@ -61,10 +60,12 @@ _button3_.set_object(
 )
 
 def _button1_callback():
-    if _button1_.check_config({"effect": "True"}, clicks):
+    _check = _button1_.check_config({"effect": "True"})
+    if _check:
+        clicks()
         _button1_.write_in_config({"effect": "False"})
 
-    elif _button1_.check_config({"effect": "False"}):
+    elif not _check:
         _button1_.write_in_config({"effect": "True"})
 
     else:
@@ -77,12 +78,13 @@ def _button1_callback():
 
 def _button2_callback():
     _button2_.check_config({"effect": "True"}, clicks)
+    _check = _button2_.check_config({"music": "True"})
 
-    if _button2_.check_config({"music": "True"}):
+    if _check:
         _button2_.write_in_config({"music": "False"})
         sound()
 
-    elif _button2_.check_config({"music": "False"}):
+    elif not _check:
         _button2_.write_in_config({"music": "True"})
         sound()
 
@@ -96,16 +98,17 @@ def _button2_callback():
     _button2_.text_change({"music": "True"}, "8", "9")
 
 def _button3_callback():
-        _button3_.check_config({"effect": "True"}, return_exit)
-        exit_options()
+    _button3_.check_config({"effect": "True"}, return_exit)
+    exit_options()
 
 
 def options(x_t=536.5, y_t=255.5):
-    global _x_coord, y_coord, x_c, y_c, _runner, _work
+    global _x_coord, y_coord, x_c, y_c, _runner, _work, _surfM_
     
     if x_t != _x_coord and y_t != y_coord:
         _x_coord, y_coord = x_t, y_t
 
+        _surfM_ = SurfaceM(GLOBAL_EVENT, d, size_config=procent)
         _surfM_.set_object(_x_coord * procent, y_coord * procent, (x_size, y_size))
         x_c = _surfM_.get_x_pos()
         y_c = _surfM_.get_y_pos()
@@ -131,9 +134,6 @@ def options(x_t=536.5, y_t=255.5):
     sound()
     visible_cursor()
 
-    GLOBAL_EVENT.mouse_get()
-    GLOBAL_EVENT.event_pool()
-
     def initialize():
         for event_ in event.get():
             GLOBAL_EVENT.event = event_
@@ -147,6 +147,7 @@ def options(x_t=536.5, y_t=255.5):
                     quit_options()
 
         GLOBAL_EVENT.mouse_get()
+        GLOBAL_EVENT.mouse_button_down()
         # surfM.update_pos()
         # surfM.animation_resize()
         _surfM_.main_work(quit_options)

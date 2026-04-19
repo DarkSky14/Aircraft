@@ -118,8 +118,8 @@ def main_menu():
                 quit()
                 exit()
 
-            GLOBAL_EVENT.mouse_get()
-            GLOBAL_EVENT.mouse_button_down()
+        GLOBAL_EVENT.mouse_get()
+        GLOBAL_EVENT.mouse_button_down()
 
         background()
 
