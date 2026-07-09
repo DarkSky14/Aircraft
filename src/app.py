@@ -1,7 +1,7 @@
 from sys import exit
 
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background,
+    button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, log, fix_import,
     procent, height, screen, version_game, clicks, return_exit,
     standart_curs, click_cursor, set_fps, get_fps, tick_fps,
@@ -93,22 +93,22 @@ def main_menu():
     def button_call1():
         _button1_.Button(_button_1_callback_)
         _button1_.animation()
-        _button1_.get_text(standart_text, "0")
+        _button1_.get_text(standard_text, "0")
     
     def button_call2():
         _button2_.Button(_button_2_callback_)
         _button2_.animation()
-        _button2_.get_text(standart_text, "1")
+        _button2_.get_text(standard_text, "1")
 
     def button_call3():
         _button3_.Button(_button_3_callback_)
         _button3_.animation()
-        _button3_.get_text(standart_text, "2")
+        _button3_.get_text(standard_text, "2")
 
     def button_call4():
         _button4_.Button(_button_4_callback_)
         _button4_.animation()
-        _button4_.get_text(standart_text, "6")
+        _button4_.get_text(standard_text, "6")
 
     def initialize():
         for event_ in event.get():

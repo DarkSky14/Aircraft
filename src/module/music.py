@@ -16,13 +16,14 @@ class Sound:
 
 
 class Music:
-    def __init__(self, config, address, volume: float = 0.01) -> None:
+    def __init__(self, config, address: str, volume: float = 0.01) -> None:
         self.volume = volume
         self.config = config
         self.address = address
         self.archive = 0
 
-    def music_get(self):
+    @staticmethod
+    def music_get():
         """Get music object."""
         return mixer_music
 

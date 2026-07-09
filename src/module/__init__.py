@@ -1,5 +1,5 @@
 __version__ = "0.2.8-b"
-__author__ = "Chinho"
+__author__ = "Chinho/DarkSky14"
 
 from pygame import init, font, display, mouse, transform, image, time
 
@@ -14,7 +14,7 @@ try:
     from Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
     from event import EventControl
 
-    from Text import Text, ModuleText
+    from Text import *
     from UI import ModuleButton
 
 except ImportError:
@@ -28,7 +28,7 @@ except ImportError:
     from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
     from module.event import EventControl
 
-    from module.Text import Text, ModuleText
+    from module.Text import *
     from module.UI import ModuleButton
 
 
@@ -172,22 +172,23 @@ log.info("LANGUAGE LOADED...")
 
 
 log.info("Load font...")
-STANDART_TEXT = font.SysFont("Georgia", round(21 * procent), 0, 0)  # Arial
-BIG_TEXT = font.SysFont("Georgia", round(36 * procent))
-VERS_GAME = font.SysFont(None, round(20 * procent))
-BASE_FONT = font.SysFont("Calibri", round(20 * procent))
-GAME_TEXT = font.SysFont("Consolas", round(30 * procent))
+
+BIG_TEXT = Font("Georgia", round(36 * procent)) # Arial
+VERS_GAME = Font(None, round(20 * procent))
+BASE_FONT = Font("Georgia", round(20 * procent))
+GAME_TEXT = Font("Georgia", round(30 * procent))
 log.info("Font (4) successfully loaded.")
 
-text = Text(VERS_GAME, language, d, config, (0, 0, 0))
+text = Text(VERS_GAME.render_font(), language, d, config, (0, 0, 0))
 big_text = ModuleText(text.copy())
-big_text.create_font("Georgia", round(36 * procent))
+big_text.copy_font(BIG_TEXT.get_font())
 
-standart_text = ModuleText(text.copy())
-standart_text.create_font("Georgia", round(21 * procent))
+standard_text = ModuleText(text.copy())
+standard_text.copy_font(BIG_TEXT.get_font())
+standard_text.set_size(round(21 * procent))
 
 
-button_modified = ModuleButton(GLOBAL_EVENT, d, config, standart_text, procent)
+button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text, procent)
 
 
 def sound_scroll():
@@ -213,16 +214,16 @@ def background():
 
 def version_game():
     d.blit(
-        VERS_GAME.render(str(get_version()), True, BLACK),
-        (width - (44 * procent), height - (14 * procent)),
+        VERS_GAME.render_font().render(str(get_version()), True, BLACK),
+        (width - (50 * procent), height - (14 * procent)),
     )
 
 def get_fps(
-    font_text: font.Font = BASE_FONT,
+    font_text: Font = BASE_FONT,
     color: tuple = (200, 200, 200),
     coordinate: tuple = (3, 3),
 ):
-    main_surface_fps = font_text.render(str(int(FPS.get_fps())), True, color)
+    main_surface_fps = font_text.render_font().render(str(int(FPS.get_fps())), True, color)
     rect_object = main_surface_fps.get_rect()
     rect_object.topleft = coordinate
     d.blit(main_surface_fps, rect_object)

@@ -1,5 +1,5 @@
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background,
+    button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, config,
     clicks, return_exit, version_game, standart_curs, click_cursor,
     set_fps, get_fps, tick_fps,
@@ -62,22 +62,22 @@ def _button_4_callback_():
 def button_1():
     _button1_.animation()
     _button1_.Button(_button1_callback_)
-    _button1_.get_text(standart_text, "3")
+    _button1_.get_text(standard_text, "3")
 
 def button_2():
     _button2_.animation()
     _button2_.Button(_button_2_callback_)
-    _button2_.get_text(standart_text, "4")
+    _button2_.get_text(standard_text, "4")
 
 def button_3():
     _button3_.animation()
     _button3_.Button(_button_3_callback_)
-    _button3_.get_text(standart_text, "5")
+    _button3_.get_text(standard_text, "5")
 
 def button_4():
     _button4_.animation()
     _button4_.Button(_button_4_callback_)
-    _button4_.get_text(standart_text, "6")
+    _button4_.get_text(standard_text, "6")
 
 
 def level():

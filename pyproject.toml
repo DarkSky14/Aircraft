@@ -1,6 +1,6 @@
 [project]
 name = "aircraft"
-version = "0.2.8b"
+version = "0.2.8-b"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [

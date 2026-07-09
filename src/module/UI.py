@@ -37,6 +37,11 @@ class Button(AnimationMove):
         self.event = event
         self.surface = surface
         self.size_config = size_config
+        self.x, self.y= 0, 0
+        self.size = 0, 0
+        self.size_x, self.size_y = self.size
+        self.b_radius = 0
+        self.draw_button = MyDrawObject
         AnimationMove.__init__(self, self.size_config)
 
     # @abstractmethod
@@ -52,13 +57,11 @@ class Button(AnimationMove):
         self.size_x, self.size_y = size
         self.size_x *= self.size_config
         self.size_y *= self.size_config
-        self.b_radius = round(self.size_y / 2)
+        self.b_radius = round(self.size_y * 0.5)
 
         if self.size_y <= (self.b_radius * 2):
             self.size_y = self.b_radius * 2
-
         self.size = self.size_x, self.size_y
-        self.draw_button = MyDrawObject
         return self.x, self.y, self.size
 
     def get_position(self):

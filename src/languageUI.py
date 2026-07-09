@@ -1,7 +1,7 @@
 from module import (
-    button_modified, standart_text, GLOBAL_EVENT, background,
+    button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, ENGLISH,
-    UKRAINIAN, config, clicks, return_exit, version_game, standart_curs, 
+    UKRAINIAN, config, clicks, return_exit, version_game, standart_curs,
     click_cursor, set_fps, get_fps, tick_fps, language
 )
 
@@ -15,7 +15,7 @@ def exit_language():
 
 def update_text():
     global language
-    standart_text.set_language(language)
+    standard_text.set_language(language)
     big_text.set_language(language)
     button_modified.set_language(language)
 
@@ -71,12 +71,12 @@ def language_get():
     def button_1():
         _button1_.animation()
         _button1_.Button(_button1_callback_)
-        _button1_.get_text(standart_text, "English", (0, 0, 0))
+        _button1_.get_text(standard_text, "English", (0, 0, 0))
 
     def button_2():
         _button2_.animation()
         _button2_.Button(_button2_callback_)
-        _button2_.get_text(standart_text, "Українська", (0, 0, 0))
+        _button2_.get_text(standard_text, "Українська", (0, 0, 0))
 
     #def button_3():
         # surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
@@ -85,7 +85,7 @@ def language_get():
     def button_4():
         _button4_.animation()
         _button4_.Button(_button_4_callback_)
-        _button4_.get_text(standart_text, "6")
+        _button4_.get_text(standard_text, "6")
 
     set_fps(60)
 

@@ -1,8 +1,8 @@
 from module import (
-    button_modified, GLOBAL_EVENT, screen, music, update_display, 
+    button_modified, GLOBAL_EVENT, screen, music, update_display,
     big_text, sound_scroll, procent, main_surface, conf_height,
-    conf_width, fix_import, d, log, sound_menu, clicks, 
-    return_exit, version_game, visible_cursor, standart_curs, 
+    conf_width, fix_import, d, log, sound_menu, clicks,
+    return_exit, version_game, visible_cursor, standart_curs,
     click_cursor, set_fps, tick_fps
 )
 

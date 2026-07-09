@@ -1,3 +1,4 @@
+import pygame
 from module import (
     ScrollingBG, music, config, GAME_TEXT, bg, update_display, d, log,
     height, width, BASE_FONT, version_game, standart_curs,
@@ -85,7 +86,7 @@ def source(
     enemies = []
 
     last_score_render = -1
-    score_text_cache = BASE_FONT.render("0", True, BLACK)
+    score_text_cache = BASE_FONT.render_font().render("0", True, BLACK)
 
     time.set_timer(enemy_spawn, enemy_timer_spawn)
     time.set_timer(change_img, 125)
@@ -180,7 +181,7 @@ def source(
             music.music_unpause()
 
         if scores != last_score_render:
-            score_text_cache = BASE_FONT.render(str(scores), True, BLACK)
+            score_text_cache = BASE_FONT.render_font().render(str(scores), True, BLACK)
             last_score_render = scores
 
         d.blit(score_text_cache, (d.get_width() - 30, 0))
