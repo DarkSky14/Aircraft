@@ -180,11 +180,11 @@ GAME_TEXT = Font("Georgia", round(30 * procent))
 log.info("Font (4) successfully loaded.")
 
 text = Text(VERS_GAME.render_font(), language, d, config, (0, 0, 0))
-big_text = ModuleText(text.copy())
-big_text.copy_font(BIG_TEXT.get_font())
+big_text = ModuleText(text)
+big_text.set_font(BIG_TEXT.copy_font())
 
-standard_text = ModuleText(text.copy())
-standard_text.copy_font(BIG_TEXT.get_font())
+standard_text = ModuleText(text)
+standard_text.set_font(BIG_TEXT.copy_font())
 standard_text.set_size(round(21 * procent))
 
 

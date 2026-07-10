@@ -14,18 +14,18 @@ class Font:
             self._name_font, self._size_font, self.bold, self.italic
         )
 
-    def get_font(self) -> Font:
+    def copy_font(self) -> Font:
         return Font(self._name_font, self._size_font, self.bold, self.italic)
 
     def render_font(self)  -> font.Font:
         return self.font
 
-    def copy_font(self, new_font: Font):
-        self.font = new_font.get_font()
-        self._name_font = self.font.get_name()
-        self._size_font = self.font.get_size()
-        self.bold = self.font.get_bold()
-        self.italic = self.font.get_italic()
+    def set_font(self, new_font: Font):
+        self.font = new_font.copy_font()
+        self._name_font = new_font.get_name()
+        self._size_font = new_font.get_size()
+        self.bold = new_font.get_bold()
+        self.italic = new_font.get_italic()
         self.__initial_font__()
 
     def set_size(self, size):
@@ -45,7 +45,52 @@ class Font:
         return self.italic
 
 
-class Text:  # Correct
+class DrawText:
+    def __init__(self):
+        self.font = font.Font()
+        self.surface = Surface
+
+    def draw_text(self, text, x, y, color: tuple = (0, 0, 0)):
+        text_obj = self.font.render(text, True, color)
+        text_rect = text_obj.get_rect()
+        text_rect.topleft = (x, y)
+        self.surface.blit(text_obj, text_rect)
+        return text_rect
+
+
+class TriggerText:
+    def __init__(self):
+        self.config = None
+        self.chosen = ""
+        self.lang = dict
+
+    def set_change_text(self, inspection, change_x, change_y):
+        if self.config.check(inspection):
+            self.chosen = self.lang.get(change_x, int(change_x))
+
+        elif not self.config.check(inspection):
+            self.chosen = self.lang.get(change_y, int(change_y))
+
+
+class StandardText:
+    def __init__(self):
+        self.text = ""
+        self.lang = dict
+
+    def __call__(self, base_key):
+        self.text = self.lang.get(base_key, int(base_key))
+
+
+class DrawingText(DrawText, StandardText, TriggerText):
+    def __init__(self):
+        StandardText().__init__()
+
+    def get_set_text(self, base_key, x_text, y_text, color: tuple = (0, 0, 0)):
+        self.__call__(base_key)
+        self.draw_text("{} {}".format(self.text, self.chosen), x_text, y_text, color)
+
+
+class Text(DrawingText, Font):  # Correct
     def __init__(self,
         font_name: font.Font,
         lang: dict,
@@ -57,13 +102,7 @@ class Text:  # Correct
         self.surface = surface
         self.config = config
         self.color = color
-
-    def draw_text(self, text, x, y, color: tuple = (0, 0, 0)):
-        text_obj = self.font.render(text, True, color)
-        text_rect = text_obj.get_rect()
-        text_rect.topleft = (x, y)
-        self.surface.blit(text_obj, text_rect)
-        return text_rect
+        DrawText().__init__()
 
     def get_language(self):
         return self.lang
@@ -83,11 +122,18 @@ class Text:  # Correct
     def set_surface(self, surface: Surface):
         self.surface = surface
 
-    def copy(self):
+    def set_settings_text(self, obj: Text):
+        self.font = obj.copy_font()
+        self.lang = obj.get_language()
+        self.surface = obj.surface
+        self.config = obj.config()
+        self.color = obj.get_color()
+
+    def copy_text(self):
         return Text(self.font, self.lang, self.surface, self.config, self.color)
 
 
-class ModuleText(Text, Font):
+class ModuleText(Text):
     def __init__(self, class_text: Text):
         super().__init__(
             class_text.font,
@@ -102,17 +148,6 @@ class ModuleText(Text, Font):
         self.chosen = ""
         self.text = ""
 
-    def update_lang(self):
-        self.lang = self.class_text.get_language()
-
-    def set_change_text(self, inspection, change_x, change_y):
-        if self.config.check(inspection):
-            self.chosen = self.lang.get(change_x, f"{change_x}")
-
-        elif not self.config.check(inspection):
-            self.chosen = self.lang.get(change_y, f"{change_y}")
-
     def get_set_text(self, base_key, x_text, y_text, color: tuple = (0, 0, 0)):
         self.text = self.lang.get(base_key, f"{base_key}")
         self.draw_text("{} {}".format(self.text, self.chosen), x_text, y_text, color)
-
