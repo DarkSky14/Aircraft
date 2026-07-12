@@ -2,8 +2,8 @@ from module import (
     button_modified, GLOBAL_EVENT, screen, music, update_display,
     big_text, sound_scroll, procent, main_surface, conf_height,
     conf_width, fix_import, d, log, sound_menu, clicks,
-    return_exit, version_game, visible_cursor, standart_curs,
-    click_cursor, set_fps, tick_fps
+    return_exit, version_game, visible_cursor, standard_curs,
+    click_cursor, set_fps, tick_fps, standard_text
 )
 
 from module.UI import SurfaceM
@@ -42,7 +42,6 @@ y_c = _surfM_.get_y_pos()
 
 _button1_ = button_modified.copy()
 _button1_.set_object(x_c + (23 * procent), y_c + (85 * procent), (300, 30))
-_button1_.text_change({"effect": "True"}, "8", "9")
 
 _button2_ = button_modified.copy()
 _button2_.set_object(
@@ -50,7 +49,6 @@ _button2_.set_object(
     (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * procent)),
     (300, 30),
 )
-_button2_.text_change({"music": "True"}, "8", "9")
 
 _button3_ = button_modified.copy()
 _button3_.set_object(
@@ -74,8 +72,6 @@ def _button1_callback():
             "Error in config file, missing 'effect' key. Default value 'True' was set."
         )
 
-    _button1_.text_change({"effect": "True"}, "8", "9")
-
 def _button2_callback():
     _button2_.check_config({"effect": "True"}, clicks)
     _check = _button2_.check_config({"music": "True"})
@@ -94,8 +90,6 @@ def _button2_callback():
             "Error in config file, missing 'music' key. Default value 'True' was set."
         )
         sound()
-
-    _button2_.text_change({"music": "True"}, "8", "9")
 
 def _button3_callback():
     _button3_.check_config({"effect": "True"}, return_exit)
@@ -153,17 +147,23 @@ def options(x_t=536.5, y_t=255.5):
         _surfM_.main_work(quit_options)
 
         _button1_.Button(_button1_callback)
-        _button1_.get_text_self("12")
+        text = standard_text.set_base_text("12")
+        check = standard_text.set_change_text({"effect": "True"}, "8", "9")
+        _button1_.get_text("{} {}".format(text, check))
 
         _button2_.Button(_button2_callback)
-        _button2_.get_text_self("10")
+        text = standard_text.set_base_text("10")
+        check = standard_text.set_change_text({"music": "True"}, "8", "9")
+        _button2_.get_text("{} {}".format(text, check))
 
         _button3_.Button(_button3_callback)
-        _button3_.get_text_self("6")
+        text = standard_text.set_base_text("6")
+        _button3_.get_text(text)
 
         GLOBAL_EVENT.mouse_button_down()
-        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("1", x_c + (45 * procent), y_c + (25 * procent))
+        GLOBAL_EVENT.event_button_check(standard_curs, click_cursor, sound_scroll)
+        text = standard_text.set_base_text("1")
+        big_text.get_set_text(text, x_c + (45 * procent), y_c + (25 * procent))
 
         # get_fps(coordinate=(3, Surface.height - 20))
         tick_fps()

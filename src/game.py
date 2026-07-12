@@ -1,7 +1,7 @@
 import pygame
 from module import (
     ScrollingBG, music, config, GAME_TEXT, bg, update_display, d, log,
-    height, width, BASE_FONT, version_game, standart_curs,
+    height, width, BASE_FONT, version_game, standard_curs,
     sound_game, sound_menu, BLACK, RED, invisible_cursor, visible_cursor,
     fix_import, procent, set_fps, get_fps, tick_fps
 )
@@ -194,7 +194,7 @@ def source(
     clean_bon_and_en()
     music.set_position()
     music.music_all(sound_menu)
-    standart_curs()
+    standard_curs()
     visible_cursor()
 
 

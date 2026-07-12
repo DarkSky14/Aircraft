@@ -4,7 +4,7 @@ from module import (
     button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, log, fix_import,
     procent, height, screen, version_game, clicks, return_exit,
-    standart_curs, click_cursor, set_fps, get_fps, tick_fps,
+    standard_curs, click_cursor, set_fps, get_fps, tick_fps,
 )
 
 from pygame import QUIT, image, transform, display, quit, event
@@ -93,22 +93,26 @@ def main_menu():
     def button_call1():
         _button1_.Button(_button_1_callback_)
         _button1_.animation()
-        _button1_.get_text(standard_text, "0")
+        text = standard_text.set_base_text("0")
+        _button1_.get_text(text)
     
     def button_call2():
         _button2_.Button(_button_2_callback_)
         _button2_.animation()
-        _button2_.get_text(standard_text, "1")
+        text = standard_text.set_base_text("1")
+        _button2_.get_text(text)
 
     def button_call3():
         _button3_.Button(_button_3_callback_)
         _button3_.animation()
-        _button3_.get_text(standard_text, "2")
+        text = standard_text.set_base_text("2")
+        _button3_.get_text(text)
 
     def button_call4():
         _button4_.Button(_button_4_callback_)
         _button4_.animation()
-        _button4_.get_text(standard_text, "6")
+        text = standard_text.set_base_text("6")
+        _button4_.get_text(text)
 
     def initialize():
         for event_ in event.get():
@@ -129,8 +133,9 @@ def main_menu():
         button_call4()
 
         version_game()
-        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("7", 70 * procent, 150 * procent)
+        GLOBAL_EVENT.event_button_check(standard_curs, click_cursor, sound_scroll)
+        text = big_text.set_base_text("7")
+        big_text.get_set_text(text, 70 * procent, 150 * procent)
 
         get_fps(coordinate=(3, height - (20 * procent)))
         tick_fps()

@@ -1,4 +1,4 @@
-__version__ = "0.2.8-b"
+__version__ = "0.2.8-dev"
 __author__ = "Chinho/DarkSky14"
 
 from pygame import init, font, display, mouse, transform, image, time
@@ -67,7 +67,7 @@ def click_cursor():
     mouse.set_cursor(11)
 
 
-def standart_curs():
+def standard_curs():
     mouse.set_cursor(0)
 
 
@@ -121,7 +121,7 @@ def scroll():
 log.info("Sounds (3) successfully loaded.")
 
 
-main_surface = AdjustmentSurface().surface()  # 960, 544 StandartSurface(960, 544) #
+main_surface = AdjustmentSurface().surface()  # 960, 544 StandardSurface(960, 544) #
 sub_surface = AdjustmentSubSurface(1373, 761)  # Original size 300x168
 d = sub_surface.surface(main_surface)
 main_surface.fill((0, 0, 0))
@@ -180,15 +180,15 @@ GAME_TEXT = Font("Georgia", round(30 * procent))
 log.info("Font (4) successfully loaded.")
 
 text = Text(VERS_GAME.render_font(), language, d, config, (0, 0, 0))
-big_text = ModuleText(text)
+big_text = text.copy_text()
 big_text.set_font(BIG_TEXT.copy_font())
 
-standard_text = ModuleText(text)
+standard_text = text.copy_text()
 standard_text.set_font(BIG_TEXT.copy_font())
 standard_text.set_size(round(21 * procent))
 
 
-button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text, procent)
+button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text.cop_whaTT(), procent)
 
 
 def sound_scroll():

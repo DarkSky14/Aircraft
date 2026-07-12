@@ -1,7 +1,7 @@
 from module import (
     button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, config,
-    clicks, return_exit, version_game, standart_curs, click_cursor,
+    clicks, return_exit, version_game, standard_curs, click_cursor,
     set_fps, get_fps, tick_fps,
 )
 
@@ -62,22 +62,26 @@ def _button_4_callback_():
 def button_1():
     _button1_.animation()
     _button1_.Button(_button1_callback_)
-    _button1_.get_text(standard_text, "3")
+    text = standard_text.set_base_text("3")
+    _button1_.get_text(text)
 
 def button_2():
     _button2_.animation()
     _button2_.Button(_button_2_callback_)
-    _button2_.get_text(standard_text, "4")
+    text = standard_text.set_base_text("4")
+    _button2_.get_text(text)
 
 def button_3():
     _button3_.animation()
     _button3_.Button(_button_3_callback_)
-    _button3_.get_text(standard_text, "5")
+    text = standard_text.set_base_text("5")
+    _button3_.get_text(text)
 
 def button_4():
     _button4_.animation()
     _button4_.Button(_button_4_callback_)
-    _button4_.get_text(standard_text, "6")
+    text = standard_text.set_base_text("6")
+    _button4_.get_text(text)
 
 
 def level():
@@ -115,8 +119,9 @@ def level():
 
         version_game()
         GLOBAL_EVENT.mouse_button_down()
-        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("11", 70 * procent, 150 * procent)
+        GLOBAL_EVENT.event_button_check(standard_curs, click_cursor, sound_scroll)
+        text = standard_text.set_base_text("11")
+        big_text.get_set_text(text, 70 * procent, 150 * procent)
 
         get_fps(coordinate=(3, height - (20 * procent)))
         tick_fps()

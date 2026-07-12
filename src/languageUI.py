@@ -1,7 +1,7 @@
 from module import (
     button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, ENGLISH,
-    UKRAINIAN, config, clicks, return_exit, version_game, standart_curs,
+    UKRAINIAN, config, clicks, return_exit, version_game, standard_curs,
     click_cursor, set_fps, get_fps, tick_fps, language
 )
 
@@ -52,7 +52,6 @@ def _button2_callback_():
         _button2_.write_in_config({"language": "UA"})
         language = UKRAINIAN
         update_text()
-        update_text()
 
 def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, return_exit)
@@ -71,12 +70,12 @@ def language_get():
     def button_1():
         _button1_.animation()
         _button1_.Button(_button1_callback_)
-        _button1_.get_text(standard_text, "English", (0, 0, 0))
+        _button1_.get_text("English", (0, 0, 0))
 
     def button_2():
         _button2_.animation()
         _button2_.Button(_button2_callback_)
-        _button2_.get_text(standard_text, "Українська", (0, 0, 0))
+        _button2_.get_text("Українська", (0, 0, 0))
 
     #def button_3():
         # surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
@@ -85,7 +84,9 @@ def language_get():
     def button_4():
         _button4_.animation()
         _button4_.Button(_button_4_callback_)
-        _button4_.get_text(standard_text, "6")
+        text = standard_text.set_base_text("6")
+        _button4_.get_text(text)
+
 
     set_fps(60)
 
@@ -112,8 +113,9 @@ def language_get():
 
         version_game()
         GLOBAL_EVENT.mouse_button_down()
-        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("2", 70 * procent, 150 * procent)
+        GLOBAL_EVENT.event_button_check(standard_curs, click_cursor, sound_scroll)
+        text = big_text.set_base_text("2")
+        big_text.get_set_text(text, 70 * procent, 150 * procent)
 
         get_fps(coordinate=(3, height - (20 * procent)))
         tick_fps()
