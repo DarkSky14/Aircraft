@@ -1,7 +1,6 @@
-try:
-    from logged import log
-except ImportError:
-    from module.logged import log
+import os
+
+from module.logged import log
 
 
 English = {
@@ -27,19 +26,24 @@ class LanguageCreated:
         self._lang = {}
         self._file = file
 
-    def get_lang(self):
+    @property
+    def path(self) -> str | bytes:
+        return os.path.join(self._url, self._file)
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def language(self):
         return self._lang if self._lang != {} else {0: ""}
 
-    def set_lang(self, reader):
-        work = reader(self._name, self._url, self._lang, self._file)
+    def set_language(self, obj_class):
         try:
-            self._lang = work.read()
-            log.debug({"LANGUAGE LOADED:": self._name})
+            self._lang = obj_class.read(self.path)
+            log.debug("LANGUAGE LOADED: %s", self._name)
         except FileNotFoundError:
-            log.error({"LANGUAGE_LOAD_ERROR": self._file})
-
-    def get_name(self):
-        return self._name
+            log.error("LANGUAGE_LOAD_ERROR: %s", self._file)
 
 
 class LanguageSetter:
@@ -51,9 +55,9 @@ class LanguageSetter:
         language = self._basic
 
         for arg in args:
-            check = {"language": arg.get_name()}
+            check = {"language": arg.name}
             if self.config.check(check):
-                return arg.get_lang()
+                return arg.language
             else:
                 continue
 

@@ -3,7 +3,7 @@ from module import (
     ScrollingBG, music, config, GAME_TEXT, bg, update_display, d, log,
     height, width, BASE_FONT, version_game, standard_curs,
     sound_game, sound_menu, BLACK, RED, invisible_cursor, visible_cursor,
-    fix_import, procent, set_fps, get_fps, tick_fps
+    absolute_import, procent, set_fps, get_fps, tick_fps
 )
 
 
@@ -19,7 +19,7 @@ from os import listdir
 _bg_speed_ = 2 * procent
 _game_work = True
 
-IMGS_PATH = fix_import + "library/player"
+IMGS_PATH = absolute_import("player")
 
 log.info("Start load player images...")
 _player_img = [
@@ -40,7 +40,7 @@ _player_speed = 2.5 * procent
 
 
 log.info("Start load enemy image...")
-_enemy_png = image.load(fix_import + "library/pictures/enemy.png")
+_enemy_png = image.load(absolute_import("pictures/enemy.png"))
 _enemy = transform.scale(
     _enemy_png, ((_enemy_png.get_width() * procent), (_enemy_png.get_height() * procent))
 )
@@ -53,7 +53,7 @@ log.info("Enemy image successfully loaded.")
 
 
 log.info("Start load bonus image...")
-_bonus_jpg = image.load(fix_import + "library/pictures/bonus.jpg")
+_bonus_jpg = image.load(absolute_import("pictures/bonus.jpg"))
 _bonus = transform.scale(
     _bonus_jpg, ((_bonus_jpg.get_width() * procent), (_bonus_jpg.get_height() * procent))
 )

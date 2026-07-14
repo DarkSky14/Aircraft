@@ -1,22 +1,20 @@
+import pygame
+from pygame import rect
+from abc import ABC
+
 from pygame import Surface, DOUBLEBUF, WINDOWMAXIMIZED, HWSURFACE, display, surface
 
-try:
-    from logged import log
-except ImportError:
-    from module.logged import log
+from module.logged import log
 
 
-class _ClassSurface:
+class _ClassSurface(ABC):
     def __init__(self, width: int = 0, height: int = 0):
         self.width = width
         self.height = height
-        self.screen = self.width, self.height
 
-    def surface(self) -> Surface:
-        pass
-
-    def get_size_surface(self) -> tuple[int, int]:
-        return self.screen
+    @property
+    def screen(self) -> tuple[int, int]:
+        return self.width, self.height
 
     def get_width(self) -> int:
         return self.width
@@ -31,16 +29,16 @@ class StandardSurface(_ClassSurface):
 
     def surface(self, mode=WINDOWMAXIMIZED) -> Surface:
         flags = DOUBLEBUF | HWSURFACE
-        mode_work = display.mode_ok((self.width, self.height), flags)
+        supported = display.mode_ok(self.screen, flags)
 
-        log.debug({"Mode": mode_work})
-        log.debug({"Display driver": display.get_driver()})
-        log.debug({"Video info": display.Info()})
+        log.debug("Mode ok: %s", supported)
+        log.debug("Display driver: %s", display.get_driver())
+        log.debug("Video info: %s", {display.Info()})
 
-        if mode_work == 0:
-            return display.set_mode(self.screen, mode)
-        else:
-            return display.set_mode(self.screen, flags)
+        if supported:
+            return display.set_mode(self.screen, flags | mode)
+        log.warning("Requested display mode not supported, falling back to defaults")
+        return display.set_mode(self.screen, mode)
 
 
 class AdjustmentSurface(_ClassSurface):
@@ -50,69 +48,63 @@ class AdjustmentSurface(_ClassSurface):
     def surface(self, mode=WINDOWMAXIMIZED) -> Surface:
         info = display.Info()
         self.width, self.height = info.current_w, info.current_h
-        self.screen = self.width, self.height
 
         flags = DOUBLEBUF | HWSURFACE
-        mode_work = display.mode_ok((self.width, self.height), flags)
+        supported = display.mode_ok(self.screen, flags)
 
-        log.debug({"Mode": mode_work})
-        log.debug({"Display driver": display.get_driver()})
-        log.debug({"Video info": display.Info()})
+        log.debug("Mode ok: %s", supported)
+        log.debug("Display driver: %s", display.get_driver())
+        log.debug("Video info: %s", {display.Info()})
 
-        if mode_work == 0:
-            return display.set_mode(self.screen, mode)
-        else:
-            return display.set_mode(self.screen, flags)
+        if supported:
+            return display.set_mode(self.screen, flags | mode)
+        log.warning("Requested display mode not supported, falling back to defaults")
+        return display.set_mode(self.screen, mode)
 
 
 class SubSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         _ClassSurface.__init__(self, width, height)
 
-    def surface(self, sub_surface: Surface, left, top) -> Surface:
-        return sub_surface.subsurface(left, top, self.width, self.height)
+    def surface(self, sub_surface: Surface, left: int, top: int) -> Surface:
+        return sub_surface.subsurface(pygame.rect.Rect(left, top, self.width, self.height))
 
 
 class AdjustmentSubSurface(_ClassSurface):
     def __init__(self, width: int = 0, height: int = 0):
         _ClassSurface.__init__(self, width, height)
+        self.proponent = 1
+        self._conf_width = 0
+        self._conf_height = 0
 
-    def surface(self, surface: surface.Surface):
-        proponent_width = surface.get_width() / self.width
-        proponent_height = surface.get_height() / self.height
+    def surface(self, window: surface.Surface):
+        proponent_width = window.get_width() / self.width
+        proponent_height = window.get_height() / self.height
 
         if proponent_width > proponent_height:
-            self.procent = proponent_height
-            size_width = self.width * proponent_height
-            size_height = surface.get_height()
-            self._conf_width = (surface.get_width() - size_width) / 2
-            self._conf_height = 0
+            self.proponent = proponent_height
+            self.width = self.width * proponent_height
+            self.height = window.get_height()
+            self._conf_width = (window.get_width() - self.width) * 0.5
 
         elif proponent_width < proponent_height:
-            self.procent = proponent_width
-            size_width = surface.get_width()
-            size_height = self.height * proponent_width
-            self._conf_width = 0
-            self._conf_height = (surface.get_height() - size_height) / 2
+            self.proponent = proponent_width
+            self.width = window.get_width()
+            self.height = self.height * proponent_width
+            self._conf_height = (window.get_height() - self.height) * 0.5
 
-        elif proponent_width == proponent_height:
-            self.procent = proponent_width
-            size_width = surface.get_width()
-            size_height = surface.get_height()
-            self._conf_width = 0
-            self._conf_height = 0
+        else:
+            self.proponent = proponent_width
+            self.width = window.get_width()
+            self.height = window.get_height()
 
-        self.width = size_width
-        self.height = size_height
-        self.screen = self.width, self.height
+        log.debug("Proponent: %s", self.proponent)
+        log.debug("Size width: %s", self.width)
+        log.debug("Size height: %s", self.height)
+        log.debug("Conf width: %s", self._conf_width)
+        log.debug("Conf height: %s", self._conf_height)
 
-        log.debug({"Proponent:": self.procent})
-        log.debug({"Size width": size_width})
-        log.debug({"Size height:": size_height})
-        log.debug({"Conf width:": self._conf_width})
-        log.debug({"Conf height:": self._conf_height})
-
-        return surface.subsurface(
+        return window.subsurface(
             self._conf_width, self._conf_height, self.width, self.height
         )
 
@@ -122,8 +114,8 @@ class AdjustmentSubSurface(_ClassSurface):
     def get_conf_width(self) -> float:
         return self._conf_width
 
-    def get_procent(self) -> int | float:
-        return self.procent
+    def get_proponent(self) -> float:
+        return self.proponent
 
 
 class ScrollingBG:
@@ -131,13 +123,14 @@ class ScrollingBG:
         self.image = image
         self.width = self.image.get_width()
         self.speed = speed
+        self.moved_width = 1
         self.x = 0
-        log.debug({"Image size": self.image.get_size()})
+        log.debug("Image size: %s", self.image.get_size())
 
     def update(self):
         self.x = (self.x - self.speed) % self.image.get_width()
-        self.width = self.x - self.image.get_width()
+        self.moved_width = self.x - self.image.get_width()
 
-    def draw(self, surface: Surface):
-        surface.blit(self.image, (self.x, 0))
-        surface.blit(self.image, (self.width, 0))
+    def draw(self, window: Surface):
+        window.blit(self.image, (self.x, 0))
+        window.blit(self.image, (self.moved_width, 0))

@@ -1,11 +1,7 @@
 from pygame import MOUSEBUTTONDOWN, draw, surface, Rect
 
-try:
-    from Text import Text
-    from UI_module.animation import AnimationMove
-except ImportError:
-    from module.Text import Text
-    from module.UI_module.animation import AnimationMove
+from module.Text import Text
+from module.UI_module.animation import AnimationMove
 
 
 class MyDrawObject:  # Correct
@@ -103,7 +99,7 @@ class ModuleButton(Button, Text):#, ModuleText):
         return self.config.check(text, effect_click)
 
     def write_in_config(self, text):
-        self.config.write(text)
+        self.config.writer(text)
 
     def get_text(self, text, color: tuple = (0, 0, 0)):
         self.get_set_text(text, self.x + 15, self.y + 2, color)

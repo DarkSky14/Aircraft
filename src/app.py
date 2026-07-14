@@ -1,8 +1,15 @@
+import sys
 from sys import exit
+from pathlib import Path
+
+SRC_ROOT = Path(__file__).resolve().parent
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+
 
 from module import (
     button_modified, standard_text, GLOBAL_EVENT, background,
-    update_display, big_text, sound_scroll, log, fix_import,
+    update_display, big_text, sound_scroll, log, absolute_import,
     procent, height, screen, version_game, clicks, return_exit,
     standard_curs, click_cursor, set_fps, get_fps, tick_fps,
 )
@@ -14,7 +21,7 @@ from level import level
 
 # Setup pygame/window -----------------------------
 log.info("Setup icon window...")
-icon_obj = image.load(fix_import + "library/Aircraft.ico").convert()
+icon_obj = image.load(absolute_import("Aircraft.ico")).convert()
 icon = transform.scale(icon_obj, screen)
 log.info("Icon window setup complete.")
 log.info("Setup background image options...")

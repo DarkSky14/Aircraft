@@ -1,7 +1,7 @@
 from module import (
     button_modified, GLOBAL_EVENT, screen, music, update_display,
     big_text, sound_scroll, procent, main_surface, conf_height,
-    conf_width, fix_import, d, log, sound_menu, clicks,
+    conf_width, absolute_import, d, log, sound_menu, clicks,
     return_exit, version_game, visible_cursor, standard_curs,
     click_cursor, set_fps, tick_fps, standard_text
 )
@@ -10,7 +10,7 @@ from module.UI import SurfaceM
 
 from pygame import QUIT, K_ESCAPE, KEYDOWN, image, transform, event, quit
 
-_fon_obj = image.load(fix_import + "library/pictures/fon_.png").convert()
+_fon_obj = image.load(absolute_import("pictures/fon_.png")).convert()
 _fon = transform.scale(_fon_obj, screen)
 log.info("Background image options setup complete.")
 

@@ -7,6 +7,8 @@ Version
 - Fix import statements.
 - Fix dynamic import.
 
+**Bugfixes**
+
 # V 0.2.7
 -------------
 **Improvements**

@@ -2,7 +2,7 @@ from module import (
     button_modified, standard_text, GLOBAL_EVENT, background,
     update_display, big_text, sound_scroll, procent, height, ENGLISH,
     UKRAINIAN, config, clicks, return_exit, version_game, standard_curs,
-    click_cursor, set_fps, get_fps, tick_fps, language
+    click_cursor, set_fps, get_fps, tick_fps, active_language
 )
 
 from pygame import QUIT, K_ESCAPE, KEYDOWN, event, quit
@@ -13,11 +13,10 @@ def exit_language():
     global _work
     _work = False
 
-def update_text():
-    global language
-    standard_text.set_language(language)
-    big_text.set_language(language)
-    button_modified.set_language(language)
+def update_text(lang):
+    standard_text.set_language(lang)
+    big_text.set_language(lang)
+    button_modified.set_language(lang)
 
 
 _button1_ = button_modified.copy()
@@ -43,7 +42,7 @@ def _button1_callback_():
     if not _button1_.check_config({"language": "EN"}):
         _button1_.write_in_config({"language": "EN"})
         language = ENGLISH
-        update_text()
+        update_text(language)
 
 def _button2_callback_():
     global language
@@ -51,7 +50,7 @@ def _button2_callback_():
     if not _button2_.check_config({"language": "UA"}):
         _button2_.write_in_config({"language": "UA"})
         language = UKRAINIAN
-        update_text()
+        update_text(language)
 
 def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, return_exit)

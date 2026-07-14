@@ -3,37 +3,23 @@ __author__ = "Chinho/DarkSky14"
 
 from pygame import init, font, display, mouse, transform, image, time
 
-try:
-    from correct_start import fix_import
-    from logged import log
-    from music import Music, Sound
+from module.correct_start import absolute_import
+from module.logged import log
+from module.music import Music, Sound
 
-    from language import LanguageCreated, LanguageSetter
-    from FileWorker import JsonReader, JsonWorker
+from module.language import LanguageCreated, LanguageSetter
+from module.FileWorker import JsonReader, JsonWorker
 
-    from Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-    from event import EventControl
+from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
+from module.event import EventControl
 
-    from Text import *
-    from UI import ModuleButton
-
-except ImportError:
-    from module.correct_start import fix_import
-    from module.logged import log
-    from module.music import Music, Sound
-
-    from module.language import LanguageCreated, LanguageSetter
-    from module.FileWorker import JsonReader, JsonWorker
-
-    from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-    from module.event import EventControl
-
-    from module.Text import *
-    from module.UI import ModuleButton
+from module.Text import *
+from module.UI import ModuleButton
 
 
 def get_version():
     return __version__
+
 
 def get_author():
     return __author__
@@ -54,13 +40,13 @@ COLOR_CASE = {
     "LIME": (100, 250, 100),
 }
 
-click_open_2 = fix_import + "library/effect/click_open2.mp3"
-click_open_1 = fix_import + "library/effect/click_open1.mp3"
-click_exit = fix_import + "library/effect/click_exit1.mp3"
-effect_game = fix_import + "library/effect/sound3.mp3"
-click_aim = fix_import + "library/effect/nice click aim.mp3"
-sound_menu = fix_import + "library/music/Menu1 - peace.mp3"
-sound_game = fix_import + "library/music/01897.mp3"
+click_open_2 = absolute_import("effect/click_open2.mp3")
+click_open_1 = absolute_import("effect/click_open1.mp3")
+click_exit = absolute_import("effect/click_exit1.mp3")
+effect_game = absolute_import("effect/sound3.mp3")
+click_aim = absolute_import("effect/nice click aim.mp3")
+sound_menu = absolute_import("music/Menu1 - peace.mp3")
+sound_game = absolute_import("music/01897.mp3")
 
 
 def click_cursor():
@@ -127,10 +113,10 @@ d = sub_surface.surface(main_surface)
 main_surface.fill((0, 0, 0))
 d.fill((255, 255, 255))
 
-screen = sub_surface.get_size_surface()
+screen = sub_surface.screen
 conf_width = sub_surface.get_conf_width()
 conf_height = sub_surface.get_conf_height()
-procent = sub_surface.get_procent()
+procent = sub_surface.get_proponent()
 height = d.get_height()
 width = d.get_width()
 
@@ -139,7 +125,7 @@ log.debug({"Main surface size": screen})
 
 log.info("Start load background image...")
 bg = transform.scale(
-    image.load(fix_import + "library/pictures/background.png").convert(), screen
+    image.load(absolute_import("pictures/background.png")).convert(), screen
 )
 log.info("Background image successfully loaded.")
 bgX = 0
@@ -149,7 +135,7 @@ bg_speed = 1
 
 config = JsonWorker(
     "config",
-    fix_import + "library/data",
+    absolute_import("data"),
     {"level": 1, "effect": "True", "music": "True", "language": "EN"},
     "config.json",
 )
@@ -159,15 +145,15 @@ config.reader()
 GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
 
-ENG = LanguageCreated("EN", fix_import + "library/language", "english.json")
-ENG.set_lang(JsonReader)
-ENGLISH = ENG.get_lang()
+ENG = LanguageCreated("EN", absolute_import("language"), "english.json")
+ENG.set_language(JsonReader)
+ENGLISH = ENG.language
 
-UKR = LanguageCreated("UA", fix_import + "library/language", "ukrainian.json")
-UKR.set_lang(JsonReader)
-UKRAINIAN = UKR.get_lang()
+UKR = LanguageCreated("UA", absolute_import("language"), "ukrainian.json")
+UKR.set_language(JsonReader)
+UKRAINIAN = UKR.language
 
-language = LanguageSetter(config).language_set(ENG, UKR)
+active_language = LanguageSetter(config).language_set(ENG, UKR)
 log.info("LANGUAGE LOADED...")
 
 
@@ -175,17 +161,16 @@ log.info("Load font...")
 
 BIG_TEXT = Font("Georgia", round(36 * procent)) # Arial
 VERS_GAME = Font(None, round(20 * procent))
-BASE_FONT = Font("Georgia", round(20 * procent))
+BASE_FONT = Font("Georgia", round(21 * procent))
 GAME_TEXT = Font("Georgia", round(30 * procent))
 log.info("Font (4) successfully loaded.")
 
-text = Text(VERS_GAME.render_font(), language, d, config, (0, 0, 0))
+text = Text(VERS_GAME.render_font(), active_language, d, config, (0, 0, 0))
 big_text = text.copy_text()
 big_text.set_font(BIG_TEXT.copy_font())
 
 standard_text = text.copy_text()
-standard_text.set_font(BIG_TEXT.copy_font())
-standard_text.set_size(round(21 * procent))
+standard_text.set_font(BASE_FONT.copy_font())
 
 
 button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text.cop_whaTT(), procent)
