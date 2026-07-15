@@ -33,7 +33,7 @@ class StandardSurface(_ClassSurface):
 
         log.debug("Mode ok: %s", supported)
         log.debug("Display driver: %s", display.get_driver())
-        log.debug("Video info: %s", {display.Info()})
+        log.debug("Video info: %s", str(display.Info()))
 
         if supported:
             return display.set_mode(self.screen, flags | mode)
@@ -54,7 +54,7 @@ class AdjustmentSurface(_ClassSurface):
 
         log.debug("Mode ok: %s", supported)
         log.debug("Display driver: %s", display.get_driver())
-        log.debug("Video info: %s", {display.Info()})
+        log.debug("Video info: %s", str(display.Info()))
 
         if supported:
             return display.set_mode(self.screen, flags | mode)
@@ -71,8 +71,13 @@ class SubSurface(_ClassSurface):
 
 
 class AdjustmentSubSurface(_ClassSurface):
-    def __init__(self, width: int = 0, height: int = 0):
+    def __init__(self, width: int = 1, height: int = 1):
         _ClassSurface.__init__(self, width, height)
+        if width <= 0 or height <= 0:
+            text_error = f"width/height мають бути додатні, отримано ({width}, {height})"
+            log.critical(text_error)
+            raise ValueError(text_error)
+            ...
         self.proponent = 1
         self._conf_width = 0
         self._conf_height = 0
@@ -105,7 +110,7 @@ class AdjustmentSubSurface(_ClassSurface):
         log.debug("Conf height: %s", self._conf_height)
 
         return window.subsurface(
-            self._conf_width, self._conf_height, self.width, self.height
+            pygame.rect.Rect(self._conf_width, self._conf_height, self.width, self.height)
         )
 
     def get_conf_height(self) -> float:

@@ -1,7 +1,7 @@
 __version__ = "0.2.8-dev"
 __author__ = "Chinho/DarkSky14"
 
-from pygame import init, font, display, mouse, transform, image, time
+from pygame import init, display, mouse, transform, image, time
 
 from module.correct_start import absolute_import
 from module.logged import log
@@ -15,7 +15,10 @@ from module.event import EventControl
 
 from module.Text import *
 from module.UI import ModuleButton
+from module.bootrap import bootstrap
 
+boot = bootstrap()
+#boot = None
 
 def get_version():
     return __version__

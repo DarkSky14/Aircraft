@@ -2,6 +2,7 @@ from pygame import MOUSEBUTTONDOWN, draw, surface, Rect
 
 from module.Text import Text
 from module.UI_module.animation import AnimationMove
+from module.logged import log
 
 
 class MyDrawObject:  # Correct
@@ -17,6 +18,16 @@ class MyDrawObject:  # Correct
     def draw_object(
         self, color: tuple, border: int = 0, border_radius: int = 0, radius: int = 50
     ) -> Rect:
+        max_safe = min(self.rect.width, self.rect.height) // 2
+        border = min(border, max_safe)
+        border_radius = min(border_radius, max_safe)
+        radius = min(radius, max_safe)
+
+        log.debug(
+            "draw.rect params: rect=%s border=%s border_radius=%s radius=%s max_safe=%s",
+            tuple(self.rect), border, border_radius, radius, max_safe,
+        )
+
         return draw.rect(
             self.surface, color, self.rect, border, border_radius, 
             radius, radius, radius, radius,
@@ -108,7 +119,7 @@ class ModuleButton(Button, Text):#, ModuleText):
         button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
 
         if button.rect.collidepoint(self.event.mx, self.event.my):
-            button.draw_object((205, 200, 200), self.b_radius, 10)
+            button.draw_object((205, 200, 200), 3, 10)
             self.event.set_choose_button(1)
             self.event.set_choose_fake_button(1)
 
@@ -136,22 +147,22 @@ class SurfaceM(Button):
         )
 
     def set_object(self, x, y, size):
-        self.x, self.y = x * self.size_config, y * self.size_config
+        self.x, self.y = round(x), round(y)
         self.size_x, self.size_y = size
         self.size = size
-        self.b_radius = self.size_y / 2
+        self.b_radius = self.size_y * 0.5
         self.sub_surface = MyDrawObject(self.x, self.y, self.size, self.surface)
         return self.x, self.y, self.size
 
     def update_pos(self):
         self.sub_surface = MyDrawObject(self.x, self.y, self.size, self.surface)
-        self.b_radius = self.size_y / 2
+        self.b_radius = self.size_y * 0.5
 
     def main_work(self, exit):
         window = self.sub_surface.draw_object(
             (100, 100, 100), 
+            0,
             round(self.b_radius),
-            round(30 * self.size_config),
             round(40 * self.size_config),
         )
         # surface = self.sub_surface(self.x, self.y, self.size, self.surface) #type: ignore
