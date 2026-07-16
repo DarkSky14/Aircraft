@@ -1,9 +1,7 @@
-from module import boot
-import module
 from game import source
 from pygame import QUIT, K_ESCAPE, KEYDOWN, quit, event, USEREVENT
+from module.bootstrap import boot
 
-#boot = module
 _work = True
 
 def exit_level():

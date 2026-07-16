@@ -1,8 +1,6 @@
 from pygame import QUIT, K_ESCAPE, KEYDOWN, event, quit
-from module import boot
-import module
+from module.bootstrap import boot
 
-#boot = module
 _work = True
 
 def exit_language():

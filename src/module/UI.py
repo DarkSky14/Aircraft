@@ -2,7 +2,6 @@ from pygame import MOUSEBUTTONDOWN, draw, surface, Rect
 
 from module.Text import Text
 from module.UI_module.animation import AnimationMove
-from module.logged import log
 
 
 class MyDrawObject:  # Correct
@@ -18,15 +17,10 @@ class MyDrawObject:  # Correct
     def draw_object(
         self, color: tuple, border: int = 0, border_radius: int = 0, radius: int = 50
     ) -> Rect:
-        max_safe = min(self.rect.width, self.rect.height) // 2
-        border = min(border, max_safe)
-        border_radius = min(border_radius, max_safe)
-        radius = min(radius, max_safe)
-
-        log.debug(
-            "draw.rect params: rect=%s border=%s border_radius=%s radius=%s max_safe=%s",
-            tuple(self.rect), border, border_radius, radius, max_safe,
-        )
+        #max_safe = min(self.rect.width, self.rect.height) // 2
+        #border = min(border, max_safe)
+        #border_radius = min(border_radius, max_safe)
+        #radius = min(radius, max_safe)
 
         return draw.rect(
             self.surface, color, self.rect, border, border_radius, 
@@ -44,7 +38,7 @@ class Button(AnimationMove):
         self.event = event
         self.surface = window
         self.size_config = size_config
-        self.x, self.y= 0, 0
+        self.x, self.y = 0, 0
         self.size = 0, 0
         self.size_x, self.size_y = self.size
         self.b_radius = 0
@@ -116,10 +110,10 @@ class ModuleButton(Button, Text):#, ModuleText):
         self.get_set_text(text, self.x + 15, self.y + 2, color)
 
     def Button(self, function1):
-        button = self.draw_button(self.x, self.y, self.size, self.surface)  # type: ignore
+        button = MyDrawObject(self.x, self.y, self.size, self.surface)  # type: ignore
 
         if button.rect.collidepoint(self.event.mx, self.event.my):
-            button.draw_object((205, 200, 200), 3, 10)
+            button.draw_object((205, 200, 200), 0, round(self.b_radius))
             self.event.set_choose_button(1)
             self.event.set_choose_fake_button(1)
 
@@ -146,7 +140,7 @@ class SurfaceM(Button):
             self.event, self.surface, self.x_move, self.y_move, self.size_config
         )
 
-    def set_object(self, x, y, size):
+    def set_object(self, x, y, size: tuple = (int, int)):
         self.x, self.y = round(x), round(y)
         self.size_x, self.size_y = size
         self.size = size

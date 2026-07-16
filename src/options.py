@@ -1,12 +1,10 @@
-import module
-
 from module.UI import SurfaceM
 
 from pygame import QUIT, K_ESCAPE, KEYDOWN, image, transform, event, quit
 from module import (
-    absolute_import, log, boot
+    absolute_import, log
 )
-#boot = module
+from module.bootstrap import boot
 
 _fon_obj = image.load(absolute_import("pictures/fon_.png")).convert()
 _fon = transform.scale(_fon_obj, boot.screen)

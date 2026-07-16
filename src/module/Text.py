@@ -14,14 +14,13 @@ class Font:
             self._name_font, self._size_font, self.bold, self.italic
         )
 
-    def copy_font(self) -> Font:
+    def copy_font(self) -> "Font":
         return Font(self._name_font, self._size_font, self.bold, self.italic)
 
     def render_font(self)  -> font.Font:
         return self.font
 
     def set_font(self, new_font: Font):
-        self.font = new_font.copy_font()
         self._name_font = new_font.get_name()
         self._size_font = new_font.get_size()
         self.bold = new_font.get_bold()
@@ -61,33 +60,29 @@ class DrawText:
 class TriggerText:
     def __init__(self):
         self.config = None
-        self.lang = dict
+        self.lang = {}
 
     def set_change_text(self, inspection, change_x, change_y):
-        if self.config.check(inspection):
-            return self.lang.get(change_x, change_x)
-
-        elif not self.config.check(inspection):
-            return self.lang.get(change_y, change_y)
-
+        matched = self.config.check(inspection)
+        return self.lang.get(change_x if matched else change_y, change_x if matched else change_y)
 
 class StandardText:
     def __init__(self):
-        self.lang = dict
+        self.lang = {}
 
     def set_base_text(self, base_key):
         return self.lang.get(base_key, base_key)
 
 
-class DrawingText(DrawText, StandardText, TriggerText):
+class DrawingText(DrawText):
     def __init__(self):
-        StandardText().__init__()
+        DrawText.__init__(self)
 
     def get_set_text(self, text, x_text, y_text, color: tuple = (0, 0, 0)):
         self.draw_text(text, x_text, y_text, color)
 
 
-class Text(DrawingText, Font):  # Correct
+class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
     def __init__(self,
         font_name: font.Font,
         lang: dict,
@@ -123,11 +118,11 @@ class Text(DrawingText, Font):  # Correct
         self.font = obj.copy_font()
         self.lang = obj.get_language()
         self.surface = obj.surface
-        self.config = obj.config()
+        self.config = obj.config
         self.color = obj.get_color()
 
     def copy_text(self):
         return Text(self.font, self.lang, self.surface, self.config, self.color)
 
-    def cop_whaTT(self):
-        return self.font, self.lang, self.surface, self.config, self.color
+    def __iter__(self):
+        return iter((self.font, self.lang, self.surface, self.config, self.color))

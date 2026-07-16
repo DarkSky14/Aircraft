@@ -6,10 +6,10 @@ SRC_ROOT = Path(__file__).resolve().parent
 if str(SRC_ROOT) not in sys.path:
     sys.path.insert(0, str(SRC_ROOT))
 
-import module
 from module import (
-    log, absolute_import, boot
+    log, absolute_import
 )
+from module.bootstrap import boot
 
 from pygame import QUIT, image, transform, display, quit, event
 from options import options
@@ -17,7 +17,6 @@ from languageUI import language_get
 from level import level
 
 # Setup pygame/window -----------------------------
-#boot = module
 
 log.info("Setup icon window...")
 icon_obj = image.load(absolute_import("Aircraft.ico")).convert()

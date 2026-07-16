@@ -1,8 +1,6 @@
-import pygame
 from module import (
-    ScrollingBG, log, absolute_import, boot
+    ScrollingBG, log, absolute_import
 )
-import module
 
 from pygame import (
     QUIT, K_DOWN, K_UP, K_RIGHT, K_LEFT, K_ESCAPE, KEYDOWN, event, key,
@@ -12,8 +10,8 @@ from pygame import (
 from options import options
 from random import randint
 from os import listdir
+from module.bootstrap import boot
 
-#boot = module
 _bg_speed_ = 2 * boot.procent
 _game_work = True
 
@@ -68,7 +66,7 @@ def source(
         change_img = (USEREVENT + 3), create_bonus = (USEREVENT + 1),
         enemy_timer_spawn = 3500
     ):
-    global _game_work,  _player, _player_rect, _player_imgs, _player_speed
+    global _game_work, _player, _player_rect, _player_imgs, _player_speed
 
     fon_background = ScrollingBG(boot.bg, _bg_speed_)
 
@@ -190,6 +188,7 @@ def source(
 
     _game_work = True
     clean_bon_and_en()
+    _player_rect.x, _player_rect.y = 0,0
     boot.music.set_position()
     boot.music.music_all(boot.sound_menu)
     boot.standard_curs()

@@ -1,8 +1,6 @@
-__version__ = "0.2.8-dev"
-__author__ = "Chinho/DarkSky14"
-
 from dataclasses import dataclass
-import pygame
+from module import init, display, mouse, transform, image, time, surface
+#import pygame
 
 from module.correct_start import absolute_import
 from module.logged import log
@@ -13,19 +11,11 @@ from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG
 from module.event import EventControl
 from module.Text import Text, Font
 from module.UI import ModuleButton
-
-def get_version():
-    return __version__
-
-
-def get_author():
-    return __author__
-
-
+from module import get_author, get_version
 
 @dataclass
 class AppContext:
-    d: pygame.Surface
+    d: surface.Surface
     screen: tuple[int, int]
     procent: float
     conf_width: float
@@ -75,7 +65,7 @@ class AppContext:
 
 
 def bootstrap() -> AppContext:
-    pygame.init()
+    init()
 
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -92,18 +82,18 @@ def bootstrap() -> AppContext:
     sound_game = absolute_import("music/01897.mp3")
 
     def click_cursor():
-        pygame.mouse.set_cursor(11)
+        mouse.set_cursor(11)
 
     def standard_curs():
-        pygame.mouse.set_cursor(0)
+        mouse.set_cursor(0)
 
     def invisible_cursor():
-        pygame.mouse.set_visible(False)
+        mouse.set_visible(False)
 
     def visible_cursor():
-        pygame.mouse.set_visible(True)
+        mouse.set_visible(True)
 
-    FPS = pygame.time.Clock()
+    FPS = time.Clock()
 
     fps = 0
 
@@ -154,8 +144,8 @@ def bootstrap() -> AppContext:
     log.debug({"Main surface size": screen})
 
     log.info("Start load background image...")
-    bg = pygame.transform.scale(
-        pygame.image.load(absolute_import("pictures/background.png")).convert(), screen
+    bg = transform.scale(
+        image.load(absolute_import("pictures/background.png")).convert(), screen
     )
     log.info("Background image successfully loaded.")
     bgX = 0
@@ -198,7 +188,7 @@ def bootstrap() -> AppContext:
     standard_text = text.copy_text()
     standard_text.set_font(BASE_FONT.copy_font())
 
-    button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text.cop_whaTT(), procent)
+    button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text, procent)
 
     def sound_scroll():
         if config.check({"effect": "True"}):
@@ -207,7 +197,7 @@ def bootstrap() -> AppContext:
     fon_background = ScrollingBG(bg, bg_speed)
 
     def update_display():
-        pygame.display.update(conf_width, conf_height, width, height)
+        display.update(conf_width, conf_height, width, height)
 
     music = Music(config, sound_menu, 0.1)
     music.music_all(sound_menu)
@@ -235,7 +225,7 @@ def bootstrap() -> AppContext:
     return AppContext(
         d=d, screen=screen, procent=procent,
         conf_width=conf_width, conf_height=conf_height,
-        height=d.get_height(), width=d.get_width(),
+        height=height, width=width,
         config=config, GLOBAL_EVENT=GLOBAL_EVENT,
         standard_text=standard_text, big_text=big_text,
         button_modified=button_modified,
@@ -255,3 +245,5 @@ def bootstrap() -> AppContext:
         BASE_FONT=BASE_FONT,BLACK=BLACK,LIME=LIME, WHITE=WHITE,
         RED=RED, GREEN=GREEN
     )
+
+boot = bootstrap()
