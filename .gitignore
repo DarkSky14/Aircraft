@@ -1,7 +1,12 @@
+# Python generated file
 *__pycache__
 *output
 *Logs
 *data
+
+# Another
 buildozer.spec
+
+# Virtual environments
 .vscode*/
 *.idea

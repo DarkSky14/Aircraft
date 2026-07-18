@@ -1,149 +1,46 @@
+__version__ = "0.2.8"
+__author__ = "Chinho/DarkSky14"
+
 import pygame
-from pygame import init
+import sys
 
-def _debag():
-    try:
-        with open("module/correct_start.py") as correct:
-            correct.close()
-        return ""
-    except:
-        return "src/"
+from module.correct_start import absolute_import
+from module.logged import log
+from module.music import Music, Sound
 
-fix_import = _debag()
+from module.language import LanguageCreated, LanguageSetter
+from module.FileWorker import JsonReader, JsonWorker
 
+from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
+from module.event import EventControl
 
-try:
-    from logged import log
-    from music import Music
+from module.Text import *
+from module.UI import ModuleButton
 
-    from language import LanguageCreater, LanguageSetter
-    from FileWorker import JsonReader, JsonWorker
-
-    from Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-    from event import EventControl
-
-    from Text import Text, ModuleText
-    from UI import Button, ModuleButton, SurfaceM
-
-except:
-    from module.logged import log
-    from module.music import Music
-
-    from module.language import LanguageCreater, LanguageSetter
-    from module.FileWorker import JsonReader, JsonWorker
-
-    from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-    from module.event import EventControl
-
-    from module.Text import Text, ModuleText
-    from module.UI import Button, ModuleButton, SurfaceM
+def get_version():
+    return __version__
 
 
-init()
+def get_author():
+    return __author__
 
-game_work = True
-work = True
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+RED = (250, 0, 0)
+GREEN = (0, 255, 0)
+LIME = (100, 250, 100)
+COLOR_CASE = {
+    "BLACK": (0, 0, 0),
+    "WHITE": (255, 255, 255),
+    "RED": (250, 0, 0),
+    "GREEN": (0, 255, 0),
+    "LIME": (100, 250, 100),
+}
 
-
-main_surface = AdjustmentSurface().surface() # 960, 544 StandartSurface(960, 544) #
-sub_surface = AdjustmentSubSurface(1373, 761)# Original size 300x168
-d = sub_surface.surface(main_surface)
-main_surface.fill((0, 0, 0))
-d.fill((255, 255, 255))
-
-screen = sub_surface.get_size_surface()
-conf_width = sub_surface.get_conf_width()
-conf_height = sub_surface.get_conf_height()
-procent = sub_surface.get_procent()
-height = d.get_height()
-width =  d.get_width()
-
-log.debug({"Main surface size": screen})
-
-
-config = JsonWorker(
-    "config",
-    fix_import + "library/data",
-    {
-        "level": 1, 
-        "effect": "True", 
-        "music": "True", 
-        "language": "EN"
-    },
-    "config.json"
-)
-config.reader()
-
-temp = JsonWorker(
-    "temp",
-    "none",
-    {"musicID": "None"}
-)
-log.debug({"INITIALIAZE_TEMP": temp.get_data()})
-
-
-GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
-
-
-ENG = LanguageCreater("EN", fix_import + "library/language", "english.json")
-ENG.set_lang(JsonReader)
-ENGLISH = ENG.get_lang()
-
-UKR = LanguageCreater("UA", fix_import + "library/language", "ukrainian.json")
-UKR.set_lang(JsonReader)
-UKRAINIAN = UKR.get_lang()
-
-language = LanguageSetter(config).language_set(ENG, UKR)
-log.info("LANGUAGE LOADED...")
-
-
-log.info("Load font...")
-STANDART_TEXT = pygame.font.SysFont('Georgia', round(21 * procent), 0, 0) #Arial
-BIG_TEXT = pygame.font.SysFont('Georgia', round(36 * procent))
-VERS_GAME = pygame.font.SysFont(None, round(20 * procent))
-BASE_FONT = pygame.font.SysFont("Calibri", round(20 * procent))
-GAME_TEXT = pygame.font.SysFont("Consolas", round(30 * procent))
-log.info("Font (4) successfully loaded.")
-
-text = Text(VERS_GAME, language, d, config, (0,0,0))
-big_text = ModuleText(text.copy())
-big_text.create_font('Georgia', round(36 * procent))
-
-standart_text = ModuleText(text.copy())
-standart_text.create_font('Georgia', round(21 * procent))
-
-
-button_modified = ModuleButton(GLOBAL_EVENT, d, config, standart_text, procent)
-
-
-try:
-    from menu_client import sound_menu, scroll, bg, bg_speed
-except ImportError:
-    from module.menu_client import sound_menu, scroll, bg, bg_speed
-
-def on_music() -> bool:
-    if config.check({"effect": "True"}) == True:
-        return True
-    else:
-        return False
-
-is_music = on_music()
-
-def sound_scroll():
-    if is_music == True:
-        scroll()
-        
-
-fon_background = ScrollingBG(bg, bg_speed)
-
-
-def update_display():
-    pygame.display.update(conf_width, conf_height, width, height)
-
-
-music = Music(config, temp, sound_menu, 0.1)
-music.music_all(sound_menu)
-
-def background():
-    fon_background.update()
-    fon_background.draw(d)
+click_open_2 = absolute_import("effect/click_open2.mp3")
+click_open_1 = absolute_import("effect/click_open1.mp3")
+click_exit = absolute_import("effect/click_exit1.mp3")
+effect_game = absolute_import("effect/sound3.mp3")
+click_aim = absolute_import("effect/nice click aim.mp3")
+sound_menu = absolute_import("music/Menu1 - peace.mp3")
+sound_game = absolute_import("music/01897.mp3")

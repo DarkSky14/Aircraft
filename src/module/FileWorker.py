@@ -1,138 +1,115 @@
 import json
-from os import makedirs
-
-try:
-    from module.logged import log
-except ImportError:
-    from logged import log
+import os
+import pygame as py
+from module.logged import log
 
 
 class Lib:
-    def __init__(self, name: str, url: str, data, file: str = "None"):
+    def __init__(self, name: str, url: str, data, file: str):
         self._name = name
         self._url = url
         self._data = data
         self._file = file
 
-    def get_name(self):
+    @property
+    def path(self) -> str:
+        return os.path.join(self._url, self._file)
+
+    @property
+    def name(self) -> str:
         return self._name
 
-    def get_url(self):
-        return self._url
-
-    def get_data(self):
-        return self._data
-
-    def get_file(self):
-        return self._file
-    
-    def get_value(self, argID: str):
-        return dict.get(self._data, argID)
-
-    def update_name(self, new_name: str):
+    @name.setter
+    def name(self, new_name: str) -> None:
         self._name = new_name
 
-    def update_url(self, new_url: str):
+    @property
+    def url(self) -> str:
+        return self._url
+
+    @url.setter
+    def url(self, new_url: str) -> None:
         self._url = new_url
 
-    def update_dict(self, new_data):
+    @property
+    def data(self):
+        return self._data
+
+    @data.setter
+    def data(self, new_data: str) -> None:
         self._data = new_data
 
-    def update_file(self, new_file: str):
+    @property
+    def file(self) -> str:
+        return self._file
+
+    @file.setter
+    def file(self, new_file: str) -> None:
         self._file = new_file
+
+    def get_value(self, arg_id: str, default: None):
+        return self._data.get(arg_id, default)
 
 
 class _DLib(Lib):
-    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
+    def __init__(self, name: str, url: str, data: dict, file: str):
         Lib.__init__(self, name, url, data, file)
-        self._name = name
-        self._url = url
-        self._dict = data
-        self._file = file
-    
-    def get_value(self, argID: str):
-        return dict.get(self._dict, argID, 0)
 
     def update_dict(self, new_dict: dict):
-        self._dict.update(new_dict)
+        self._data.update(new_dict)
 
     def clear_dict(self):
-        self._dict.clear()
+        self._data.clear()
 
 
 class CheckedDict:
     @staticmethod
-    def check(data: dict, args: dict):
-        key = list(args.keys()).pop()
-        return args == {key: f"{data.get(key)}"}   
-    
-    #@staticmethod
-    #def return_value(data: dict, value: str, default = 0):
-    #    return dict.get(data, value, default)
-    
-    #@staticmethod
-    #def return_key(args: dict):
-    #    return list(args.keys()).pop()
+    def check(data: dict, arg: dict):
+        key, value = next(iter(arg.items()))
+        return data.get(key) == value
 
 
-class JsonReader(_DLib):
-    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
-        _DLib.__init__(self, name, url, data, file)
-    
-    def read(self, encoding = "utf-8"):
-        with open(self._url + "/" + self._file, "r", encoding = encoding) as file:
-            data = json.load(file)
-            self.update_dict(data)
-            return data
+class JsonReader:
+    @staticmethod
+    def read(path, encoding="utf-8"):
+        with open(path, "r", encoding=encoding) as file:
+            return json.load(file)
 
 
-class JsonWriter(_DLib):
-    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
-        _DLib.__init__(self, name, url, data, file)
-
-    def write(self, args: dict, encoding = None):
-        data = self._dict.copy()
+class JsonWriter:
+    @staticmethod
+    def write(url, path, data,  args: dict, encoding="utf-8"):
         data.update(args)
+        py.makedirs(url, exist_ok=True)
 
-        self._dict.update(data)
-        makedirs(self._url, exist_ok=True)
-
-        with open((self._url + "/" + self._file), "w", encoding=encoding) as file:
-            json.dump(data, file, indent = 4) 
+        with open(path, "w", encoding=encoding) as file:
+           json.dump(data, file, indent=4)
+        return data
 
 
-class JsonWorker(JsonReader, JsonWriter, _DLib):
-    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
+class JsonWorker(_DLib):
+    def __init__(self, name: str, url: str, data: dict, file: str):
         _DLib.__init__(self, name, url, data, file)
 
-    def check(self, args: dict, script = None):
-        ifel = CheckedDict.check(self.get_data(), args)
-        if ifel == True:
-            if script != None:
-                script() #type: ignore
-            return True
-        
-        elif ifel == False:
-            return False
+    def check(self, args: dict, script=None):
+        checker = CheckedDict.check(self.data, args)
+        if checker and script is not None:
+            script()  # type: ignore
+        return checker
+
+    def reader(self, encoding="utf-8"):
+        try:
+            data = JsonReader.read(self.path, encoding)
+            log.info("Loaded %s: %s", self.name, self.data)
+        except FileNotFoundError:
+            log.warning("File %s not found, creating new one...", self.file)
+            self.writer(self.data)
+        except json.JSONDecodeError as jde:
+            log.exception("File %s is empty or corrupted: %s", self.file, jde)
+            self.writer(self.data)
         else:
-            log.error("Undefined error...", {self.get_data(): args}, stack_info=True)
-            return None
+            self.data = data
+            return self.data
 
-    def reader(self, encoding = "utf-8"):
-        try: 
-            self.read(encoding)
-            log.info({f"Load {self.get_name()}": self.get_data()})
-            
-        except FileNotFoundError as fnfe: 
-            log.exception({f"File {self.get_file()} not found, creating new file...": fnfe}, stack_info=True)
-            self.writer(self._dict)
-
-        except json.decoder.JSONDecodeError as jde:
-            log.exception({f"File {self.get_file()} void or crash, recording...": jde}, stack_info=True)
-            self.writer(self._dict)
-        except:
-            log.critical("Undefined error...", stack_info=True)
-
-    def writer(self, args: dict, encoding = "utf-8"):
-        self.write(args, encoding)
-         
+    def writer(self, args: dict, encoding="utf-8"):
+        JsonWriter.write(self.url, self.path, self.data, args, encoding)

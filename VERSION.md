@@ -1,5 +1,13 @@
 Version
 =========
+# V 0.2.8
+**Improvements**
+- Add pre-render static UI elements.
+- Optimize list storage in game.
+- Fix import statements.
+- Fix dynamic import.
+
+**Bugfixes**
 
 # V 0.2.7
 -------------
@@ -68,7 +76,7 @@ Version
 **Bugfixes**
 - Fixed a bug with placing backgrounds on screens larger than (1373, 767) pixels.
 - Fixed a bug related to enemies and bonuses, and their clearing.
-- Fixes in text and button classes.
+- Fixes in *text* and *button* classes.
 
 # V 0.2.2
 -------------
@@ -76,15 +84,15 @@ Version
 - Improving the performance of the *Surface* class.
 
 **Bugfixes**
-- Fix screen config.
+- Fix *screen_config*.
 
 # V 0.2.1
 -------------
 **Improvements**
 - Add event_pool.
 - Add logging class (print in console).
-- Improwed Formatter.
-- Improwed on/off music.
+- Improved *Formatter*.
+- Improved on/off music.
 - Add *draw* class.
 - Save appearance of a mouse.
 - Optimize CPU usage.

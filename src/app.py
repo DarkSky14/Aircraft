@@ -1,137 +1,141 @@
-from sys import exit
+import sys
+from pathlib import Path
 
-from module import ( 
-    button_modified, standart_text, GLOBAL_EVENT, background, work,
-    update_display, big_text, sound_scroll, log, fix_import, procent,
-    height, screen
+SRC_ROOT = Path(__file__).resolve().parent
+if str(SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(SRC_ROOT))
+
+from module import (
+    log, absolute_import, py
 )
+from module.bootstrap import boot
 
-import pygame
-
-from pygame import QUIT
-
-from module.menu_client import (
-    clicks, return_exit, version_game, standart_curs, click_cursor
-)
-
-from module.game_client import (
-    set_fps, get_fps, tick_fps
-)
-
+from options import options
+from languageUI import language_get
+from level import level
 
 # Setup pygame/window -----------------------------
+
 log.info("Setup icon window...")
-icon_obj = pygame.image.load(fix_import + 'library/Aircraft.ico').convert()
-icon = pygame.transform.scale(icon_obj, screen)
+icon_obj = py.image.load(absolute_import("Aircraft.ico")).convert()
+icon = py.transform.scale(icon_obj, (32, 32))
 log.info("Icon window setup complete.")
 log.info("Setup background image options...")
 
-pygame.display.set_caption('Aircraft',"Aircraft")
-pygame.display.set_icon(icon) 
+py.display.set_caption("Aircraft", "Aircraft")
+py.display.set_icon(icon)
+
+def exit_game():
+    log.info("Successful stop.")
+    py.quit()
+    sys.exit()
+
+_button1_ = boot.button_modified.copy()
+_button1_.set_object((-300 * boot.procent), (220 * boot.procent), (300, 30))
+
+_button2_ = boot.button_modified.copy()
+_button2_.set_object(
+    (-300 * boot.procent),
+    (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * boot.procent)),
+    (300, 30),
+)
+
+_button3_ = boot.button_modified.copy()
+_button3_.set_object(
+    (-300 * boot.procent),
+    (_button2_.get_y_pos() + _button2_.get_size_y() + (10 * boot.procent)),
+    (300, 30),
+)
+
+_button4_ = boot.button_modified.copy()
+_button4_.set_object(
+    (-300 * boot.procent),
+    (_button3_.get_y_pos() + _button3_.get_size_y() + (25 * boot.procent)),
+    (300, 30),
+)
+
+
+def _button_hide():
+    _button1_.moved(-300, None, 0)
+    _button2_.moved(-300, None, 0)
+    _button3_.moved(-300, None, 0)
+    _button4_.moved(-300, None, 0)
+
+
+def _button_get():
+    _button1_.moved(50, None, 300)
+    _button2_.moved(50, None, 300)
+    _button3_.moved(50, None, 300)
+    _button4_.moved(50, None, 300)
+
+
+def _button_1_callback_():
+    _button1_.check_config({"effect": "True"}, boot.clicks)
+    level()
+
+def _button_2_callback_():
+    _button2_.check_config({"effect": "True"}, boot.clicks)
+    options(25, 150)
+
+def _button_3_callback_():
+    _button3_.check_config({"effect": "True"}, boot.clicks)
+    language_get()
+
+def _button_4_callback_():
+    _button4_.check_config({"effect": "True"}, boot.return_exit)
+    exit_game()
+
+_button_get()
+
+_buttons = (
+    (_button1_, _button_1_callback_, "0"),
+    (_button2_, _button_2_callback_, "1"),
+    (_button3_, _button_3_callback_, "2"),
+    (_button4_, _button_4_callback_, "6"),
+)
+
+def draw_menu_buttons():
+    for button, callback, text_key in _buttons:
+        button.Button(callback)
+        button.animation()
+        button.get_text(boot.standard_text.set_base_text(text_key))
+
 
 def main_menu():
-    global work
+    work = True
 
-    def exitGame():     
-        log.info("Successful stop.")
-        pygame.quit()
-        exit()
-
-    #sub_surface = initial.UI.MyDrawObject(50, 240, (350, 250), initial.d)
-    #sub_surface.draw_object((100, 100, 100), 300, 10)
-
-    button1 = button_modified.copy()
-    button1.set_object((-300 * procent), (220 * procent), (300, 30))
-    button1.moved(50, None, 300) 
-    
-    button2 = button_modified.copy()
-    button2.set_object((-300 * procent), (button1.get_y_pos() + button1.get_size_y() + (10 * procent)), (300, 30))
-    button2.moved(50, None, 300) 
-
-    button3 = button_modified.copy()
-    button3.set_object((-300 * procent), (button2.get_y_pos() + button2.get_size_y() + (10 * procent)), (300, 30))
-    button3.moved(50, None, 300) 
-
-    button4 = button_modified.copy()
-    button4.set_object((-300 * procent), (button3.get_y_pos() + button3.get_size_y() + (25 * procent)), (300, 30))
-    button4.moved(50, None, 300) 
-
-    def button_1():
-        def button(): 
-            button1.check_config({"effect": "True"}, clicks)
-            from level import level
-            level()
-            #button1.moved(-300, None, 0)
-            #button1.animation(level())               
-            #button1.moved(50, None, 300) 
-            
-        button1.Button(button)
-        button1.animation()
-        button1.get_text(standart_text, "0")
-    
-    def button_2():
-        def button(): 
-            button2.check_config({"effect": "True"}, clicks)
-            from options import options
-            options(25, 150)
-            #button2.moved(50, None, 0) 
-            #button2.animation(opti())
-
-        button2.Button(button)
-        button2.animation()
-        button2.get_text(standart_text, "1")
-    
-    def button_3():
-        def button(): 
-            button3.check_config({"effect": "True"}, clicks)
-            from languageUI import language_get
-            language_get()
-
-        button3.Button(button)
-        button3.animation()
-        button3.get_text(standart_text, "2")
-    
-    def button_4():
-        def button(): 
-            button4.check_config({"effect": "True"}, return_exit)
-            exitGame()
-
-        button4.Button(button)
-        button4.animation()
-        button4.get_text(standart_text, "6")
-
-    set_fps(60)
+    boot.set_fps(60)
 
     def initialize():
-        for event in pygame.event.get():
-            GLOBAL_EVENT.event = event
+        boot.GLOBAL_EVENT.event_pool()
+        if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
+            py.quit()
+            sys.exit()
 
-            if GLOBAL_EVENT.comparison_type(QUIT):
-                pygame.quit()
-                exit()
+        boot.GLOBAL_EVENT.mouse_get()
+        boot.GLOBAL_EVENT.mouse_button_down()
+        boot.background()
 
-            GLOBAL_EVENT.mouse_get()
-            GLOBAL_EVENT.MOUSEBUTTONDOWN() 
+        draw_menu_buttons()
 
-        background() 
-        
-        button_1() 
-        button_2() 
-        button_3()   
-        button_4() 
+        boot.version_game()
+        boot.GLOBAL_EVENT.event_button_check(
+            boot.standard_curs, boot.click_cursor, boot.sound_scroll
+        )
+        boot.big_text.get_set_text(
+            boot.big_text.set_base_text("7"), 70 * boot.procent, 150 * boot.procent
+        )
 
-        version_game()
-        GLOBAL_EVENT.event_button_check(standart_curs, click_cursor, sound_scroll)
-        big_text.get_set_text("7", 70 * procent, 150 * procent)     
+        boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
+        boot.tick_fps()
+        boot.update_display()
 
-        get_fps(coordinate=(3, height - (20 * procent)))
-        tick_fps()
-        update_display()
-
-    while work:   
-        initialize()    
-
-    work = True    
+    while work:
+        try:
+            initialize()
+        except Exception:
+            log.exception("Unhandled error in main")
+            raise
 
 if __name__ == "__main__":
     log.info("Successful start...")

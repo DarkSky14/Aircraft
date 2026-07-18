@@ -1,18 +1,15 @@
 import logging
-from os import makedirs
+import os
 from time import strftime
+from module import absolute_import
 
-path_log = 'library/Logs'
+path_log = absolute_import("Logs")
 
-makedirs(path_log, exist_ok=True)
+os.makedirs(path_log, exist_ok=True)
 log = logging
 log.basicConfig(
-    filename = (path_log + "/" + "logs {}.log").format(strftime("%Y-%m-%d %H-%M-%S")),
-    format = u'%(levelname)-8s [%(asctime)s.%(msecs)03d] %(message)s',
-    datefmt = '%Y-%m-%d %H:%M:%S',
-    level = logging.DEBUG
+    filename=(os.path.join(path_log, "logs {}.log").format(strftime("%Y-%m-%d %H-%M-%S"))),
+    format="%(levelname)-8s [%(asctime)s.%(msecs)03d] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+    level=logging.DEBUG,
 )
-
-
-
-    
