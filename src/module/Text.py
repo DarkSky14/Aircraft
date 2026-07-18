@@ -1,4 +1,5 @@
-from pygame import font, Surface
+import pygame as py
+
 
 class Font:
     def __init__(self, name_font, size_font, bold=False, italic=False):
@@ -10,14 +11,14 @@ class Font:
         self.__initial_font__()
 
     def __initial_font__(self):
-        self.font = font.SysFont(
+        self.font = py.font.SysFont(
             self._name_font, self._size_font, self.bold, self.italic
         )
 
     def copy_font(self) -> "Font":
         return Font(self._name_font, self._size_font, self.bold, self.italic)
 
-    def render_font(self)  -> font.Font:
+    def render_font(self)  -> py.font.Font:
         return self.font
 
     def set_font(self, new_font: Font):
@@ -46,15 +47,19 @@ class Font:
 
 class DrawText:
     def __init__(self):
-        self.font = font.Font()
-        self.surface = Surface
+        self.font = py.font.Font()
+        self.surface = py.surface.Surface
 
-    def draw_text(self, text, x, y, color: tuple = (0, 0, 0)):
-        text_obj = self.font.render(text, True, color)
-        text_rect = text_obj.get_rect()
-        text_rect.topleft = (x, y)
-        self.surface.blit(text_obj, text_rect)
-        return text_rect
+    def draw_text(self, text: str, x, y, color: tuple = (0, 0, 0)):
+        cache_key = (text, color, id(self.font))
+        if getattr(self, "_cache_key", None) != cache_key:
+            self._cache_key = cache_key
+            self.text_obj = self.font.render(text, True, color)
+            self.text_rect = self.text_obj.get_rect()
+
+        self.text_rect.topleft = (x, y)
+        self.surface.blit(self.text_obj, self.text_rect)
+        return self.text_rect
 
 
 class TriggerText:
@@ -84,9 +89,9 @@ class DrawingText(DrawText):
 
 class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
     def __init__(self,
-        font_name: font.Font,
+        font_name: py.font.Font,
         lang: dict,
-        surface: Surface,
+        surface: py.surface.Surface,
         config,
         color: tuple = (0, 0, 0)):
         self.font = font_name
@@ -94,7 +99,6 @@ class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
         self.surface = surface
         self.config = config
         self.color = color
-        DrawText().__init__()
 
     def get_language(self):
         return self.lang
@@ -111,7 +115,7 @@ class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
     def set_language(self, new_language: dict):
         self.lang = new_language
 
-    def set_surface(self, surface: Surface):
+    def set_surface(self, surface: py.surface.Surface):
         self.surface = surface
 
     def set_settings_text(self, obj: Text):

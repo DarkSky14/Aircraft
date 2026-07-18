@@ -1,5 +1,4 @@
-from pygame import event, time, mouse, MOUSEBUTTONDOWN
-
+import pygame as py
 
 class EventControl:
     def __init__(
@@ -14,22 +13,21 @@ class EventControl:
         self.config_width = config_width
         self.config_height = config_height
         self.mx, self.my = 0, 0
-        self.event = event.Event
+        self.events = []
 
     def event_pool(self):
-        for eventful in event.get():
-            self.event = eventful
+        self.events = py.event.get()
 
     def mouse_get(self):
-        self.mx, self.my = mouse.get_pos()
+        self.mx, self.my = py.mouse.get_pos()
         self.mx -= self.config_width
         self.my -= self.config_height
 
     def mouse_button_down(self):
         self.set_click(False)
-        if self.comparison_type(MOUSEBUTTONDOWN) and self.choose_button == 1:
+        if self.comparison_type(py.MOUSEBUTTONDOWN) and self.choose_button == 1:
             self.set_choose_button(0)
-            now = time.get_ticks()
+            now = py.time.get_ticks()
             if now > self.debounce_ms + self._last_click_time:
                 self._last_click_time = now
                 self.set_click(True)
@@ -58,11 +56,12 @@ class EventControl:
     def set_choose_fake_button(self, fake_choose: int):
         self.fake_choose_button = fake_choose
 
-    def comparison_type(self, event_type):
-        return self.event.type == event_type
+    def comparison_type(self, event_type) -> bool:
+        return any(e.type == event_type for e in self.events)
 
-    def comparison_key(self, event_key):
-        return self.event.key == event_key
+    def comparison_key(self, event_key) -> bool:
+        return any(getattr(e, "key", None) == event_key for e in self.events)
 
-    def set_key(self, event_key):
-        self.event.key = event_key
+    @staticmethod
+    def custom_type():
+        return py.event.custom_type()

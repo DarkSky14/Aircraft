@@ -1,7 +1,8 @@
-__version__ = "0.2.8-dev"
+__version__ = "0.2.8"
 __author__ = "Chinho/DarkSky14"
 
-from pygame import init, display, mouse, transform, image, time, surface
+import pygame
+import sys
 
 from module.correct_start import absolute_import
 from module.logged import log

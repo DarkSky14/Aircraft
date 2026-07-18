@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from module import init, display, mouse, transform, image, time, surface
-#import pygame
+import pygame as py
 
 from module.correct_start import absolute_import
 from module.logged import log
@@ -15,7 +14,7 @@ from module import get_author, get_version
 
 @dataclass
 class AppContext:
-    d: surface.Surface
+    d: py.surface.Surface
     screen: tuple[int, int]
     procent: float
     conf_width: float
@@ -65,7 +64,7 @@ class AppContext:
 
 
 def bootstrap() -> AppContext:
-    init()
+    py.init()
 
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -82,18 +81,18 @@ def bootstrap() -> AppContext:
     sound_game = absolute_import("music/01897.mp3")
 
     def click_cursor():
-        mouse.set_cursor(11)
+        py.mouse.set_cursor(11)
 
     def standard_curs():
-        mouse.set_cursor(0)
+        py.mouse.set_cursor(0)
 
     def invisible_cursor():
-        mouse.set_visible(False)
+        py.mouse.set_visible(False)
 
     def visible_cursor():
-        mouse.set_visible(True)
+        py.mouse.set_visible(True)
 
-    FPS = time.Clock()
+    FPS = py.time.Clock()
 
     fps = 0
 
@@ -144,8 +143,8 @@ def bootstrap() -> AppContext:
     log.debug({"Main surface size": screen})
 
     log.info("Start load background image...")
-    bg = transform.scale(
-        image.load(absolute_import("pictures/background.png")).convert(), screen
+    bg = py.transform.scale(
+        py.image.load(absolute_import("pictures/background.png")).convert(), screen
     )
     log.info("Background image successfully loaded.")
     bgX = 0
@@ -163,11 +162,11 @@ def bootstrap() -> AppContext:
     GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
     ENG = LanguageCreated("EN", absolute_import("language"), "english.json")
-    ENG.set_language(JsonReader)
+    ENG.set_language(JsonWorker)
     ENGLISH = ENG.language
 
     UKR = LanguageCreated("UA", absolute_import("language"), "ukrainian.json")
-    UKR.set_language(JsonReader)
+    UKR.set_language(JsonWorker)
     UKRAINIAN = UKR.language
 
     active_language = LanguageSetter(config).language_set(ENG, UKR)
@@ -197,7 +196,7 @@ def bootstrap() -> AppContext:
     fon_background = ScrollingBG(bg, bg_speed)
 
     def update_display():
-        display.update(conf_width, conf_height, width, height)
+        py.display.update(conf_width, conf_height, width, height)
 
     music = Music(config, sound_menu, 0.1)
     music.music_all(sound_menu)
@@ -209,7 +208,7 @@ def bootstrap() -> AppContext:
     def version_game():
         d.blit(
             VERS_GAME.render_font().render(str(get_version()), True, BLACK),
-            (width - (50 * procent), height - (14 * procent)),
+            (width - (38 * procent), height - (14 * procent)),
         )
 
     def get_fps(

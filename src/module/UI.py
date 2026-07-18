@@ -1,39 +1,38 @@
-from pygame import MOUSEBUTTONDOWN, draw, surface, Rect
-
+import pygame as py
 from module.Text import Text
 from module.UI_module.animation import AnimationMove
 
 
 class MyDrawObject:  # Correct
     def __init__(
-        self, left: float, top: float, size: tuple, surface: surface.Surface
+        self, left: float, top: float, size: tuple, window: py.surface.Surface
     ) -> None:
         self.top = top
         self.left = left
         self.size = size
-        self.surface = surface
-        self.rect = Rect((self.left, self.top), self.size)
+        self.surface = window
+        self.rect = py.Rect((self.left, self.top), self.size)
 
     def draw_object(
         self, color: tuple, border: int = 0, border_radius: int = 0, radius: int = 50
-    ) -> Rect:
+    ) -> py.Rect:
         #max_safe = min(self.rect.width, self.rect.height) // 2
         #border = min(border, max_safe)
         #border_radius = min(border_radius, max_safe)
         #radius = min(radius, max_safe)
 
-        return draw.rect(
+        return py.draw.rect(
             self.surface, color, self.rect, border, border_radius, 
             radius, radius, radius, radius,
         )
 
-    def get_rect(self) -> Rect:
+    def get_rect(self) -> py.Rect:
         return self.rect
 
 
 class Button(AnimationMove):
     def __init__(
-        self, event, window: surface.Surface, size_config: int | float = 0
+        self, event, window: py.surface.Surface, size_config: int | float = 0
     ):
         self.event = event
         self.surface = window
@@ -86,7 +85,7 @@ class Button(AnimationMove):
 
 class ModuleButton(Button, Text):#, ModuleText):
     def __init__(
-        self, event, window: surface.Surface, config,
+        self, event, window: py.surface.Surface, config,
         class_text: Text, size_config: int|float = 0,
     ):
         ob1, ob2, ob3, ob4, ob5 = class_text
@@ -117,7 +116,7 @@ class ModuleButton(Button, Text):#, ModuleText):
             self.event.set_choose_button(1)
             self.event.set_choose_fake_button(1)
 
-            if self.event.comparison_type(MOUSEBUTTONDOWN) and self.event.get_click():
+            if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
                 button.draw_object((205, 200, 200), 3, 10)
                 self.event.set_choose_button(0)
                 self.event.set_click(False)
@@ -128,7 +127,7 @@ class ModuleButton(Button, Text):#, ModuleText):
 
 class SurfaceM(Button):
     def __init__(
-        self, event, window: surface.Surface, x_move=0,
+        self, event, window: py.surface.Surface, x_move=0,
         y_move=0, size_config: float = 0,
     ):
         self.x_move = x_move
@@ -164,7 +163,7 @@ class SurfaceM(Button):
 
         if not window.collidepoint((self.event.mx, self.event.my)):
             self.event.set_choose_button(1)
-            if self.event.comparison_type(MOUSEBUTTONDOWN) and self.event.get_click():
+            if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
                 self.event.set_choose_button(0)
                 self.event.set_click(False)
                 exit()

@@ -1,13 +1,12 @@
 from module.UI import SurfaceM
 
-from pygame import QUIT, K_ESCAPE, KEYDOWN, image, transform, event, quit
 from module import (
-    absolute_import, log
+    absolute_import, log, py, sys
 )
 from module.bootstrap import boot
 
-_fon_obj = image.load(absolute_import("pictures/fon_.png")).convert()
-_fon = transform.scale(_fon_obj, boot.screen)
+_fon_obj = py.image.load(absolute_import("pictures/fon_.png")).convert()
+_fon = py.transform.scale(_fon_obj, boot.screen)
 log.info("Background image options setup complete.")
 
 _work = True
@@ -54,48 +53,28 @@ _button3_.set_object(
 )
 
 def _button1_callback():
-    _check = _button1_.check_config({"effect": "True"})
-    if _check:
+    if _button1_.check_config({"effect": "True"}):
         boot.clicks()
         _button1_.write_in_config({"effect": "False"})
-
-    elif not _check:
-        _button1_.write_in_config({"effect": "True"})
-
     else:
         _button1_.write_in_config({"effect": "True"})
-        log.error(
-            "Error in config file, missing 'effect' key. Default value 'True' was set."
-        )
 
 def _button2_callback():
     _button2_.check_config({"effect": "True"}, boot.clicks)
-    _check = _button2_.check_config({"music": "True"})
-
-    if _check:
+    if _button2_.check_config({"music": "True"}):
         _button2_.write_in_config({"music": "False"})
-        sound()
-
-    elif not _check:
-        _button2_.write_in_config({"music": "True"})
-        sound()
-
     else:
         _button2_.write_in_config({"music": "True"})
-        log.error(
-            "Error in config file, missing 'music' key. Default value 'True' was set."
-        )
-        sound()
+    sound()
 
 def _button3_callback():
     _button3_.check_config({"effect": "True"}, boot.return_exit)
     exit_options()
 
-
 def options(x_t=536.5, y_t=255.5):
     global _x_coord, y_coord, x_c, y_c, _runner, _work, _surfM_
     
-    if x_t != _x_coord and y_t != y_coord:
+    if x_t != _x_coord or y_t != y_coord:
         _x_coord, y_coord = x_t, y_t
 
         _surfM_ = SurfaceM(boot.GLOBAL_EVENT, boot.d, size_config=boot.procent)
@@ -125,21 +104,17 @@ def options(x_t=536.5, y_t=255.5):
     boot.visible_cursor()
 
     def initialize():
-        for event_ in event.get():
-            boot.GLOBAL_EVENT.event = event_
-            if boot.GLOBAL_EVENT.event.type == QUIT:
-                quit()
-                exit()
+        boot.GLOBAL_EVENT.event_pool()
+        if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
+            py.quit()
+            sys.exit()
 
-            if boot.GLOBAL_EVENT.comparison_type(KEYDOWN):
-                if boot.GLOBAL_EVENT.comparison_key(K_ESCAPE):
-                    boot.GLOBAL_EVENT.set_key(0)
+        if boot.GLOBAL_EVENT.comparison_type(py.KEYDOWN):
+                if boot.GLOBAL_EVENT.comparison_key(py.K_ESCAPE):
                     quit_options()
 
         boot.GLOBAL_EVENT.mouse_get()
         boot.GLOBAL_EVENT.mouse_button_down()
-        # surfM.update_pos()
-        # surfM.animation_resize()
         _surfM_.main_work(quit_options)
 
         _button1_.Button(_button1_callback)
@@ -156,7 +131,6 @@ def options(x_t=536.5, y_t=255.5):
         text = boot.standard_text.set_base_text("6")
         _button3_.get_text(text)
 
-        boot.GLOBAL_EVENT.mouse_button_down()
         boot.GLOBAL_EVENT.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
@@ -170,11 +144,14 @@ def options(x_t=536.5, y_t=255.5):
         boot.update_display()
 
     while _work:
-        if anim_time_fon <= 180:
-            anim_time_fon += 20
-            boot.main_surface.blit(_fon, (0 + boot.conf_width, 0 + boot.conf_height))
-
-        initialize()
+        try:
+            if anim_time_fon <= 180:
+                anim_time_fon += 20
+                boot.main_surface.blit(_fon, (0 + boot.conf_width, 0 + boot.conf_height))
+            initialize()
+        except Exception:
+            log.exception("Unhandled error in main")
+            raise
 
     else:
         _work = True

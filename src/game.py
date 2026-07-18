@@ -1,15 +1,10 @@
 from module import (
-    ScrollingBG, log, absolute_import
+    ScrollingBG, log, absolute_import,py, sys
 )
 
-from pygame import (
-    QUIT, K_DOWN, K_UP, K_RIGHT, K_LEFT, K_ESCAPE, KEYDOWN, event, key,
-    USEREVENT, time, image, transform, Rect
-)
-
-from options import options
 from random import randint
 from os import listdir
+from options import options
 from module.bootstrap import boot
 
 _bg_speed_ = 2 * boot.procent
@@ -19,16 +14,17 @@ IMGS_PATH = absolute_import("player")
 
 log.info("Start load player images...")
 _player_img = [
-    image.load(IMGS_PATH + "/" + file).convert_alpha()
-    for file in listdir(IMGS_PATH)
+    py.image.load(IMGS_PATH + "/" + file).convert_alpha()
+    for file in sorted(listdir(IMGS_PATH))
 ]
 _player_imgs = [
-    transform.scale(
+    py.transform.scale(
         player_img,
         ((player_img.get_width() * boot.procent), (player_img.get_height() * boot.procent)),
     )
     for player_img in _player_img
 ]
+CHANGED_IMG = boot.GLOBAL_EVENT.custom_type()
 log.info("Player images successfully load.")
 _player = _player_imgs[0]
 _player_rect = _player.get_rect()
@@ -36,34 +32,36 @@ _player_speed = 2.5 * boot.procent
 
 
 log.info("Start load enemy image...")
-_enemy_png = image.load(absolute_import("pictures/enemy.png"))
-_enemy = transform.scale(
+_enemy_png = py.image.load(absolute_import("pictures/enemy.png"))
+_enemy = py.transform.scale(
     _enemy_png, ((_enemy_png.get_width() * boot.procent), (_enemy_png.get_height() * boot.procent))
 )
 def _create_enemy(speed_w1, speed_w2):
     global _enemy
-    enemy_rect = Rect(boot.width, randint(0, int(boot.height)), *_enemy.get_size())
+    enemy_rect = py.Rect(boot.width, randint(0, int(boot.height)), *_enemy.get_size())
     enemy_speed = randint(speed_w1, speed_w2)
     return [_enemy, enemy_rect, enemy_speed]
+ENEMY_EVENT = boot.GLOBAL_EVENT.custom_type()
 log.info("Enemy image successfully loaded.")
 
 
 log.info("Start load bonus image...")
-_bonus_jpg = image.load(absolute_import("pictures/bonus.jpg"))
-_bonus = transform.scale(
+_bonus_jpg = py.image.load(absolute_import("pictures/bonus.jpg"))
+_bonus = py.transform.scale(
     _bonus_jpg, ((_bonus_jpg.get_width() * boot.procent), (_bonus_jpg.get_height() * boot.procent))
 )
 def _create_bonus():
     global _bonus
-    bonus_rect = Rect(randint(0, int(boot.width)), -1000, *_bonus.get_size())
+    bonus_rect = py.Rect(randint(0, int(boot.width)), -1000, *_bonus.get_size())
     bonus_speed = 0
     return [_bonus, bonus_rect, bonus_speed]
+BONUS_EVENT = boot.GLOBAL_EVENT.custom_type()
 log.info("Bonus image successfully loaded.")
 
 
 def source(
         speed_w1, speed_w2, enemy_spawn, max_score, level: dict,
-        change_img = (USEREVENT + 3), create_bonus = (USEREVENT + 1),
+        change_img = CHANGED_IMG, create_bonus = BONUS_EVENT,
         enemy_timer_spawn = 3500
     ):
     global _game_work, _player, _player_rect, _player_imgs, _player_speed
@@ -84,25 +82,26 @@ def source(
     last_score_render = -1
     score_text_cache = boot.BASE_FONT.render_font().render("0", True, boot.BLACK)
 
-    time.set_timer(enemy_spawn, enemy_timer_spawn)
-    time.set_timer(change_img, 125)
-    time.set_timer(create_bonus, 2500)
+    py.time.set_timer(enemy_spawn, enemy_timer_spawn)
+    py.time.set_timer(change_img, 125)
+    py.time.set_timer(create_bonus, 2500)
 
     def clean_bon_and_en():
         """Delete all bonuses and enemies"""
         bonuses.clear()
         enemies.clear()
 
-    check_first_while = 0
+    settings_open = False
 
     while _game_work:
-        pressed_keys = key.get_pressed()
-        for event_ in event.get():
-            if event_.type == QUIT:
-                quit()
-            if event_.type == KEYDOWN:
-                if event_.key == K_ESCAPE:
-                    check_first_while = 0
+        pressed_keys = py.key.get_pressed()
+        for event_ in py.event.get():
+            if event_.type == py.QUIT:
+                py.quit()
+                sys.exit()
+            if event_.type == py.KEYDOWN:
+                if event_.key == py.K_ESCAPE:
+                    settings_open = False
                     boot.music.music_pause()
                     boot.music.music_load(boot.sound_menu)
                     _game_work = options()
@@ -152,25 +151,25 @@ def source(
         bonuses.clear()
         bonuses.extend(bonuses_to_keep)
 
-        if pressed_keys[K_DOWN] and not _player_rect.bottom >= boot.height:
+        if pressed_keys[py.K_DOWN] and not _player_rect.bottom >= boot.height:
             _player_rect.y += _player_speed
 
-        if pressed_keys[K_UP] and not _player_rect.top <= 0:
+        if pressed_keys[py.K_UP] and not _player_rect.top <= 0:
             _player_rect.y -= _player_speed
 
-        if pressed_keys[K_RIGHT] and not _player_rect.right >= boot.width:
+        if pressed_keys[py.K_RIGHT] and not _player_rect.right >= boot.width:
             _player_rect.x += _player_speed
 
-        if pressed_keys[K_LEFT] and not _player_rect.left <= 0:
+        if pressed_keys[py.K_LEFT] and not _player_rect.left <= 0:
             _player_rect.x -= _player_speed
 
         if scores >= max_score:
-            if not boot.config.check(level, boot.invisible_cursor):
+            if not boot.config.check(level):
                 boot.config.write(level)
             _game_work = False
 
-        if check_first_while == 0 and _game_work:
-            check_first_while =+ 1
+        if not settings_open and _game_work:
+            settings_open = True
 
             boot.invisible_cursor()
             boot.music.music_load(boot.sound_game)
@@ -196,4 +195,4 @@ def source(
 
 
 if __name__ == "__main__":
-    source(1, 3, USEREVENT + 2, 30, {"level": 1})
+    source(1, 3, ENEMY_EVENT, 30, {"level": 1})

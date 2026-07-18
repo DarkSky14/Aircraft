@@ -1,20 +1,18 @@
 import json
 import os
-from os import makedirs
-from typing import Any, Optional
+import pygame as py
 from module.logged import log
 
 
-
 class Lib:
-    def __init__(self, name: str, url: str, data, file: Optional[str] = None):
+    def __init__(self, name: str, url: str, data, file: str):
         self._name = name
         self._url = url
         self._data = data
         self._file = file
 
     @property
-    def path(self) -> str|bytes:
+    def path(self) -> str:
         return os.path.join(self._url, self._file)
 
     @property
@@ -34,27 +32,27 @@ class Lib:
         self._url = new_url
 
     @property
-    def data(self) -> Any:
+    def data(self):
         return self._data
 
     @data.setter
-    def data(self, new_data: Any) -> None:
+    def data(self, new_data: str) -> None:
         self._data = new_data
 
     @property
-    def file(self) -> Optional[str]:
+    def file(self) -> str:
         return self._file
 
     @file.setter
-    def file(self, new_file: Optional[str]) -> None:
+    def file(self, new_file: str) -> None:
         self._file = new_file
 
-    def get_value(self, arg_id: str, default: Any = None) -> Any:
+    def get_value(self, arg_id: str, default: None):
         return self._data.get(arg_id, default)
 
 
 class _DLib(Lib):
-    def __init__(self, name: str, url: str, data: dict, file: Optional[str] = None):
+    def __init__(self, name: str, url: str, data: dict, file: str):
         Lib.__init__(self, name, url, data, file)
 
     def update_dict(self, new_dict: dict):
@@ -82,15 +80,15 @@ class JsonWriter:
     @staticmethod
     def write(url, path, data,  args: dict, encoding="utf-8"):
         data.update(args)
-        makedirs(url, exist_ok=True)
+        py.makedirs(url, exist_ok=True)
 
         with open(path, "w", encoding=encoding) as file:
            json.dump(data, file, indent=4)
         return data
 
 
-class JsonWorker(JsonReader, JsonWriter, _DLib):
-    def __init__(self, name: str, url: str, data: dict, file: str = "None"):
+class JsonWorker(_DLib):
+    def __init__(self, name: str, url: str, data: dict, file: str):
         _DLib.__init__(self, name, url, data, file)
 
     def check(self, args: dict, script=None):
@@ -101,7 +99,7 @@ class JsonWorker(JsonReader, JsonWriter, _DLib):
 
     def reader(self, encoding="utf-8"):
         try:
-            data = self.read(self.path, encoding)
+            data = JsonReader.read(self.path, encoding)
             log.info("Loaded %s: %s", self.name, self.data)
         except FileNotFoundError:
             log.warning("File %s not found, creating new one...", self.file)
@@ -111,6 +109,7 @@ class JsonWorker(JsonReader, JsonWriter, _DLib):
             self.writer(self.data)
         else:
             self.data = data
+            return self.data
 
     def writer(self, args: dict, encoding="utf-8"):
-        self.write(self.url, self.path, self.data, args, encoding)
+        JsonWriter.write(self.url, self.path, self.data, args, encoding)

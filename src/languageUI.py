@@ -1,5 +1,5 @@
-from pygame import QUIT, K_ESCAPE, KEYDOWN, event, quit
 from module.bootstrap import boot
+from module import log, py, sys
 
 _work = True
 
@@ -31,25 +31,32 @@ _button4_.set_object(
 )
 
 def _button1_callback_():
-    global language
     _button1_.check_config({"effect": "True"}, boot.clicks)
     if not _button1_.check_config({"language": "EN"}):
         _button1_.write_in_config({"language": "EN"})
-        language = boot.ENGLISH
-        update_text(language)
+        update_text(boot.ENGLISH)
 
 def _button2_callback_():
-    global language
     _button2_.check_config({"effect": "True"}, boot.clicks)
     if not _button2_.check_config({"language": "UA"}):
         _button2_.write_in_config({"language": "UA"})
-        language = boot.UKRAINIAN
-        update_text(language)
+        update_text(boot.UKRAINIAN)
 
 def _button_4_callback_():
     _button4_.check_config({"effect": "True"}, boot.return_exit)
     exit_language()
 
+_buttons = (
+    (_button1_, _button1_callback_, "English"),
+    (_button2_, _button2_callback_, "Українська"),
+    (_button4_, _button_4_callback_, "6"),
+)
+
+def draw_menu_buttons():
+    for button, callback, text_key in _buttons:
+        button.Button(callback)
+        button.animation()
+        button.get_text(boot.standard_text.set_base_text(text_key))
 
 def language_get():
     global _work
@@ -60,52 +67,31 @@ def language_get():
     _button2_.moved(50, None, 300)
     _button4_.moved(50, None, 300)
 
-    def button_1():
-        _button1_.animation()
-        _button1_.Button(_button1_callback_)
-        _button1_.get_text("English", (0, 0, 0))
-
-    def button_2():
-        _button2_.animation()
-        _button2_.Button(_button2_callback_)
-        _button2_.get_text("Українська", (0, 0, 0))
-
     #def button_3():
         # surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
         #standart_text.draw_text("Русский", 75, (221 * 2), (0, 0, 0))
 
-    def button_4():
-        _button4_.animation()
-        _button4_.Button(_button_4_callback_)
-        text = boot.standard_text.set_base_text("6")
-        _button4_.get_text(text)
-
-
     boot.set_fps(60)
 
     def initialize():
-        for event_ in event.get():
-            boot.GLOBAL_EVENT.event = event_
-            if boot.GLOBAL_EVENT.event.type == QUIT:
-                quit()
-                exit()
+        boot.GLOBAL_EVENT.event_pool()
+        if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
+                py.quit()
+                sys.exit()
 
-            if boot.GLOBAL_EVENT.comparison_type(KEYDOWN) and boot.GLOBAL_EVENT.comparison_key(
-                K_ESCAPE
+        if boot.GLOBAL_EVENT.comparison_type(py.KEYDOWN) and boot.GLOBAL_EVENT.comparison_key(
+                py.K_ESCAPE
             ):
                 boot.config.check({"effect": "True"}, boot.return_exit)
-                boot.GLOBAL_EVENT.set_key(0)
                 exit_language()
 
         boot.GLOBAL_EVENT.mouse_get()
+        boot.GLOBAL_EVENT.mouse_button_down()
         boot.background()
 
-        button_1()
-        button_2()
-        button_4()
+        draw_menu_buttons()
 
         boot.version_game()
-        boot.GLOBAL_EVENT.mouse_button_down()
         boot.GLOBAL_EVENT.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
@@ -117,7 +103,11 @@ def language_get():
         boot.update_display()
 
     while _work:
-        initialize()
+        try:
+            initialize()
+        except Exception:
+            log.exception("Unhandled error in language")
+            raise
 
     _work = True
 

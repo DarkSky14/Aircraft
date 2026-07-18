@@ -4,7 +4,7 @@ requires-python = ">=3.10"
 
 [[package]]
 name = "aircraft"
-version = "0.2.8-dev"
+version = "0.2.8"
 source = { virtual = "." }
 dependencies = [
     { name = "pygame-ce" },

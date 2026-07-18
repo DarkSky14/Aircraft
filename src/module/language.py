@@ -1,6 +1,4 @@
-import os
-
-from module.logged import log
+from module.FileWorker import JsonWorker
 
 
 English = {
@@ -19,31 +17,18 @@ English = {
     "12": "Effect:",
 }
 
-class LanguageCreated:
-    def __init__(self, name: str, url: str, file: str = "None"):
-        self._name = name
-        self._url = url
+
+class LanguageCreated(JsonWorker):
+    def __init__(self, name: str, url: str, file: str):
         self._lang = {}
-        self._file = file
-
-    @property
-    def path(self) -> str | bytes:
-        return os.path.join(self._url, self._file)
-
-    @property
-    def name(self):
-        return self._name
+        super().__init__(name, url, self._lang, file)
 
     @property
     def language(self):
-        return self._lang if self._lang != {} else {0: ""}
+        return self.data if self.data != {} else {}
 
     def set_language(self, obj_class):
-        try:
-            self._lang = obj_class.read(self.path)
-            log.debug("LANGUAGE LOADED: %s", self._name)
-        except FileNotFoundError:
-            log.error("LANGUAGE_LOAD_ERROR: %s", self._file)
+        self.data = obj_class.reader(self)
 
 
 class LanguageSetter:
@@ -58,7 +43,4 @@ class LanguageSetter:
             check = {"language": arg.name}
             if self.config.check(check):
                 return arg.language
-            else:
-                continue
-
         return language
