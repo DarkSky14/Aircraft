@@ -1,6 +1,5 @@
 import json
 import os
-import pygame as py
 from module.logged import log
 
 
@@ -71,16 +70,16 @@ class CheckedDict:
 
 class JsonReader:
     @staticmethod
-    def read(path, encoding="utf-8"):
+    def reader(path, encoding="utf-8"):
         with open(path, "r", encoding=encoding) as file:
             return json.load(file)
 
 
 class JsonWriter:
     @staticmethod
-    def write(url, path, data,  args: dict, encoding="utf-8"):
+    def writer(url, path, data, args: dict, encoding="utf-8"):
         data.update(args)
-        py.makedirs(url, exist_ok=True)
+        os.makedirs(url, exist_ok=True)
 
         with open(path, "w", encoding=encoding) as file:
            json.dump(data, file, indent=4)
@@ -99,7 +98,7 @@ class JsonWorker(_DLib):
 
     def reader(self, encoding="utf-8"):
         try:
-            data = JsonReader.read(self.path, encoding)
+            data = JsonReader.reader(self.path, encoding)
             log.info("Loaded %s: %s", self.name, self.data)
         except FileNotFoundError:
             log.warning("File %s not found, creating new one...", self.file)
@@ -112,4 +111,4 @@ class JsonWorker(_DLib):
             return self.data
 
     def writer(self, args: dict, encoding="utf-8"):
-        JsonWriter.write(self.url, self.path, self.data, args, encoding)
+        JsonWriter.writer(self.url, self.path, self.data, args, encoding)

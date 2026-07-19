@@ -3,11 +3,9 @@ Version
 # V 0.2.8
 **Improvements**
 - Add pre-render static UI elements.
-- Optimize list storage in game.
+- Optimize.
 - Fix import statements.
 - Fix dynamic import.
-
-**Bugfixes**
 
 # V 0.2.7
 -------------

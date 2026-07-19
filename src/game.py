@@ -165,7 +165,7 @@ def source(
 
         if scores >= max_score:
             if not boot.config.check(level):
-                boot.config.write(level)
+                boot.config.writer(level)
             _game_work = False
 
         if not settings_open and _game_work:
