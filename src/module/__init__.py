@@ -15,7 +15,7 @@ from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
 from module.event import EventControl
 
 from module.Text import *
-from module.UI import ModuleButton
+from module.UI import ButtonModify, CanvasButton, ButtonCollector
 
 def get_version():
     return __version__

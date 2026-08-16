@@ -1,5 +1,23 @@
 Version
 =========
+# Unreleased
+**Add**
+- Додані класи ButtonCollector, ButtonInfo and ButtonUtility.
+- Доданий модуль absolute_import_obsessed в correct_start.py.
+
+**Changed**
+- З UI_module/animations.py в UI.py був перенесений клас AnimationMoved.
+- Клас Button перейменований в ButtonBase.
+- Клас SurfaceM перейменований в CanvasButton.
+- Клас ModuleButton перейменований в ButtonModify.
+- Зміни в файлах bootstrap.py, app.py, languageUI.py, options.py задля сумісності.
+- Зміни event.py пов'язані з отриманням значень для зміни вигляду мишки.
+- Зміни в absolute_import.
+- VERSION.md перейменований в CHANGELOG.md.
+
+**Deprecated**
+- Можливо буде видалений ButtonUtility після майбутніх виправлень.
+
 # V 0.2.8
 **Improvements**
 - Add pre-render static UI elements.

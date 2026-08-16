@@ -1,7 +1,5 @@
 import pygame as py
-from module.Text import Text
-from module.UI_module.animation import AnimationMove
-
+from module.UI_module.animation import is_move #AnimationMove
 
 class MyDrawObject:  # Correct
     def __init__(
@@ -30,26 +28,163 @@ class MyDrawObject:  # Correct
         return self.rect
 
 
-class Button(AnimationMove):
+class ButtonUtility:
+    def __init__(self):
+        pass
+
+    def __rect__update__(self):
+        self.button_rect = MyDrawObject(self.x, self.y, self.size, self.surface)
+
+
+class AnimationMove(ButtonUtility):
+    def __init__(self, size_config) -> None:
+        self.size_config = size_config
+        self.x = getattr(self, "x", 0)
+        self.y = getattr(self, "y", 0)
+
+    def moved(self, pixel_x=None, pixel_y=None, milliseconds: int = 0):  # type: ignore #
+        global is_move
+        self._pixel_x = pixel_x
+        self._pixel_y = pixel_y
+
+        if is_move:
+            if milliseconds == 0:
+                times = 1000
+            else:
+                times = milliseconds / 10
+
+            if pixel_x is None:
+                self._move_to_x = 0
+                self._pixel_x = round(self.x)
+            else:
+                self._pixel_x = round(self._pixel_x * self.size_config)
+                self._move_to_x = (self._pixel_x - self.x) / times
+
+            if pixel_y is None:
+                self._move_to_y = 0
+                self._pixel_y = round(self.y)
+            else:
+                self._pixel_y = round(self._pixel_y * self.size_config)
+                self._move_to_y = (self._pixel_y - self.y) / times
+
+        else:
+            if pixel_x is None:
+                self._pixel_x = self.x
+            else:
+                self.x = round(self._pixel_x * self.size_config)
+
+            if pixel_y is None:
+                self._pixel_y = self.y
+            else:
+                self.y = round(self._pixel_y * self.size_config)
+
+            self._move_to_x = 0
+            self._move_to_y = 0
+
+    def animation(self, func=None):
+        self.x += self._move_to_x
+        self.y += self._move_to_y
+        self.__rect__update__()
+        if round(self.x) == self._pixel_x and round(self.y) == self._pixel_y:
+            self._move_to_x = 0
+            self._move_to_y = 0
+            self.x_true = self.x
+            self.y_true = self.y
+            if func is not None:
+                func()
+                del func
+
+
+class ButtonInfo:
+    x, y = 0, 0
+    size_x, size_y = 0, 0
+    size = size_x, size_y
+    b_radius = 0
+    id = None
+
+
+class ButtonBase:
+    def __init__(self, button: "ButtonInfo" = None):
+        if button is None:
+            self.button = ButtonInfo()
+        else:
+            self.button = button
+
+        self.id = self.button.__hash__()
+
+    @property
+    def x(self):
+        return self.button.x
+
+    @x.setter
+    def x(self, x):
+        self.button.x = x
+
+    @property
+    def y(self):
+        return self.button.y
+
+    @y.setter
+    def y(self, y):
+        self.button.y = y
+
+    @property
+    def size(self):
+        return self.button.size
+
+    @size.setter
+    def size(self, size: tuple):
+        self.button.size = size
+
+    @property
+    def size_x(self):
+        return self.button.size_x
+
+    @size_x.setter
+    def size_x(self, x):
+        self.button.size_x = x
+
+    @property
+    def size_y(self):
+        return self.button.size_y
+
+    @size_y.setter
+    def size_y(self, y):
+        self.button.size_y = y
+
+    @property
+    def button_radius(self):
+        return self.button.b_radius
+
+    @button_radius.setter
+    def button_radius(self, radius):
+        self.button.b_radius = radius
+
+    @property
+    def id(self):
+        return self.button.id
+
+    @id.setter
+    def id(self, new_id):
+        self.button.id = new_id
+
+    def return_self(self):
+        return self
+
+
+class ButtonModify(ButtonBase, AnimationMove):
     def __init__(
-        self, event, window: py.surface.Surface, size_config: int | float = 0
+            self, event, window: py.surface.Surface, size_config: int | float = 0
     ):
         self.event = event
         self.surface = window
         self.size_config = size_config
-        self.x, self.y = 0, 0
-        self.size = 0, 0
-        self.size_x, self.size_y = self.size
-        self.b_radius = 0
-        self.draw_button = MyDrawObject
-        AnimationMove.__init__(self, self.size_config)
+        super().__init__()
 
-    # @abstractmethod
     def copy(self):
-        return Button(self.event, self.surface, self.size_config)
-
-    def __copy_object__(self):
-        return self.x, self.y, self.size
+        return ButtonModify(
+            self.event, self.surface, self.size_config
+        )
 
     def set_object(self, x, y, size: tuple = (int, int)):
         self.x, self.y = round(x), round(y)
@@ -57,113 +192,90 @@ class Button(AnimationMove):
         self.size_x, self.size_y = size
         self.size_x *= self.size_config
         self.size_y *= self.size_config
-        self.b_radius = round(self.size_y * 0.5)
+        self.button_radius = round(self.size_y * 0.5)
 
-        if self.size_y <= (self.b_radius * 2):
-            self.size_y = self.b_radius * 2
+        if self.size_y <= (self.button_radius * 2):
+            self.size_y = self.button_radius * 2
         self.size = self.size_x, self.size_y
-        return self.x, self.y, self.size
+        self.__rect__update__()
+        return self
 
-    def get_position(self):
-        return self.x, self.y
-
-    def get_x_pos(self):
-        return self.x
-
-    def get_y_pos(self):
-        return self.y
-
-    def get_size(self):
-        return self.size_x, self.size_y
-
-    def get_size_x(self):
-        return self.size_x
-
-    def get_size_y(self):
-        return self.size_y
-
-
-class ModuleButton(Button, Text):#, ModuleText):
-    def __init__(
-        self, event, window: py.surface.Surface, config,
-        class_text: Text, size_config: int|float = 0,
-    ):
-        ob1, ob2, ob3, ob4, ob5 = class_text
-        Text.__init__(self, ob1, ob2, ob3, ob4, ob5)
-        Button.__init__(self, event, window, size_config)
-        self.config = config
-        self.class_text = class_text
-
-    def copy(self):
-        return ModuleButton(
-            self.event, self.surface, self.config, self.class_text, self.size_config
-        )
-
-    def check_config(self, text, effect_click=None):
-        return self.config.check(text, effect_click)
-
-    def write_in_config(self, text):
-        self.config.writer(text)
-
-    def get_text(self, text, color: tuple = (0, 0, 0)):
-        self.get_set_text(text, self.x + 15, self.y + 2, color)
-
-    def Button(self, function1):
-        button = MyDrawObject(self.x, self.y, self.size, self.surface)  # type: ignore
-
-        if button.rect.collidepoint(self.event.mx, self.event.my):
-            button.draw_object((205, 200, 200), 0, round(self.b_radius))
-            self.event.set_choose_button(1)
-            self.event.set_choose_fake_button(1)
+    def callback(self, function1, bools: bool = True, this_is_button: bool = True):
+        if self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)) == bools:
+            self.button_rect.draw_object((205, 200, 200), 0, round(self.button_radius))
+            self.event.set_choose_button(True)
+            self.event.set_choose_fake_button(this_is_button)
 
             if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
-                button.draw_object((205, 200, 200), 3, 10)
-                self.event.set_choose_button(0)
+                self.button_rect.draw_object((205, 200, 200), 3, 10)
+                #self.event.set_choose_fake_button(False)
                 self.event.set_click(False)
                 function1()
 
-        button.draw_object((205, 200, 200), 3, 10)
+        self.button_rect.draw_object((205, 200, 200), 3, 10)
+
+    def get_text(self, class_text, text, color: tuple = (0, 0, 0)):
+        class_text.get_set_text(text, self.x + 15, self.y + 2, color)
 
 
-class SurfaceM(Button):
+class CanvasButton(ButtonModify):
     def __init__(
-        self, event, window: py.surface.Surface, x_move=0,
-        y_move=0, size_config: float = 0,
+            self, event, window: py.surface.Surface, size_config: int | float = 0
     ):
-        self.x_move = x_move
-        self.y_move = y_move
-        Button.__init__(self, event, window, size_config)
-
-    def copy(self):
-        return SurfaceM(
-            self.event, self.surface, self.x_move, self.y_move, self.size_config
-        )
+        ButtonModify.__init__(self, event, window, size_config)
 
     def set_object(self, x, y, size: tuple = (int, int)):
         self.x, self.y = round(x), round(y)
         self.size_x, self.size_y = size
         self.size = size
-        self.b_radius = self.size_y * 0.5
-        self.sub_surface = MyDrawObject(self.x, self.y, self.size, self.surface)
-        return self.x, self.y, self.size
+        self.button_radius = self.size_y * 0.5
+        self.__rect__update__()
+        return self
 
-    def update_pos(self):
-        self.sub_surface = MyDrawObject(self.x, self.y, self.size, self.surface)
-        self.b_radius = self.size_y * 0.5
-
-    def main_work(self, exit):
-        window = self.sub_surface.draw_object(
-            (100, 100, 100), 
-            0,
-            round(self.b_radius),
-            round(40 * self.size_config),
-        )
-        # surface = self.sub_surface(self.x, self.y, self.size, self.surface) #type: ignore
-        # surface.draw_object((100, 100, 100), round(self.b_radius), round(30*self.size_config), round(40*self.size_config))
-
-        if not window.collidepoint((self.event.mx, self.event.my)):
-            self.event.set_choose_button(1)
+    def callback(self, exit, ):
+        if not self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)):
+            self.event.set_choose_button(True)
             if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
-                self.event.set_choose_button(0)
+                self.event.set_choose_button(False)
                 self.event.set_click(False)
                 exit()
+
+        self.button_rect.draw_object(
+            (100, 100, 100),
+            0,
+            round(self.button_radius),
+            round(40 * self.size_config),
+        )
+
+
+class ButtonCollector:
+    def __init__(self):
+        self._buttons: dict[str, ButtonModify] = {}
+
+    def add(self, button: "ButtonModify"):
+        if button.id in self._buttons:
+            raise IndexError(
+                f"Button id {button.id} already registered"
+            )
+        self._buttons.update({button.id: button})
+        return button.return_self()
+
+    def remove(self, button_id):
+        self._buttons.pop(button_id, None)
+
+    def get_button(self, button_id):
+        return self._buttons[button_id].return_self()
+
+    def create_button(self, button_class: "ButtonModify"):
+        self.add(button_class)
+        return button_class.return_self()
+
+    def clear(self):
+        self._buttons.clear()
+
+    def get_buttons(self):
+        return self._buttons
+
+    @staticmethod
+    def controller(button):
+        return button.return_self()

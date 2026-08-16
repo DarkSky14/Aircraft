@@ -14,43 +14,43 @@ _button1_.set_object((-300 * boot.procent), (220 * boot.procent), (300, 30))
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
     (-300 * boot.procent),
-    (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * boot.procent)),
+    (_button1_.y + _button1_.size_y + (10 * boot.procent)),
     (300, 30),
 )
 
 _button3_ = boot.button_modified.copy()
 _button3_.set_object(
     (-300 * boot.procent),
-    (_button2_.get_y_pos() + _button2_.get_size_y() + (10 * boot.procent)),
+    (_button2_.y + _button2_.size_y + (10 * boot.procent)),
     (300, 30),
 )
 
 _button4_ = boot.button_modified.copy()
 _button4_.set_object(
     (-300 * boot.procent),
-    (_button3_.get_y_pos() + _button3_.get_size_y() + (25 * boot.procent)),
+    (_button3_.y + _button3_.size_y + (25 * boot.procent)),
     (300, 30),
 )
 
 def _button_1_callback_():
-    _button1_.check_config({"effect": "True"}, boot.clicks)
+    boot.config.check({"effect": "True"}, boot.clicks)
     source(1, 3, ENEMY_EVENT, 30, {"level": 2})
     boot.set_fps(60)
 
 def _button_2_callback_():
-    _button2_.check_config({"effect": "True"}, boot.clicks)
+    boot.config.check({"effect": "True"}, boot.clicks)
     if boot.config.get_value("level", 0) >= 2:
         source(2, 5, ENEMY_EVENT, 300, {"level": 3}, enemy_timer_spawn= 3000)
         boot.set_fps(60)
 
 def _button_3_callback_():
-    _button3_.check_config({"effect": "True"}, boot.clicks)
+    boot.config.check({"effect": "True"}, boot.clicks)
     if boot.config.get_value("level", 0) >= 3:
         source(3, 7, ENEMY_EVENT, 1500, {"level": 3.1}, enemy_timer_spawn= 2000)
         boot.set_fps(60)
 
 def _button_4_callback_():
-    _button4_.check_config({"effect": "True"}, boot.return_exit)
+    boot.config.check({"effect": "True"}, boot.return_exit)
     exit_level()
 
 _buttons = (
@@ -62,9 +62,9 @@ _buttons = (
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.Button(callback)
+        button.callback(callback)
         button.animation()
-        button.get_text(boot.standard_text.set_base_text(text_key))
+        button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
 
 def level():
     global _work

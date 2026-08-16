@@ -7,9 +7,9 @@ class EventControl:
         self.debounce_ms = debounce_ms
         self._last_click_time = 0
         self.click = False
-        self.choose_button = 0
-        self.fake_choose_button = 0
-        self.wait_button = 0
+        self.choose_button = False
+        self.fake_choose_button = False
+        self.wait_button = False
         self.config_width = config_width
         self.config_height = config_height
         self.mx, self.my = 0, 0
@@ -25,7 +25,7 @@ class EventControl:
 
     def mouse_button_down(self):
         self.set_click(False)
-        if self.comparison_type(py.MOUSEBUTTONDOWN) and self.choose_button == 1:
+        if self.comparison_type(py.MOUSEBUTTONDOWN) and self.choose_button:
             self.set_choose_button(0)
             now = py.time.get_ticks()
             if now > self.debounce_ms + self._last_click_time:
@@ -33,15 +33,15 @@ class EventControl:
                 self.set_click(True)
 
     def event_button_check(self, base_mouse, nonbase_mouse, sound_and_func):
-        if self.fake_choose_button == 1 and self.wait_button == 1:
-            self.fake_choose_button = 0
-        elif self.fake_choose_button == 1:
-            self.wait_button = 1
-            self.fake_choose_button = 0
+        if self.fake_choose_button == True and self.wait_button == True:
+            self.fake_choose_button = False
+        elif self.fake_choose_button:
+            self.wait_button = True
+            self.fake_choose_button = True
             nonbase_mouse()
             sound_and_func()
         else:
-            self.wait_button = 0
+            self.wait_button = False
             base_mouse()
 
     def set_click(self, click: bool):

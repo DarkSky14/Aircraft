@@ -1,7 +1,7 @@
 import sys
 
 from module import (
-    log, absolute_import, py
+    log, absolute_import, py, CanvasButton, ButtonCollector
 )
 from module.bootstrap import boot
 
@@ -31,21 +31,21 @@ _button1_.set_object((-300 * boot.procent), (220 * boot.procent), (300, 30))
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
     (-300 * boot.procent),
-    (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * boot.procent)),
+    (_button1_.y + _button1_.size_y + (10 * boot.procent)),
     (300, 30),
 )
 
 _button3_ = boot.button_modified.copy()
 _button3_.set_object(
     (-300 * boot.procent),
-    (_button2_.get_y_pos() + _button2_.get_size_y() + (10 * boot.procent)),
+    (_button2_.y + _button2_.size_y + (10 * boot.procent)),
     (300, 30),
 )
 
 _button4_ = boot.button_modified.copy()
 _button4_.set_object(
     (-300 * boot.procent),
-    (_button3_.get_y_pos() + _button3_.get_size_y() + (25 * boot.procent)),
+    (_button3_.y + _button3_.size_y + (25 * boot.procent)),
     (300, 30),
 )
 
@@ -65,19 +65,19 @@ def _button_get():
 
 
 def _button_1_callback_():
-    _button1_.check_config({"effect": "True"}, boot.clicks)
+    boot.config.check({"effect": "True"}, boot.clicks)
     level()
 
 def _button_2_callback_():
-    _button2_.check_config({"effect": "True"}, boot.clicks)
+    boot.config.check({"effect": "True"}, boot.clicks)
     options(25, 150)
 
 def _button_3_callback_():
-    _button3_.check_config({"effect": "True"}, boot.clicks)
+    boot.config.check({"effect": "True"}, boot.clicks)
     language_get()
 
 def _button_4_callback_():
-    _button4_.check_config({"effect": "True"}, boot.return_exit)
+    boot.config.check({"effect": "True"}, boot.return_exit)
     exit_game()
 
 _button_get()
@@ -91,9 +91,9 @@ _buttons = (
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.Button(callback)
+        button.callback(callback)
         button.animation()
-        button.get_text(boot.standard_text.set_base_text(text_key))
+        button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
 
 
 def main_menu():

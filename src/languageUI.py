@@ -10,7 +10,6 @@ def exit_language():
 def update_text(lang):
     boot.standard_text.set_language(lang)
     boot.big_text.set_language(lang)
-    boot.button_modified.set_language(lang)
 
 
 _button1_ = boot.button_modified.copy()
@@ -19,31 +18,31 @@ _button1_.set_object((-300 * boot.procent), (220 * boot.procent), (300, 30))
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
     (-300 * boot.procent),
-    (_button1_.get_y_pos() + _button1_.get_size_y() + (10 * boot.procent)),
+    (_button1_.y + _button1_.size_y + (10 * boot.procent)),
     (300, 30),
 )
 
 _button4_ = boot.button_modified.copy()
 _button4_.set_object(
     (-300 * boot.procent),
-    (_button2_.get_y_pos() + _button2_.get_size_y() + (30 * boot.procent)),
+    (_button2_.y + _button2_.size_y + (30 * boot.procent)),
     (300, 30),
 )
 
 def _button1_callback_():
-    _button1_.check_config({"effect": "True"}, boot.clicks)
-    if not _button1_.check_config({"language": "EN"}):
-        _button1_.write_in_config({"language": "EN"})
+    boot.config.check({"effect": "True"}, boot.clicks)
+    if not boot.config.check({"language": "EN"}):
+        boot.config.writer({"language": "EN"})
         update_text(boot.ENGLISH)
 
 def _button2_callback_():
-    _button2_.check_config({"effect": "True"}, boot.clicks)
-    if not _button2_.check_config({"language": "UA"}):
-        _button2_.write_in_config({"language": "UA"})
+    boot.config.check({"effect": "True"}, boot.clicks)
+    if not boot.config.check({"language": "UA"}):
+        boot.config.writer({"language": "UA"})
         update_text(boot.UKRAINIAN)
 
 def _button_4_callback_():
-    _button4_.check_config({"effect": "True"}, boot.return_exit)
+    boot.config.check({"effect": "True"}, boot.return_exit)
     exit_language()
 
 _buttons = (
@@ -54,9 +53,9 @@ _buttons = (
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.Button(callback)
+        button.callback(callback)
         button.animation()
-        button.get_text(boot.standard_text.set_base_text(text_key))
+        button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
 
 def language_get():
     global _work
@@ -68,7 +67,7 @@ def language_get():
     _button4_.moved(50, None, 300)
 
     #def button_3():
-        # surfM.Button(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
+        # surfM.callback(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})
         #standart_text.draw_text("Русский", 75, (221 * 2), (0, 0, 0))
 
     boot.set_fps(60)

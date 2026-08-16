@@ -9,8 +9,11 @@ from module.FileWorker import JsonReader, JsonWorker
 from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG
 from module.event import EventControl
 from module.Text import Text, Font
-from module.UI import ModuleButton
-from module import get_author, get_version
+from module.UI import ButtonModify
+from module import (get_version, BLACK, WHITE, RED, GREEN, LIME,
+    click_open_1,click_aim,click_exit,click_open_2,effect_game,sound_game,sound_menu
+)
+
 
 @dataclass
 class AppContext:
@@ -25,7 +28,7 @@ class AppContext:
     GLOBAL_EVENT: EventControl
     standard_text: Text
     big_text: Text
-    button_modified: ModuleButton
+    button_modified: ButtonModify
     fon_background: ScrollingBG
     music: Music
     clicks_used: Sound
@@ -65,20 +68,6 @@ class AppContext:
 
 def bootstrap() -> AppContext:
     py.init()
-
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    RED = (250, 0, 0)
-    GREEN = (0, 255, 0)
-    LIME = (100, 250, 100)
-
-    click_open_2 = absolute_import("effect/click_open2.mp3")
-    click_open_1 = absolute_import("effect/click_open1.mp3")
-    click_exit = absolute_import("effect/click_exit1.mp3")
-    effect_game = absolute_import("effect/sound3.mp3")
-    click_aim = absolute_import("effect/nice click aim.mp3")
-    sound_menu = absolute_import("music/Menu1 - peace.mp3")
-    sound_game = absolute_import("music/01897.mp3")
 
     def click_cursor():
         py.mouse.set_cursor(11)
@@ -187,7 +176,7 @@ def bootstrap() -> AppContext:
     standard_text = text.copy_text()
     standard_text.set_font(BASE_FONT.copy_font())
 
-    button_modified = ModuleButton(GLOBAL_EVENT, d, config, standard_text, procent)
+    button_modified = ButtonModify(GLOBAL_EVENT, d, procent)
 
     def sound_scroll():
         if config.check({"effect": "True"}):

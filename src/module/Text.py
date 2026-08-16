@@ -71,6 +71,7 @@ class TriggerText:
         matched = self.config.check(inspection)
         return self.lang.get(change_x if matched else change_y, change_x if matched else change_y)
 
+
 class StandardText:
     def __init__(self):
         self.lang = {}
@@ -108,9 +109,6 @@ class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
 
     def get_config(self):
         return self.config
-
-    def set_color(self, new_color: tuple):
-        self.color = new_color
 
     def set_language(self, new_language: dict):
         self.lang = new_language
