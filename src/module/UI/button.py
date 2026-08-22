@@ -1,5 +1,5 @@
 import pygame as py
-from module.UI_module.animation import is_move #AnimationMove
+from module.UI import AnimationMove
 
 class MyDrawObject:  # Correct
     def __init__(
@@ -26,73 +26,6 @@ class MyDrawObject:  # Correct
 
     def get_rect(self) -> py.Rect:
         return self.rect
-
-
-class ButtonUtility:
-    def __init__(self):
-        pass
-
-    def __rect__update__(self):
-        self.button_rect = MyDrawObject(self.x, self.y, self.size, self.surface)
-
-
-class AnimationMove(ButtonUtility):
-    def __init__(self, size_config) -> None:
-        self.size_config = size_config
-        self.x = getattr(self, "x", 0)
-        self.y = getattr(self, "y", 0)
-
-    def moved(self, pixel_x=None, pixel_y=None, milliseconds: int = 0):  # type: ignore #
-        global is_move
-        self._pixel_x = pixel_x
-        self._pixel_y = pixel_y
-
-        if is_move:
-            if milliseconds == 0:
-                times = 1000
-            else:
-                times = milliseconds / 10
-
-            if pixel_x is None:
-                self._move_to_x = 0
-                self._pixel_x = round(self.x)
-            else:
-                self._pixel_x = round(self._pixel_x * self.size_config)
-                self._move_to_x = (self._pixel_x - self.x) / times
-
-            if pixel_y is None:
-                self._move_to_y = 0
-                self._pixel_y = round(self.y)
-            else:
-                self._pixel_y = round(self._pixel_y * self.size_config)
-                self._move_to_y = (self._pixel_y - self.y) / times
-
-        else:
-            if pixel_x is None:
-                self._pixel_x = self.x
-            else:
-                self.x = round(self._pixel_x * self.size_config)
-
-            if pixel_y is None:
-                self._pixel_y = self.y
-            else:
-                self.y = round(self._pixel_y * self.size_config)
-
-            self._move_to_x = 0
-            self._move_to_y = 0
-
-    def animation(self, func=None):
-        self.x += self._move_to_x
-        self.y += self._move_to_y
-        self.__rect__update__()
-        if round(self.x) == self._pixel_x and round(self.y) == self._pixel_y:
-            self._move_to_x = 0
-            self._move_to_y = 0
-            self.x_true = self.x
-            self.y_true = self.y
-            if func is not None:
-                func()
-                del func
 
 
 class ButtonInfo:
@@ -179,7 +112,8 @@ class ButtonModify(ButtonBase, AnimationMove):
         self.event = event
         self.surface = window
         self.size_config = size_config
-        super().__init__()
+        ButtonBase.__init__(self)
+        AnimationMove.__init__(self, size_config, self)
 
     def copy(self):
         return ButtonModify(
@@ -200,8 +134,8 @@ class ButtonModify(ButtonBase, AnimationMove):
         self.__rect__update__()
         return self
 
-    def callback(self, function1, bools: bool = True, this_is_button: bool = True):
-        if self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)) == bools:
+    def callback(self, function, bool_custom: bool = True, this_is_button: bool = True):
+        if self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)) == bool_custom:
             self.button_rect.draw_object((205, 200, 200), 0, round(self.button_radius))
             self.event.set_choose_button(True)
             self.event.set_choose_fake_button(this_is_button)
@@ -210,12 +144,15 @@ class ButtonModify(ButtonBase, AnimationMove):
                 self.button_rect.draw_object((205, 200, 200), 3, 10)
                 #self.event.set_choose_fake_button(False)
                 self.event.set_click(False)
-                function1()
+                function()
 
         self.button_rect.draw_object((205, 200, 200), 3, 10)
 
     def get_text(self, class_text, text, color: tuple = (0, 0, 0)):
         class_text.get_set_text(text, self.x + 15, self.y + 2, color)
+
+    def __rect__update__(self):
+        self.button_rect = MyDrawObject(self.x, self.y, self.size, self.surface)
 
 
 class CanvasButton(ButtonModify):
@@ -232,13 +169,13 @@ class CanvasButton(ButtonModify):
         self.__rect__update__()
         return self
 
-    def callback(self, exit, ):
-        if not self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)):
+    def callback(self, function, bool_custom: bool = False):
+        if self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)) == bool_custom:
             self.event.set_choose_button(True)
             if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
                 self.event.set_choose_button(False)
                 self.event.set_click(False)
-                exit()
+                function()
 
         self.button_rect.draw_object(
             (100, 100, 100),

@@ -1,9 +1,9 @@
 import logging
 import os
 from time import strftime
-from module import absolute_import
+from module import base_absolute_import
 
-path_log = absolute_import("Logs")
+path_log = base_absolute_import("Logs")
 
 os.makedirs(path_log, exist_ok=True)
 log = logging

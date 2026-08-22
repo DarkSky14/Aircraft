@@ -1,18 +1,18 @@
 import sys
 
 from module import (
-    log, absolute_import, py, CanvasButton, ButtonCollector
+    log, base_absolute_import, py, CanvasButton, ButtonCollector, __version__
 )
 from module.bootstrap import boot
 
-from options import options
-from languageUI import language_get
-from level import level
+from settings_menu import options
+from language_menu import language_get
+from level_menu import level
 
 # Setup pygame/window -----------------------------
 
 log.info("Setup icon window...")
-icon_obj = py.image.load(absolute_import("Aircraft.ico")).convert()
+icon_obj = py.image.load(base_absolute_import("Aircraft.ico")).convert()
 icon = py.transform.scale(icon_obj, (32, 32))
 log.info("Icon window setup complete.")
 log.info("Setup background image options...")

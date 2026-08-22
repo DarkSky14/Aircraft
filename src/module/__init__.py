@@ -1,10 +1,10 @@
-__version__ = "0.2.8"
+__version__ = "0.2.9"
 __author__ = "Chinho/DarkSky14"
 
 import pygame
 import sys
 
-from module.correct_start import absolute_import
+from module.loader import base_absolute_import
 from module.logged import log
 from module.music import Music, Sound
 
@@ -37,10 +37,10 @@ COLOR_CASE = {
     "LIME": (100, 250, 100),
 }
 
-click_open_2 = absolute_import("effect/click_open2.mp3")
-click_open_1 = absolute_import("effect/click_open1.mp3")
-click_exit = absolute_import("effect/click_exit1.mp3")
-effect_game = absolute_import("effect/sound3.mp3")
-click_aim = absolute_import("effect/nice click aim.mp3")
-sound_menu = absolute_import("music/Menu1 - peace.mp3")
-sound_game = absolute_import("music/01897.mp3")
+click_open_2 = base_absolute_import("effect/click_open2.mp3")
+click_open_1 = base_absolute_import("effect/click_open1.mp3")
+click_exit = base_absolute_import("effect/click_exit1.mp3")
+effect_game = base_absolute_import("effect/sound3.mp3")
+click_aim = base_absolute_import("effect/nice click aim.mp3")
+sound_menu = base_absolute_import("music/Menu1 - peace.mp3")
+sound_game = base_absolute_import("music/01897.mp3")

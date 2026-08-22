@@ -1,15 +1,15 @@
 from dataclasses import dataclass
 import pygame as py
 
-from module.correct_start import absolute_import
+from module.loader import base_absolute_import
 from module.logged import log
 from module.music import Music, Sound
 from module.language import LanguageCreated, LanguageSetter
-from module.FileWorker import JsonReader, JsonWorker
+from module.FileWorker import JsonWorker
 from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG
 from module.event import EventControl
 from module.Text import Text, Font
-from module.UI import ButtonModify
+from module.UI.button import ButtonModify
 from module import (get_version, BLACK, WHITE, RED, GREEN, LIME,
     click_open_1,click_aim,click_exit,click_open_2,effect_game,sound_game,sound_menu
 )
@@ -133,7 +133,7 @@ def bootstrap() -> AppContext:
 
     log.info("Start load background image...")
     bg = py.transform.scale(
-        py.image.load(absolute_import("pictures/background.png")).convert(), screen
+        py.image.load(base_absolute_import("pictures/background.png")).convert(), screen
     )
     log.info("Background image successfully loaded.")
     bgX = 0
@@ -142,7 +142,7 @@ def bootstrap() -> AppContext:
 
     config = JsonWorker(
         "config",
-        absolute_import("data"),
+        base_absolute_import("data"),
         {"level": 1, "effect": "True", "music": "True", "language": "EN"},
         "config.json",
     )
@@ -150,11 +150,11 @@ def bootstrap() -> AppContext:
 
     GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
-    ENG = LanguageCreated("EN", absolute_import("language"), "english.json")
+    ENG = LanguageCreated("EN", base_absolute_import("language"), "english.json")
     ENG.set_language(JsonWorker)
     ENGLISH = ENG.language
 
-    UKR = LanguageCreated("UA", absolute_import("language"), "ukrainian.json")
+    UKR = LanguageCreated("UA", base_absolute_import("language"), "ukrainian.json")
     UKR.set_language(JsonWorker)
     UKRAINIAN = UKR.language
 

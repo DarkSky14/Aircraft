@@ -1,16 +1,16 @@
 from module import (
-    ScrollingBG, log, absolute_import,py, sys
+    ScrollingBG, log, base_absolute_import, py, sys
 )
 
 from random import randint
 from os import listdir
-from options import options
+from settings_menu import options
 from module.bootstrap import boot
 
 _bg_speed_ = 2 * boot.procent
 _game_work = True
 
-IMGS_PATH = absolute_import("player")
+IMGS_PATH = base_absolute_import("player")
 
 log.info("Start load player images...")
 _player_img = [
@@ -32,7 +32,7 @@ _player_speed = 2.5 * boot.procent
 
 
 log.info("Start load enemy image...")
-_enemy_png = py.image.load(absolute_import("pictures/enemy.png"))
+_enemy_png = py.image.load(base_absolute_import("pictures/enemy.png"))
 _enemy = py.transform.scale(
     _enemy_png, ((_enemy_png.get_width() * boot.procent), (_enemy_png.get_height() * boot.procent))
 )
@@ -46,7 +46,7 @@ log.info("Enemy image successfully loaded.")
 
 
 log.info("Start load bonus image...")
-_bonus_jpg = py.image.load(absolute_import("pictures/bonus.jpg"))
+_bonus_jpg = py.image.load(base_absolute_import("pictures/bonus.jpg"))
 _bonus = py.transform.scale(
     _bonus_jpg, ((_bonus_jpg.get_width() * boot.procent), (_bonus_jpg.get_height() * boot.procent))
 )
