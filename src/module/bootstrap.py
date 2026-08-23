@@ -7,7 +7,7 @@ from module.music import Music, Sound
 from module.language import LanguageCreated, LanguageSetter
 from module.FileWorker import JsonWorker
 from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG
-from module.event import EventControl
+from module.event import EventControl, Mouse
 from module.Text import Text, Font
 from module.UI.button import ButtonModify
 from module import (get_version, BLACK, WHITE, RED, GREEN, LIME,
@@ -64,6 +64,7 @@ class AppContext:
     WHITE: tuple
     GREEN: tuple
     LIME: tuple
+    #mouse: None
 
 
 def bootstrap() -> AppContext:
@@ -149,6 +150,7 @@ def bootstrap() -> AppContext:
     config.reader()
 
     GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
+    #mouse = Mouse(GLOBAL_EVENT, 200, conf_width, conf_height)
 
     ENG = LanguageCreated("EN", base_absolute_import("language"), "english.json")
     ENG.set_language(JsonWorker)
@@ -231,7 +233,7 @@ def bootstrap() -> AppContext:
         GAME_TEXT=GAME_TEXT, sound_menu=sound_menu,
         main_surface=main_surface, bg=bg, bgX=bgX, bgX2=bgX2,
         BASE_FONT=BASE_FONT,BLACK=BLACK,LIME=LIME, WHITE=WHITE,
-        RED=RED, GREEN=GREEN
+        RED=RED, GREEN=GREEN#, mouse=mouse
     )
 
 boot = bootstrap()

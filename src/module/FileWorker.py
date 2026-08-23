@@ -50,17 +50,6 @@ class Lib:
         return self._data.get(arg_id, default)
 
 
-class _DLib(Lib):
-    def __init__(self, name: str, url: str, data: dict, file: str):
-        Lib.__init__(self, name, url, data, file)
-
-    def update_dict(self, new_dict: dict):
-        self._data.update(new_dict)
-
-    def clear_dict(self):
-        self._data.clear()
-
-
 class CheckedDict:
     @staticmethod
     def check(data: dict, arg: dict):
@@ -86,9 +75,9 @@ class JsonWriter:
         return data
 
 
-class JsonWorker(_DLib):
+class JsonWorker(Lib):
     def __init__(self, name: str, url: str, data: dict, file: str):
-        _DLib.__init__(self, name, url, data, file)
+        Lib.__init__(self, name, url, data, file)
 
     def check(self, args: dict, script=None):
         checker = CheckedDict.check(self.data, args)

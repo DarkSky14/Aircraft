@@ -5,6 +5,7 @@ Version
 - Додані класи ButtonCollector, ButtonInfo.
 - Доданий модуль obsessed_absolute_import в loader.py.
 - Доданий __init__.py в папці UI.
+- В event.py доданий клас Mouse.
 
 **Changed**
 - Клас Button перейменований в ButtonBase.
@@ -20,6 +21,13 @@ Version
 - UI.py перейменовано в button.py і перенесено в папку UI.
 - Покращення в animation.py.
 - Невеликі зміни в buildozer.spec.
+- Від EventControl відділено функції які тепер знаходяться в класі Mouse.
+
+**Fixed**
+- Покращено обробку стану миші, що прибрало невеликі візуальні баги з нею.
+
+**Removed**
+- Видалений застарілий клас _DLib.
 
 
 # V 0.2.8

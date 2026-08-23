@@ -12,7 +12,7 @@ from module.language import LanguageCreated, LanguageSetter
 from module.FileWorker import JsonReader, JsonWorker
 
 from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-from module.event import EventControl
+from module.event import EventControl, Mouse
 
 from module.Text import *
 from module.UI import ButtonModify, CanvasButton, ButtonCollector

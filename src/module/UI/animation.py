@@ -37,6 +37,7 @@ class AnimationMove:
             if pixel_y is not None:
                 self.y = round(pixel_y * self.size_config)
 
+            self.times = 1
             self._move_to_x = 0
             self._move_to_y = 0
 
@@ -87,6 +88,7 @@ class Resizable:
             if pixel_y_size is not None:
                 self.size_y = round(pixel_y_size * self.size_config)
 
+            self.times = 1
             self.move_to_x_size = 0
             self.move_to_y_size = 0
 
