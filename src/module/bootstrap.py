@@ -197,10 +197,11 @@ def bootstrap() -> AppContext:
         fon_background.draw(d)
 
     def version_game():
-        d.blit(
-            VERS_GAME.render_font().render(str(get_version()), True, BLACK),
-            (width - (38 * procent), height - (14 * procent)),
-        )
+        txt = VERS_GAME.render_font().render(str(get_version()), True, BLACK)
+        rect_obj = txt.get_rect()
+        rect_obj.bottomright = (width - 7, height)
+        d.blit(txt, rect_obj)
+
 
     def get_fps(
             font_text: Font = BASE_FONT,

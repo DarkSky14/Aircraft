@@ -56,8 +56,8 @@ class DrawText:
             self._cache_key = cache_key
             self.text_obj = self.font.render(text, True, color)
             self.text_rect = self.text_obj.get_rect()
+            self.text_rect.topleft = (x, y)
 
-        self.text_rect.topleft = (x, y)
         self.surface.blit(self.text_obj, self.text_rect)
         return self.text_rect
 
