@@ -1,13 +1,21 @@
 #[build-system]
-#requires = ["poetry-core>=1.0.8"]
-#build-backend = "poetry.core.masonry.api"
+#requires = ["uv_build >= 0.12.5, <0.13.0"]
+#build-backend = "uv_build"
 
 [project]
 name = "aircraft"
-version = "0.2.8"
+#.dynamic = ["version"]
+version = "0.2.9"
+#dynamic = ["version"]
 readme = "README.md"
 license = "GPL-3.0"
 requires-python = ">=3.10"
 dependencies = [
     "pygame-ce>=2.5.7",
 ]
+
+#[project.optional-dependencies]
+#all =
+
+#[tool.uv.extra-build-dependencies]
+#aircraft = ["uv_build.build_editable"]
