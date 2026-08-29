@@ -152,11 +152,9 @@ def bootstrap() -> AppContext:
     GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
     ENG = LanguageCreated("EN", base_absolute_import("language"), "english.json")
-    ENG.set_language(JsonWorker)
     ENGLISH = ENG.language
 
     UKR = LanguageCreated("UA", base_absolute_import("language"), "ukrainian.json")
-    UKR.set_language(JsonWorker)
     UKRAINIAN = UKR.language
 
     active_language = LanguageSetter(config).language_set(ENG, UKR)

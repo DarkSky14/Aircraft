@@ -1,4 +1,5 @@
-from module.FileWorker import JsonWorker
+from module.FileWorker import Lib, JsonReader
+from module.logged import log
 
 
 English = {
@@ -18,10 +19,15 @@ English = {
 }
 
 
-class LanguageCreated(JsonWorker):
+class LanguageCreated(Lib):
     def __init__(self, name: str, url: str, file: str):
         self._lang = {}
         super().__init__(name, url, self._lang, file)
+        try:
+            self.data = JsonReader.reader(self.path)
+        except FileNotFoundError:
+            log.warning(f"Language {self.name} not found.")
+
 
     @property
     def language(self):
