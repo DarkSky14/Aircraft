@@ -29,6 +29,12 @@ _button4_.set_object(
     (300, 30),
 )
 
+def _button_get():
+    _button1_.moved(50, None, 300)
+    _button2_.moved(50, None, 300)
+    #_button3_.moved(50, None, 300)
+    _button4_.moved(50, None, 300)
+
 def _button1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
     if not boot.config.check({"language": "EN"}):
@@ -43,7 +49,11 @@ def _button2_callback_():
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    exit_language()
+    _button1_.moved(-300, None, 300)
+    _button2_.moved(-300, None, 300)
+    #_button3_.moved(-300, None, 300)
+    _button4_.moved(-300, None, 300)
+    _button4_.set_func(exit_language, _button_get)
 
 _buttons = (
     (_button1_, _button1_callback_, "English"),
@@ -57,14 +67,12 @@ def draw_menu_buttons():
         button.animation()
         button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
 
+_button_get()
+
 def language_get():
     global _work
 
     # surf_m = UI.SurfaceM(e, Surface.main_surface)
-
-    _button1_.moved(50, None, 300)
-    _button2_.moved(50, None, 300)
-    _button4_.moved(50, None, 300)
 
     #def button_3():
         # surfM.callback(50, (220 + s*2), (300, 30), 75, (221 + s*2), 13, clicks, Русский, "Language", {"language": "RU"})

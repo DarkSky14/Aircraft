@@ -7,13 +7,15 @@ class AnimationMove:
         self.size_config = size_config
         self.x = button.x
         self.y = button.y
+        self.func1 = None
+        self.func2 = None
 
     def moved(self, pixel_x=None, pixel_y=None, milliseconds: int = 0):  # type: ignore #
         global is_move
 
         if is_move:
             if milliseconds == 0:
-                times = 1000
+                times = 1
             else:
                 times = milliseconds / 10
             self.times = times
@@ -41,7 +43,11 @@ class AnimationMove:
             self._move_to_x = 0
             self._move_to_y = 0
 
-    def animation(self, func=None):
+    def set_func(self, func1=None, func2 = None):
+        self.func1 = func1
+        self.func2 = func2
+
+    def animation(self):
         if self.times > 0:
             self.x += self._move_to_x
             self.y += self._move_to_y
@@ -50,9 +56,12 @@ class AnimationMove:
             if self.times == 0:
                 self._move_to_x = 0
                 self._move_to_y = 0
-                if func is not None:
-                    func()
-                    del func
+                if self.func1 is not None:
+                    self.func1()
+                    self.func1 = None
+                if self.func2 is not None:
+                    self.func2()
+                    self.func2 = None
 
 
 class Resizable:

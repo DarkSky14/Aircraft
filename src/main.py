@@ -51,10 +51,10 @@ _button4_.set_object(
 
 
 def _button_hide():
-    _button1_.moved(-300, None, 0)
-    _button2_.moved(-300, None, 0)
-    _button3_.moved(-300, None, 0)
-    _button4_.moved(-300, None, 0)
+    _button1_.moved(-300, None, 300)
+    _button2_.moved(-300, None, 300)
+    _button3_.moved(-300, None, 300)
+    _button4_.moved(-300, None, 300)
 
 
 def _button_get():
@@ -66,15 +66,18 @@ def _button_get():
 
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    level()
+    _button_hide()
+    _button1_.set_func(level, _button_get)
 
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    options(25, 150)
+    _button_hide()
+    _button1_.set_func(options, _button_get)
 
 def _button_3_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    language_get()
+    _button_hide()
+    _button1_.set_func(language_get, _button_get)
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
