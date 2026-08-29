@@ -46,26 +46,30 @@ class Font:
 
 
 class DrawText:
-    def __init__(self):
-        self.font = py.font.Font()
-        self.surface = py.surface.Surface
+    def __init__(self, font: "Font", surface: py.surface.Surface):
+        self.font = font
+        self.surface = surface
 
-    def draw_text(self, text: str, x, y, color: tuple = (0, 0, 0)):
+    def draw_text(self, text, x, y, color: tuple = (0, 0, 0), rect:str = "topleft"):
         cache_key = (text, color, id(self.font))
         if getattr(self, "_cache_key", None) != cache_key:
+            self.text = text
             self._cache_key = cache_key
-            self.text_obj = self.font.render(text, True, color)
+            self.text_obj = self.font.render(str(self.text), True, color)
             self.text_rect = self.text_obj.get_rect()
-            self.text_rect.topleft = (x, y)
+            if rect == "topleft":
+                self.text_rect.topleft = (x, y)
+            elif rect == "bottomright":
+                self.text_rect.bottomright = (x, y)
 
         self.surface.blit(self.text_obj, self.text_rect)
         return self.text_rect
 
 
 class TriggerText:
-    def __init__(self):
-        self.config = None
-        self.lang = {}
+    def __init__(self, lang = {}, config = None):
+        self.config = config
+        self.lang = lang
 
     def set_change_text(self, inspection, change_x, change_y):
         matched = self.config.check(inspection)
@@ -73,22 +77,14 @@ class TriggerText:
 
 
 class StandardText:
-    def __init__(self):
-        self.lang = {}
+    def __init__(self, lang = {}):
+        self.lang = lang
 
     def set_base_text(self, base_key):
         return self.lang.get(base_key, base_key)
 
 
-class DrawingText(DrawText):
-    def __init__(self):
-        DrawText.__init__(self)
-
-    def get_set_text(self, text, x_text, y_text, color: tuple = (0, 0, 0)):
-        self.draw_text(text, x_text, y_text, color)
-
-
-class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
+class Text(DrawText, Font, StandardText, TriggerText):
     def __init__(self,
         font_name: py.font.Font,
         lang: dict,
@@ -100,31 +96,17 @@ class Text(DrawingText, Font, StandardText, TriggerText):  # Correct
         self.surface = surface
         self.config = config
         self.color = color
-
-    def get_language(self):
-        return self.lang
-
-    def get_color(self):
-        return self.color
-
-    def get_config(self):
-        return self.config
+        super().__init__(self.font, self.surface)
 
     def set_language(self, new_language: dict):
         self.lang = new_language
 
-    def set_surface(self, surface: py.surface.Surface):
-        self.surface = surface
-
     def set_settings_text(self, obj: Text):
         self.font = obj.copy_font()
-        self.lang = obj.get_language()
+        self.lang = obj.lang
         self.surface = obj.surface
         self.config = obj.config
-        self.color = obj.get_color()
+        self.color = obj.color
 
     def copy_text(self):
         return Text(self.font, self.lang, self.surface, self.config, self.color)
-
-    def __iter__(self):
-        return iter((self.font, self.lang, self.surface, self.config, self.color))

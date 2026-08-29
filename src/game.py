@@ -68,6 +68,10 @@ def source(
 
     fon_background = ScrollingBG(boot.bg, _bg_speed_)
 
+    boot.GLOBAL_EVENT.mouse.event_button_check(
+        boot.standard_curs, boot.click_cursor, boot.sound_scroll
+    )
+
     def background():
         fon_background.update()
         fon_background.draw(boot.d)
@@ -95,7 +99,7 @@ def source(
 
     while _game_work:
         pressed_keys = py.key.get_pressed()
-        for event_ in py.event.get():
+        for event_ in boot.GLOBAL_EVENT.event_pool():
             if event_.type == py.QUIT:
                 py.quit()
                 sys.exit()
@@ -181,7 +185,7 @@ def source(
 
         boot.d.blit(score_text_cache, (boot.d.get_width() - 30, 0))
         boot.version_game()
-        boot.get_fps(boot.GAME_TEXT, boot.RED, (10, 10))
+        boot.get_fps(boot.GAME_TEXT, boot.RED, (5, 5))
         boot.tick_fps()
         boot.update_display()
 

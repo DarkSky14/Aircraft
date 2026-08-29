@@ -107,17 +107,16 @@ def main_menu():
             py.quit()
             sys.exit()
 
-        boot.GLOBAL_EVENT.mouse_get()
-        boot.GLOBAL_EVENT.mouse_button_down()
+        boot.GLOBAL_EVENT.mouse.mouse_get()
         boot.background()
 
         draw_menu_buttons()
 
         boot.version_game()
-        boot.GLOBAL_EVENT.event_button_check(
+        boot.GLOBAL_EVENT.mouse.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
-        boot.big_text.get_set_text(
+        boot.big_text.draw_text(
             boot.big_text.set_base_text("7"), 70 * boot.procent, 150 * boot.procent
         )
 

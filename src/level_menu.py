@@ -86,18 +86,17 @@ def level():
                 boot.config.check({"effect": "True"}, boot.return_exit)
                 exit_level()
 
-        boot.GLOBAL_EVENT.mouse_get()
-        boot.GLOBAL_EVENT.mouse_button_down()
+        boot.GLOBAL_EVENT.mouse.mouse_get()
         boot.background()
 
         draw_menu_buttons()
 
         boot.version_game()
-        boot.GLOBAL_EVENT.event_button_check(
+        boot.GLOBAL_EVENT.mouse.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
         text = boot.standard_text.set_base_text("11")
-        boot.big_text.get_set_text(text, 70 * boot.procent, 150 * boot.procent)
+        boot.big_text.draw_text(text, 70 * boot.procent, 150 * boot.procent)
 
         boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
         boot.tick_fps()

@@ -112,8 +112,7 @@ def options(x_t=536.5, y_t=255.5):
                 if boot.GLOBAL_EVENT.comparison_key(py.K_ESCAPE):
                     quit_options()
 
-        boot.GLOBAL_EVENT.mouse_get()
-        boot.GLOBAL_EVENT.mouse_button_down()
+        boot.GLOBAL_EVENT.mouse.mouse_get()
         _surfM_.callback(quit_options)
 
         _button1_.callback(_button1_callback)
@@ -130,15 +129,15 @@ def options(x_t=536.5, y_t=255.5):
         text = boot.standard_text.set_base_text("6")
         _button3_.get_text(boot.standard_text, text)
 
-        boot.GLOBAL_EVENT.event_button_check(
+        boot.GLOBAL_EVENT.mouse.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
         text = boot.standard_text.set_base_text("1")
-        boot.big_text.get_set_text(
+        boot.big_text.draw_text(
             text, x_c + (45 * boot.procent), y_c + (25 * boot.procent)
         )
 
-        # get_fps(coordinate=(3, Surface.height - 20))
+        #boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
         boot.tick_fps()
         boot.update_display()
 

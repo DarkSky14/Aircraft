@@ -134,24 +134,19 @@ class ButtonModify(ButtonBase, AnimationMove):
         self.__rect__update__()
         return self
 
-    def callback(self, function, bool_custom: bool = True, this_is_button: bool = True):
-        if self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)) == bool_custom:
+    def callback(self, function, bool_custom: bool = True):
+        if self.button_rect.get_rect().collidepoint((self.event.mouse.mx, self.event.mouse.my)) == bool_custom:
             self.button_rect.draw_object((205, 200, 200), 0, round(self.button_radius))
-            self.event.set_choose_button(True)
-            self.event.set_choose_mouse(this_is_button)
+            self.event.mouse.set_choose_mouse(True)
 
-            if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
+            if self.event.mouse.mouse_button_down():
                 self.button_rect.draw_object((205, 200, 200), 3, 10)
-                self.event.set_choose_mouse(False)
-                self.event.set_mouse_sound_status(True)
-                self.event.set_click(False)
-                self.event.set_sound_fixed(True)
                 function()
 
         self.button_rect.draw_object((205, 200, 200), 3, 10)
 
     def get_text(self, class_text, text, color: tuple = (0, 0, 0)):
-        class_text.get_set_text(text, self.x + 15, self.y + 2, color)
+        class_text.draw_text(text, self.x + 15, self.y + 2, color)
 
     def __rect__update__(self):
         self.button_rect = MyDrawObject(self.x, self.y, self.size, self.surface)
@@ -172,11 +167,8 @@ class CanvasButton(ButtonModify):
         return self
 
     def callback(self, function, bool_custom: bool = False):
-        if self.button_rect.get_rect().collidepoint((self.event.mx, self.event.my)) == bool_custom:
-            self.event.set_choose_button(True)
-            if self.event.comparison_type(py.MOUSEBUTTONDOWN) and self.event.get_click():
-                self.event.set_choose_button(False)
-                self.event.set_click(False)
+        if self.button_rect.get_rect().collidepoint((self.event.mouse.mx, self.event.mouse.my)) == bool_custom:
+            if self.event.mouse.mouse_button_down():
                 function()
 
         self.button_rect.draw_object(

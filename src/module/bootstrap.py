@@ -11,8 +11,8 @@ from module.event import EventControl, Mouse
 from module.Text import Text, Font
 from module.UI.button import ButtonModify
 from module import (get_version, BLACK, WHITE, RED, GREEN, LIME,
-    click_open_1,click_aim,click_exit,click_open_2,effect_game,sound_game,sound_menu
-)
+                    click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game, sound_menu, DrawText
+                    )
 
 
 @dataclass
@@ -150,7 +150,6 @@ def bootstrap() -> AppContext:
     config.reader()
 
     GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
-    #mouse = Mouse(GLOBAL_EVENT, 200, conf_width, conf_height)
 
     ENG = LanguageCreated("EN", base_absolute_import("language"), "english.json")
     ENG.set_language(JsonWorker)
@@ -196,22 +195,20 @@ def bootstrap() -> AppContext:
         fon_background.update()
         fon_background.draw(d)
 
+    vers = DrawText(VERS_GAME.render_font(), d)
     def version_game():
-        txt = VERS_GAME.render_font().render(str(get_version()), True, BLACK)
-        rect_obj = txt.get_rect()
-        rect_obj.bottomright = (width - 7, height)
-        d.blit(txt, rect_obj)
+        vers.draw_text(
+            get_version(), width - (7*boot.procent), height, BLACK, "bottomright"
+        )
 
-
+    tx_fps = DrawText(BASE_FONT.render_font(), d)
     def get_fps(
             font_text: Font = BASE_FONT,
             color: tuple = (200, 200, 200),
             coordinate: tuple = (3, 3),
     ):
-        main_surface_fps = font_text.render_font().render(str(int(FPS.get_fps())), True, color)
-        rect_object = main_surface_fps.get_rect()
-        rect_object.topleft = coordinate
-        d.blit(main_surface_fps, rect_object)
+        #tx_fps.return_self().font.set_font(font_text)
+        tx_fps.draw_text(int(FPS.get_fps()), coordinate[0], coordinate[1], color)
 
     return AppContext(
         d=d, screen=screen, procent=procent,
