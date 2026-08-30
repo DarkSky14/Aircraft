@@ -5,7 +5,7 @@ from module import (
 )
 from module.bootstrap import boot
 
-from settings_menu import options
+from settings_menu import options, canvas_conf
 from language_menu import language_get
 from level_menu import level
 
@@ -26,7 +26,11 @@ def exit_game():
     sys.exit()
 
 _button1_ = boot.button_modified.copy()
-_button1_.set_object((-300 * boot.procent), (220 * boot.procent), (300, 30))
+_button1_.set_object(
+    (-300 * boot.procent),
+    (220 * boot.procent),
+    (300, 30)
+)
 
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
@@ -66,18 +70,19 @@ def _button_get():
 
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    _button_hide()
     _button1_.set_func(level, _button_get)
+    _button_hide()
 
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
+    canvas_conf.set_x(25), canvas_conf.set_y(150)
+    _button2_.set_func(options, _button_get)
     _button_hide()
-    _button1_.set_func(options, _button_get)
 
 def _button_3_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
+    _button3_.set_func(language_get, _button_get)
     _button_hide()
-    _button1_.set_func(language_get, _button_get)
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
@@ -94,8 +99,8 @@ _buttons = (
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.callback(callback)
         button.animation()
+        button.callback(callback)
         button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
 
 
@@ -104,35 +109,33 @@ def main_menu():
 
     boot.set_fps(60)
 
-    def initialize():
-        boot.GLOBAL_EVENT.event_pool()
-        if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
-            py.quit()
-            sys.exit()
+    try:
+        while work:
+            boot.GLOBAL_EVENT.event_pool()
+            if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
+                work = False
 
-        boot.GLOBAL_EVENT.mouse.mouse_get()
-        boot.background()
+            boot.GLOBAL_EVENT.mouse.mouse_get()
+            boot.background()
 
-        draw_menu_buttons()
+            draw_menu_buttons()
+            boot.GLOBAL_EVENT.task.get_tasks()
 
-        boot.version_game()
-        boot.GLOBAL_EVENT.mouse.event_button_check(
-            boot.standard_curs, boot.click_cursor, boot.sound_scroll
-        )
-        boot.big_text.draw_text(
-            boot.big_text.set_base_text("7"), 70 * boot.procent, 150 * boot.procent
-        )
+            boot.version_game()
+            boot.GLOBAL_EVENT.mouse.event_button_check(
+                boot.standard_curs, boot.click_cursor, boot.sound_scroll
+            )
+            boot.big_text.draw_text(
+                boot.big_text.set_base_text("7"), 70 * boot.procent, 150 * boot.procent
+            )
 
-        boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
-        boot.tick_fps()
-        boot.update_display()
+            boot.get_fps(coordinate=(3, boot.height))
+            boot.tick_fps()
+            boot.update_display()
 
-    while work:
-        try:
-            initialize()
-        except Exception:
-            log.exception("Unhandled error in main")
-            raise
+    except Exception:
+        log.exception("Unhandled error in main")
+        raise
 
 if __name__ == "__main__":
     log.info("Successful start...")

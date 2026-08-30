@@ -3,7 +3,7 @@ import pygame as py
 
 class Mouse:
     def __init__(
-        self, event, debounce_ms=200,
+        self, event: "EventControl", debounce_ms=200,
         config_width: float = 0, config_height: float = 0
         ):
         self._last_click_time = 0
@@ -14,6 +14,10 @@ class Mouse:
         self.config_height = config_height
         self.mx, self.my = 0, 0
         self.event = event
+
+    def set_config(self, width = 0, height = 0):
+        self.config_width += width
+        self.config_height += height
 
     def mouse_get(self):
         self.mx, self.my = py.mouse.get_pos()
@@ -46,6 +50,30 @@ class Mouse:
         self.mouse_choose = mouse_choose
 
 
+class Task:
+    def __init__(self):
+        self.tasks = []
+        self.status = False
+
+    def add_task(self, task):
+        self.tasks.append(task)
+
+    def remove_task(self, task):
+        self.tasks.remove(task)
+
+    def get_tasks(self):
+        for task in self.tasks:
+            self.remove_task(task)
+            self.status = False
+            task()
+
+    def set_status(self, status: bool):
+        self.status = status
+
+    def get_status(self):
+        return self.status
+
+
 class EventControl:
     def __init__(
         self,
@@ -54,6 +82,7 @@ class EventControl:
         config_height: float = 0
     ):
         self.events = []
+        self.task = Task()
         self.mouse = Mouse(self, debounce_ms, config_width, config_height)
 
     def event_pool(self):

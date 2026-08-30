@@ -1,4 +1,5 @@
 import pygame as py
+from module.UI import DrawText
 
 
 class Font:
@@ -21,7 +22,7 @@ class Font:
     def render_font(self)  -> py.font.Font:
         return self.font
 
-    def set_font(self, new_font: Font):
+    def set_font(self, new_font: "Font"):
         self._name_font = new_font.get_name()
         self._size_font = new_font.get_size()
         self.bold = new_font.get_bold()
@@ -45,49 +46,28 @@ class Font:
         return self.italic
 
 
-class DrawText:
-    def __init__(self, font: "Font", surface: py.surface.Surface):
-        self.font = font
-        self.surface = surface
-
-    def draw_text(self, text, x, y, color: tuple = (0, 0, 0), rect:str = "topleft"):
-        cache_key = (text, color, id(self.font))
-        if getattr(self, "_cache_key", None) != cache_key:
-            self.text = text
-            self._cache_key = cache_key
-            self.text_obj = self.font.render(str(self.text), True, color)
-            self.text_rect = self.text_obj.get_rect()
-            if rect == "topleft":
-                self.text_rect.topleft = (x, y)
-            elif rect == "bottomright":
-                self.text_rect.bottomright = (x, y)
-
-        self.surface.blit(self.text_obj, self.text_rect)
-        return self.text_rect
-
-
 class TriggerText:
-    def __init__(self, lang = {}, config = None):
+    def __init__(self, lang, config = None):
         self.config = config
         self.lang = lang
 
     def set_change_text(self, inspection, change_x, change_y):
         matched = self.config.check(inspection)
-        return self.lang.get(change_x if matched else change_y, change_x if matched else change_y)
+        return self.lang.get_language().get(change_x if matched else change_y, change_x if matched else change_y)
 
 
 class StandardText:
-    def __init__(self, lang = {}):
+    def __init__(self, lang):
         self.lang = lang
 
     def set_base_text(self, base_key):
-        return self.lang.get(base_key, base_key)
+        return self.lang.get_language().get(base_key, base_key)
 
 
-class Text(DrawText, Font, StandardText, TriggerText):
+class Text(StandardText, TriggerText):
     def __init__(self,
-        font_name: py.font.Font,
-        lang: dict,
+        font_name: "Font",
+        lang,
         surface: py.surface.Surface,
         config,
         color: tuple = (0, 0, 0)):
@@ -96,13 +76,15 @@ class Text(DrawText, Font, StandardText, TriggerText):
         self.surface = surface
         self.config = config
         self.color = color
-        super().__init__(self.font, self.surface)
+
+    def draw_text(self, text, x, y, color: tuple = (0, 0, 0), rect:str = "topleft"):
+        DrawText.draw_text(self, text, x, y, color, rect)
 
     def set_language(self, new_language: dict):
         self.lang = new_language
 
-    def set_settings_text(self, obj: Text):
-        self.font = obj.copy_font()
+    def set_settings_text(self, obj: "Text"):
+        self.font = obj.font
         self.lang = obj.lang
         self.surface = obj.surface
         self.config = obj.config
@@ -110,3 +92,6 @@ class Text(DrawText, Font, StandardText, TriggerText):
 
     def copy_text(self):
         return Text(self.font, self.lang, self.surface, self.config, self.color)
+
+    def set_font(self, font):
+        self.font = font

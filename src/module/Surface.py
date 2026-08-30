@@ -1,10 +1,9 @@
 import pygame as py
-from abc import ABC
 
 from module.logged import log
 
 
-class _ClassSurface():
+class _ClassSurface:
     def __init__(self, width: int = 0, height: int = 0):
         self.width = width
         self.height = height
@@ -64,7 +63,7 @@ class SubSurface(_ClassSurface):
         _ClassSurface.__init__(self, width, height)
 
     def surface(self, sub_surface: py.Surface, left: int, top: int) -> py.Surface:
-        return sub_surface.subsurface(py.pygame.rect.Rect(left, top, self.width, self.height))
+        return sub_surface.subsurface(py.rect.Rect(left, top, self.width, self.height))
 
 
 class AdjustmentSubSurface(_ClassSurface):

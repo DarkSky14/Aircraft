@@ -100,4 +100,5 @@ class JsonWorker(Lib):
             return self.data
 
     def writer(self, args: dict, encoding="utf-8"):
+        log.info("Writing %s: %s", self.name, args)
         JsonWriter.writer(self.url, self.path, self.data, args, encoding)

@@ -1,32 +1,6 @@
 import pygame as py
-from module.UI import AnimationMove
 
-class MyDrawObject:  # Correct
-    def __init__(
-        self, left: float, top: float, size: tuple, window: py.surface.Surface
-    ) -> None:
-        self.top = top
-        self.left = left
-        self.size = size
-        self.surface = window
-        self.rect = py.Rect((self.left, self.top), self.size)
-
-    def draw_object(
-        self, color: tuple, border: int = 0, border_radius: int = 0, radius: int = 50
-    ) -> py.Rect:
-        #max_safe = min(self.rect.width, self.rect.height) // 2
-        #border = min(border, max_safe)
-        #border_radius = min(border_radius, max_safe)
-        #radius = min(radius, max_safe)
-
-        return py.draw.rect(
-            self.surface, color, self.rect, border, border_radius, 
-            radius, radius, radius, radius,
-        )
-
-    def get_rect(self) -> py.Rect:
-        return self.rect
-
+from module.UI import AnimationMove, MyDrawObject, Text
 
 class ButtonInfo:
     x, y = 0, 0
@@ -107,17 +81,18 @@ class ButtonBase:
 
 class ButtonModify(ButtonBase, AnimationMove):
     def __init__(
-            self, event, window: py.surface.Surface, size_config: int | float = 0
+            self, event, window: py.surface.Surface, class_text: "Text", size_config: int | float = 0
     ):
         self.event = event
         self.surface = window
         self.size_config = size_config
+        self.text = class_text
         ButtonBase.__init__(self)
         AnimationMove.__init__(self, size_config, self)
 
     def copy(self):
         return ButtonModify(
-            self.event, self.surface, self.size_config
+            self.event, self.surface, self.text.copy_text(), self.size_config
         )
 
     def set_object(self, x, y, size: tuple = (int, int)):
@@ -146,17 +121,26 @@ class ButtonModify(ButtonBase, AnimationMove):
         self.button_rect.draw_object((205, 200, 200), 3, 10)
 
     def get_text(self, class_text, text, color: tuple = (0, 0, 0)):
-        class_text.draw_text(text, self.x + 15, self.y + 2, color)
+        self.text.draw_text(text, self.x + 15, self.y + 2, color)
+
+    def set_surface(self, surface):
+        self.surface = surface
+        self.text.surface = surface
+        self.__rect__update__()
 
     def __rect__update__(self):
         self.button_rect = MyDrawObject(self.x, self.y, self.size, self.surface)
+
+    def add_coord(self, width=0, height=0):
+        self.x, self.y = round(self.x) + width, round(self.y) + height
+        self.__rect__update__()
 
 
 class CanvasButton(ButtonModify):
     def __init__(
             self, event, window: py.surface.Surface, size_config: int | float = 0
     ):
-        ButtonModify.__init__(self, event, window, size_config)
+        ButtonModify.__init__(self, event, window, "Text", size_config)
 
     def set_object(self, x, y, size: tuple = (int, int)):
         self.x, self.y = round(x), round(y)
@@ -209,4 +193,4 @@ class ButtonCollector:
 
     @staticmethod
     def controller(button):
-        return button.return_self()
+        return button.set_font()

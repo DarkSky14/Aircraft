@@ -11,6 +11,7 @@ def base_absolute_import(part: str) -> str:
 def obsessed_absolute_import(*parts: str) -> str:
     """Absolute way"""
     library_status = False
+    way = ""
     for part in parts:
         if not library_status:
             way = os.path.join(LIBRARY_ROOT, part)

@@ -24,19 +24,36 @@ def exit_options():
 def sound():
     boot.music.music_all(boot.sound_menu)
 
-_x_coord, y_coord = 536.5, 255.5
+class CoordinateOptions:
+    def __init__(self, x, y):
+        self.x_coord = x
+        self.y_coord = y
+
+    def get_x(self):
+        return self.x_coord
+
+    def get_y(self):
+        return self.y_coord
+
+    def set_x(self, x):
+        self.x_coord = x
+
+    def set_y(self, y):
+        self.y_coord = y
+
+canvas_conf = CoordinateOptions(536.5, 255.5)
+x_coord, y_coord = 0,0
 
 x_size = 350 * boot.procent
 y_size = 250 * boot.procent
 
 _surfM_ = CanvasButton(boot.GLOBAL_EVENT, boot.d, boot.procent)
-_surfM_.set_object(_x_coord * boot.procent, y_coord * boot.procent, (x_size, y_size))
-
-x_c = _surfM_.x
-y_c = _surfM_.y
+_surfM_.set_object(
+    canvas_conf.get_x() * boot.procent, canvas_conf.get_y() * boot.procent, (x_size, y_size)
+)
 
 _button1_ = boot.button_modified.copy()
-_button1_.set_object(x_c + (23 * boot.procent), y_c + (85 * boot.procent), (300, 30))
+_button1_.set_object(_surfM_.x + (23 * boot.procent), _surfM_.y + (85 * boot.procent), (300, 30))
 
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
@@ -71,17 +88,15 @@ def _button3_callback():
     boot.config.check({"effect": "True"}, boot.return_exit)
     exit_options()
 
-def options(x_t=536.5, y_t=255.5):
-    global _x_coord, y_coord, x_c, y_c, _runner, _work, _surfM_
+def options():
+    global x_coord, y_coord, _runner, _work
     
-    if x_t != _x_coord or y_t != y_coord:
-        _x_coord, y_coord = x_t, y_t
+    if canvas_conf.get_x() != x_coord or canvas_conf.get_y() != y_coord:
+        x_coord, y_coord = canvas_conf.get_x(), canvas_conf.get_y()
 
-        _surfM_.set_object(_x_coord * boot.procent, y_coord * boot.procent, (x_size, y_size))
-        x_c = _surfM_.x
-        y_c = _surfM_.y
+        _surfM_.set_object(x_coord * boot.procent, y_coord * boot.procent, (x_size, y_size))
 
-        _button1_.set_object(x_c + (23 * boot.procent), y_c + (85 * boot.procent), (300, 30))
+        _button1_.set_object(_surfM_.x + (23 * boot.procent), _surfM_.y + (85 * boot.procent), (300, 30))
 
         _button2_.set_object(
             _button1_.x,
@@ -103,13 +118,13 @@ def options(x_t=536.5, y_t=255.5):
     boot.visible_cursor()
 
     def initialize():
-        boot.GLOBAL_EVENT.event_pool()
-        if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
-            py.quit()
-            sys.exit()
+        for event in boot.GLOBAL_EVENT.event_pool():
+            if event.type == py.QUIT:
+                py.quit()
+                sys.exit()
 
-        if boot.GLOBAL_EVENT.comparison_type(py.KEYDOWN):
-                if boot.GLOBAL_EVENT.comparison_key(py.K_ESCAPE):
+            if event.type == py.KEYDOWN:
+                if event.key == py.K_ESCAPE:
                     quit_options()
 
         boot.GLOBAL_EVENT.mouse.mouse_get()
@@ -134,22 +149,23 @@ def options(x_t=536.5, y_t=255.5):
         )
         text = boot.standard_text.set_base_text("1")
         boot.big_text.draw_text(
-            text, x_c + (45 * boot.procent), y_c + (25 * boot.procent)
+            text, _surfM_.x + (45 * boot.procent), _surfM_.y + (25 * boot.procent)
         )
 
         #boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
         boot.tick_fps()
         boot.update_display()
 
-    while _work:
-        try:
+
+    try:
+        while _work:
             if anim_time_fon <= 180:
                 anim_time_fon += 20
                 boot.main_surface.blit(_fon, (0 + boot.conf_width, 0 + boot.conf_height))
             initialize()
-        except Exception:
-            log.exception("Unhandled error in main")
-            raise
+    except Exception:
+        log.exception("Unhandled error in main")
+        raise
 
     else:
         _work = True

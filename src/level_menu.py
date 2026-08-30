@@ -38,6 +38,12 @@ def _button_get():
     _button3_.moved(50, None, 300)
     _button4_.moved(50, None, 300)
 
+def _button_hide():
+    _button1_.moved(-300, None, 300)
+    _button2_.moved(-300, None, 300)
+    _button3_.moved(-300, None, 300)
+    _button4_.moved(-300, None, 300)
+
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
     source(1, 3, ENEMY_EVENT, 30, {"level": 2})
@@ -57,11 +63,8 @@ def _button_3_callback_():
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    _button1_.moved(-300, None, 300)
-    _button2_.moved(-300, None, 300)
-    _button3_.moved(-300, None, 300)
-    _button4_.moved(-300, None, 300)
     _button4_.set_func(exit_level, _button_get)
+    _button_hide()
 
 _buttons = (
     (_button1_, _button_1_callback_, "3"),
@@ -72,8 +75,8 @@ _buttons = (
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.callback(callback)
         button.animation()
+        button.callback(callback)
         button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
 
 _button_get()
@@ -84,19 +87,22 @@ def level():
     boot.set_fps(60)
 
     def initialize():
-        boot.GLOBAL_EVENT.event_pool()
-        if boot.GLOBAL_EVENT.comparison_type(py.QUIT):
+        for event in boot.GLOBAL_EVENT.event_pool():
+            if event.type == py.QUIT:
                 py.quit()
                 sys.exit()
 
-        if boot.GLOBAL_EVENT.comparison_type(py.KEYDOWN) and boot.GLOBAL_EVENT.comparison_key(py.K_ESCAPE):
+            if event.type == py.KEYDOWN and event.key == py.K_ESCAPE:
                 boot.config.check({"effect": "True"}, boot.return_exit)
-                exit_level()
+                if not _button4_.move_status:
+                    _button3_.set_func(exit_level, _button_get)
+                    _button_hide()
 
         boot.GLOBAL_EVENT.mouse.mouse_get()
         boot.background()
 
         draw_menu_buttons()
+        boot.GLOBAL_EVENT.task.get_tasks()
 
         boot.version_game()
         boot.GLOBAL_EVENT.mouse.event_button_check(
@@ -105,16 +111,16 @@ def level():
         text = boot.standard_text.set_base_text("11")
         boot.big_text.draw_text(text, 70 * boot.procent, 150 * boot.procent)
 
-        boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
+        boot.get_fps(coordinate=(3, boot.height))
         boot.tick_fps()
         boot.update_display()
 
-    while _work:
-        try:
+    try:
+        while _work:
             initialize()
-        except Exception:
-            log.exception("Unhandled error in level")
-            raise
+    except Exception:
+        log.exception("Unhandled error in level")
+        raise
 
     _work = True
 

@@ -4,7 +4,7 @@ from module import (
 
 from random import randint
 from os import listdir
-from settings_menu import options
+from settings_menu import options, canvas_conf
 from module.bootstrap import boot
 
 _bg_speed_ = 2 * boot.procent
@@ -96,6 +96,7 @@ def source(
         enemies.clear()
 
     settings_open = False
+    canvas_conf.set_x(536.5), canvas_conf.set_y(255.5)
 
     while _game_work:
         pressed_keys = py.key.get_pressed()
@@ -185,7 +186,7 @@ def source(
 
         boot.d.blit(score_text_cache, (boot.d.get_width() - 30, 0))
         boot.version_game()
-        boot.get_fps(boot.GAME_TEXT, boot.RED, (5, 5))
+        boot.get_fps(boot.GAME_TEXT, boot.RED, (5, 5), "topleft")
         boot.tick_fps()
         boot.update_display()
 

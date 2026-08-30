@@ -26,15 +26,12 @@ class LanguageCreated(Lib):
         try:
             self.data = JsonReader.reader(self.path)
         except FileNotFoundError:
-            log.warning(f"Language {self.name} not found.")
-
+            self.data = {}
+            log.warning(f"Language %s not found.", self.name)
 
     @property
-    def language(self):
-        return self.data if self.data != {} else {}
-
-    def set_language(self, obj_class):
-        self.data = obj_class.reader(self)
+    def language(self) -> dict:
+        return self.data
 
 
 class LanguageSetter:
@@ -42,11 +39,16 @@ class LanguageSetter:
         self.config = config
         self._basic = English
 
-    def language_set(self, *args) -> dict[str, str]:
-        language = self._basic
+    def set_language(self, obj: dict):
+        self._basic = obj
 
+    def get_language(self):
+        return self._basic
+
+    def checking_typical_language(self, *args) -> dict[str, str]:
         for arg in args:
             check = {"language": arg.name}
             if self.config.check(check):
+                self._basic = arg.language
                 return arg.language
-        return language
+        return self._basic

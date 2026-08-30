@@ -1,35 +1,48 @@
 Version
 =========
-# Unreleased
+# Unreleased 
 **Add**
-- Додані класи ButtonCollector, ButtonInfo.
-- Доданий модуль obsessed_absolute_import в loader.py.
-- Доданий __init__.py в папці UI.
-- В event.py доданий клас Mouse.
+- Add render.py
+- Add Task class in event.py.
 
 **Changed**
-- Клас Button перейменований в ButtonBase.
-- Клас SurfaceM перейменований в CanvasButton.
-- Клас ModuleButton перейменований в ButtonModify.
-- Зміни в event.py пов'язані з отриманням значень для зміни вигляду мишки.
-- VERSION.md перейменований в CHANGELOG.md.
-- Папка UI_module перейменована в UI.
-- correct_start.py перейменовано в loader.py.
-- languageUI.py перейменовано в language_menu.py
-- level.py перейменовано в level_menu.py.
-- options.py перейменовано в settings_menu.py.
-- UI.py перейменовано в button.py і перенесено в папку UI.
-- Покращення в animation.py.
-- Невеликі зміни в buildozer.spec.
-- Від EventControl відділено функції які тепер знаходяться в класі Mouse.
-- Змінено рендеринг функцій get_fps і version_game.
+- Text.py moved in UI path.
 
 **Fixed**
-- Покращено обробку стану миші, що прибрало невеликі візуальні баги з нею.
+- Fixed animations.
+- Fixed incorrect logic in language/text class.
+
+# V 0.2.9 - 2026-29-08
+**Add**
+- Add class ButtonCollector, ButtonInfo.
+- Add module obsessed_absolute_import in loader.py.
+- Add __init__.py in path UI.
+- In event.py add class Mouse.
+
+**Changed**
+- Class Button renamed in ButtonBase.
+- Class SurfaceM renamed in CanvasButton.
+- Class ModuleButton renamed in ButtonModify.
+- Change in event.py with getting mouse status.
+- VERSION.md renamed in CHANGELOG.md.
+- Path UI_module renamed in UI.
+- correct_start.py renamed in loader.py.
+- languageUI.py renamed in language_menu.py
+- level.py renamed in level_menu.py.
+- options.py renamed in settings_menu.py.
+- UI.py renamed in button.py і перенесено в папку UI.
+- In logic animation.py.
+- Change in buildozer.spec.
+- Logic status moved to class Mouse.
+- Change render function get_fps and version_game.
+
+**Fixed**
+- Fixed the treatment status mouse, that fixed small visual bags.
+- Correct animations and click.
 
 **Removed**
-- Видалений застарілий клас _DLib.
-- Видалено застарілий клас DrawingText.
+- Deleted outdated class _DLib.
+- Deleted outdated class DrawingText.
 
 
 # V 0.2.8

@@ -6,13 +6,14 @@ from module.logged import log
 from module.music import Music, Sound
 from module.language import LanguageCreated, LanguageSetter
 from module.FileWorker import JsonWorker
-from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG
-from module.event import EventControl, Mouse
-from module.Text import Text, Font
+from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
+from module.event import EventControl
+from module.UI.Text import Text, Font
 from module.UI.button import ButtonModify
-from module import (get_version, BLACK, WHITE, RED, GREEN, LIME,
-                    click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game, sound_menu, DrawText
-                    )
+from module import (
+    get_version, BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText,
+    click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game
+)
 
 
 @dataclass
@@ -64,6 +65,7 @@ class AppContext:
     WHITE: tuple
     GREEN: tuple
     LIME: tuple
+    active_language: None
     #mouse: None
 
 
@@ -151,13 +153,12 @@ def bootstrap() -> AppContext:
 
     GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
 
-    ENG = LanguageCreated("EN", base_absolute_import("language"), "english.json")
-    ENGLISH = ENG.language
+    ENGLISH = LanguageCreated("EN", base_absolute_import("language"), "english.json")
 
-    UKR = LanguageCreated("UA", base_absolute_import("language"), "ukrainian.json")
-    UKRAINIAN = UKR.language
+    UKRAINIAN = LanguageCreated("UA", base_absolute_import("language"), "ukrainian.json")
 
-    active_language = LanguageSetter(config).language_set(ENG, UKR)
+    active_language = LanguageSetter(config)
+    active_language.checking_typical_language(ENGLISH, UKRAINIAN)
     log.info("LANGUAGE LOADED...")
 
     log.info("Load font...")
@@ -165,17 +166,21 @@ def bootstrap() -> AppContext:
     BIG_TEXT = Font("Georgia", round(36 * procent))  # Arial
     VERS_GAME = Font(None, round(20 * procent))
     BASE_FONT = Font("Georgia", round(21 * procent))
-    GAME_TEXT = Font("Georgia", round(30 * procent))
+    GAME_TEXT = Font("NotoSans", round(30 * procent))
+    #GAME_TEXT.set_font(VERS_GAME)
+    #GAME_TEXT = Font(py.font.get_default_font().rstrip(".ttf"), round(30 * procent))
+    #print(GAME_TEXT.render_font().get_point_size())
+    #print(py.font.get_default_font().rstrip(".ttf"))
     log.info("Font (4) successfully loaded.")
 
-    text = Text(VERS_GAME.render_font(), active_language, d, config, (0, 0, 0))
+    text = Text(VERS_GAME, active_language, d, config, (0, 0, 0))
     big_text = text.copy_text()
-    big_text.set_font(BIG_TEXT.copy_font())
+    big_text.set_font(BIG_TEXT)
 
     standard_text = text.copy_text()
-    standard_text.set_font(BASE_FONT.copy_font())
+    standard_text.set_font(BASE_FONT)
 
-    button_modified = ButtonModify(GLOBAL_EVENT, d, procent)
+    button_modified = ButtonModify(GLOBAL_EVENT, d, standard_text.copy_text(), procent)
 
     def sound_scroll():
         if config.check({"effect": "True"}):
@@ -193,20 +198,23 @@ def bootstrap() -> AppContext:
         fon_background.update()
         fon_background.draw(d)
 
-    vers = DrawText(VERS_GAME.render_font(), d)
+    vers = DrawText(VERS_GAME, d)
     def version_game():
         vers.draw_text(
-            get_version(), width - (7*boot.procent), height, BLACK, "bottomright"
+            get_version(), width - 2*procent, height, BLACK, "bottomright"
         )
 
-    tx_fps = DrawText(BASE_FONT.render_font(), d)
+    tx_fps = DrawText(GAME_TEXT, d)
     def get_fps(
             font_text: Font = BASE_FONT,
             color: tuple = (200, 200, 200),
-            coordinate: tuple = (3, 3),
+            coordinate: tuple = (0, 0),
+            rect = "bottomleft"
     ):
-        #tx_fps.return_self().font.set_font(font_text)
-        tx_fps.draw_text(int(FPS.get_fps()), coordinate[0], coordinate[1], color)
+        tx_fps.set_font(font_text)
+        tx_fps.draw_text(
+            int(FPS.get_fps()), coordinate[0], coordinate[1], color, rect
+        )
 
     return AppContext(
         d=d, screen=screen, procent=procent,
@@ -229,7 +237,7 @@ def bootstrap() -> AppContext:
         GAME_TEXT=GAME_TEXT, sound_menu=sound_menu,
         main_surface=main_surface, bg=bg, bgX=bgX, bgX2=bgX2,
         BASE_FONT=BASE_FONT,BLACK=BLACK,LIME=LIME, WHITE=WHITE,
-        RED=RED, GREEN=GREEN#, mouse=mouse
+        RED=RED, GREEN=GREEN, active_language=active_language
     )
 
 boot = bootstrap()
