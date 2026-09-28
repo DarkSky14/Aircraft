@@ -1,5 +1,5 @@
 from pygame import mixer, mixer_music
-from module.logged import log
+from module.logger import log
 
 class Sound:
     def __init__(self, address) -> None:

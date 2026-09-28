@@ -163,8 +163,8 @@ def options():
                 anim_time_fon += 20
                 boot.main_surface.blit(_fon, (0 + boot.conf_width, 0 + boot.conf_height))
             initialize()
-    except Exception:
-        log.exception("Unhandled error in main")
+    except Exception as e:
+        log.exception("Unhandled error in settings: %s", e)
         raise
 
     else:

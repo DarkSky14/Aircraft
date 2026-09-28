@@ -29,19 +29,14 @@ class MyDrawObject:
 
 
 class DrawText:
-    def __init__(self, font, surface: py.surface.Surface):
-        self.font = font
+    def __init__(self, surface: py.surface.Surface):
         self.surface = surface
 
-    def set_font(self, font: "Font"):
-        self.font = font
-
-    def draw_text(self, text, x, y, color: tuple = (0, 0, 0), rect:str = "topleft"):
-        cache_key = (text, color, x, y, id(self.font))
+    def draw_text(self, text, x, y, font, color: tuple = (0, 0, 0), rect:str = "topleft"):
+        cache_key = (text, color, x, y, id(font))
         if getattr(self, "_cache_key", None) != cache_key:
-            self.text = text
             self._cache_key = cache_key
-            self.text_obj = self.font.render_font().render(str(self.text), True, color)
+            self.text_obj = font.render_font().render(str(text), True, color)
             self.text_rect = self.text_obj.get_rect()
             if rect == "topleft":
                 self.text_rect.topleft = (x, y)

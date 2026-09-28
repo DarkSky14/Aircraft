@@ -1,6 +1,6 @@
 import pygame as py
 
-from module.logged import log
+from module.logger import log
 
 
 class _ClassSurface:

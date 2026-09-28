@@ -33,38 +33,40 @@ _button4_.set_object(
 )
 
 def _button_get():
-    _button1_.moved(50, None, 300)
-    _button2_.moved(50, None, 300)
-    _button3_.moved(50, None, 300)
-    _button4_.moved(50, None, 300)
+    _button1_.moved(50, None, 0.5)
+    _button2_.moved(50, None, 0.5)
+    _button3_.moved(50, None, 0.5)
+    _button4_.moved(50, None, 0.5)
 
 def _button_hide():
-    _button1_.moved(-300, None, 300)
-    _button2_.moved(-300, None, 300)
-    _button3_.moved(-300, None, 300)
-    _button4_.moved(-300, None, 300)
+    _button1_.moved(-300, None, 0.5)
+    _button2_.moved(-300, None, 0.5)
+    _button3_.moved(-300, None, 0.5)
+    _button4_.moved(-300, None, 0.5)
 
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    source(1, 3, ENEMY_EVENT, 30, {"level": 2})
-    boot.set_fps(60)
+    if not _button1_.move_status:
+        source(1, 3, ENEMY_EVENT, 30, {"level": 2})
+        boot.set_fps(60)
 
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    if boot.config.get_value("level", 0) >= 2:
+    if boot.config.get_value("level", 0) >= 2 and  not _button2_.move_status:
         source(2, 5, ENEMY_EVENT, 300, {"level": 3}, enemy_timer_spawn= 3000)
         boot.set_fps(60)
 
 def _button_3_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    if boot.config.get_value("level", 0) >= 3:
+    if boot.config.get_value("level", 0) >= 3 and not _button3_.move_status:
         source(3, 7, ENEMY_EVENT, 1500, {"level": 3.1}, enemy_timer_spawn= 2000)
         boot.set_fps(60)
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    _button4_.set_func(exit_level, _button_get)
-    _button_hide()
+    if not _button4_.move_status:
+        _button4_.set_func(exit_level, _button_get)
+        _button_hide()
 
 _buttons = (
     (_button1_, _button_1_callback_, "3"),
@@ -118,8 +120,8 @@ def level():
     try:
         while _work:
             initialize()
-    except Exception:
-        log.exception("Unhandled error in level")
+    except Exception as e:
+        log.exception("Unhandled error in level: %s", e)
         raise
 
     _work = True

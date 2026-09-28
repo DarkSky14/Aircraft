@@ -5,14 +5,14 @@ import pygame as py
 import sys
 
 from module.loader import base_absolute_import
-from module.logged import log
+from module.logger import log
 from module.music import Music, Sound
 
 from module.language import LanguageCreated, LanguageSetter
 from module.FileWorker import JsonReader, JsonWorker
 
 from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-from module.event import EventControl, Mouse
+from module.event import EventManager, Mouse
 
 from module.UI import ButtonModify, CanvasButton, ButtonCollector, Text, DrawText
 

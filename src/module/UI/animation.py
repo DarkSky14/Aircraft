@@ -1,5 +1,3 @@
-from module.event import Task
-
 is_move = True
 
 
@@ -12,40 +10,35 @@ class AnimationMove:
         self.func1 = None
         self.func2 = None
         self.move_status = False
+        self.times = 0
+        self._move_to_x = 0
+        self._move_to_y = 0
 
     def moved(self, pixel_x=None, pixel_y=None, milliseconds: int = 0):  # type: ignore #
         global is_move
-        if self.move_status is False:
-            self.move_status = True
-            if is_move:
-                if milliseconds == 0:
-                    times = 1
-                else:
-                    times = milliseconds / 10
-                self.times = times
+        self.move_status = True
+        times = 1
 
-                if pixel_x is None:
-                    self._move_to_x = 0
-                else:
-                    pixel_x = round(pixel_x * self.size_config)
-                    self._move_to_x = (pixel_x - self.x) / times
+        if is_move:
+            if milliseconds > 0:
+                times = 60 * milliseconds
+            self.times = times
 
-                if pixel_y is None:
-                    self._move_to_y = 0
-                else:
-                    pixel_y = round(pixel_y * self.size_config)
-                    self._move_to_y = (pixel_y - self.y) / times
+            if pixel_x is not None:
+                pixel_x = round(pixel_x * self.size_config)
+                self._move_to_x = (pixel_x - self.x) / times
 
-            else:
-                if pixel_x is not None:
-                    self.x = round(pixel_x * self.size_config)
+            if pixel_y is not None:
+                pixel_y = round(pixel_y * self.size_config)
+                self._move_to_y = (pixel_y - self.y) / times
 
-                if pixel_y is not None:
-                    self.y = round(pixel_y * self.size_config)
+        else:
+            self.times = times
+            if pixel_x is not None:
+                self.x = round(pixel_x * self.size_config)
 
-                self.times = 1
-                self._move_to_x = 0
-                self._move_to_y = 0
+            if pixel_y is not None:
+                self.y = round(pixel_y * self.size_config)
 
 
     def set_func(self, func1=None, func2 = None):

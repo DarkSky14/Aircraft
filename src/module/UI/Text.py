@@ -1,3 +1,5 @@
+import sys
+
 import pygame as py
 from module.UI import DrawText
 
@@ -78,7 +80,7 @@ class Text(StandardText, TriggerText):
         self.color = color
 
     def draw_text(self, text, x, y, color: tuple = (0, 0, 0), rect:str = "topleft"):
-        DrawText.draw_text(self, text, x, y, color, rect)
+        DrawText.draw_text(self, text, x, y, self.font, color, rect)
 
     def set_language(self, new_language: dict):
         self.lang = new_language

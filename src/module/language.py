@@ -1,5 +1,5 @@
 from module.FileWorker import Lib, JsonReader
-from module.logged import log
+from module.logger import log
 
 
 English = {

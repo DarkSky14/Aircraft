@@ -21,8 +21,8 @@ py.display.set_caption("Aircraft", "Aircraft")
 py.display.set_icon(icon)
 
 def exit_game():
-    log.info("Successful stop.")
     py.quit()
+    log.delete_log()
     sys.exit()
 
 _button1_ = boot.button_modified.copy()
@@ -55,38 +55,42 @@ _button4_.set_object(
 
 
 def _button_hide():
-    _button1_.moved(-300, None, 300)
-    _button2_.moved(-300, None, 300)
-    _button3_.moved(-300, None, 300)
-    _button4_.moved(-300, None, 300)
+    _button1_.moved(-300, None, 0.5)
+    _button2_.moved(-300, None, 0.5)
+    _button3_.moved(-300, None, 0.5)
+    _button4_.moved(-300, None, 0.5)
 
 
 def _button_get():
-    _button1_.moved(50, None, 300)
-    _button2_.moved(50, None, 300)
-    _button3_.moved(50, None, 300)
-    _button4_.moved(50, None, 300)
+    _button1_.moved(50, None, 0.5)
+    _button2_.moved(50, None, 0.5)
+    _button3_.moved(50, None, 0.5)
+    _button4_.moved(50, None, 0.5)
 
 
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    _button1_.set_func(level, _button_get)
-    _button_hide()
+    if not _button1_.move_status:
+        _button1_.set_func(level, _button_get)
+        _button_hide()
 
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    canvas_conf.set_x(25), canvas_conf.set_y(150)
-    _button2_.set_func(options, _button_get)
-    _button_hide()
+    if not _button2_.move_status:
+        canvas_conf.set_x(25), canvas_conf.set_y(150)
+        _button2_.set_func(options, _button_get)
+        _button_hide()
 
 def _button_3_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    _button3_.set_func(language_get, _button_get)
-    _button_hide()
+    if not _button3_.move_status:
+        _button3_.set_func(language_get, _button_get)
+        _button_hide()
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    exit_game()
+    if not _button4_.move_status:
+        exit_game()
 
 _button_get()
 
@@ -133,8 +137,8 @@ def main_menu():
             boot.tick_fps()
             boot.update_display()
 
-    except Exception:
-        log.exception("Unhandled error in main")
+    except Exception as e:
+        log.exception("Unhandled error in main: %s", e)
         raise
 
 if __name__ == "__main__":

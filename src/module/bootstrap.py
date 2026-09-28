@@ -1,13 +1,13 @@
 from dataclasses import dataclass
-import pygame as py
+import pygame as py, sys
 
 from module.loader import base_absolute_import
-from module.logged import log
+from module.logger import log
 from module.music import Music, Sound
 from module.language import LanguageCreated, LanguageSetter
 from module.FileWorker import JsonWorker
 from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
-from module.event import EventControl
+from module.event import EventManager
 from module.UI.Text import Text, Font
 from module.UI.button import ButtonModify
 from module import (
@@ -26,7 +26,7 @@ class AppContext:
     height: int
     width: int
     config: JsonWorker
-    GLOBAL_EVENT: EventControl
+    GLOBAL_EVENT: EventManager
     standard_text: Text
     big_text: Text
     button_modified: ButtonModify
@@ -53,6 +53,7 @@ class AppContext:
     sound_game: str
     ENGLISH: dict
     UKRAINIAN: dict
+    RUSSIAN: dict
     GAME_TEXT: None
     sound_menu: str
     main_surface: None
@@ -120,7 +121,7 @@ def bootstrap() -> AppContext:
     log.info("Setup sounds/config/UI...")
 
     main_surface = AdjustmentSurface().surface()
-    sub_surface = AdjustmentSubSurface(1373, 761)
+    sub_surface = AdjustmentSubSurface(1373, 761) #1373, 761 | 1920, 1080
     d = sub_surface.surface(main_surface)
     main_surface.fill((0, 0, 0))
     d.fill((255, 255, 255))
@@ -151,14 +152,16 @@ def bootstrap() -> AppContext:
     )
     config.reader()
 
-    GLOBAL_EVENT = EventControl(200, conf_width, conf_height)
+    GLOBAL_EVENT = EventManager(200, conf_width, conf_height)
 
     ENGLISH = LanguageCreated("EN", base_absolute_import("language"), "english.json")
 
     UKRAINIAN = LanguageCreated("UA", base_absolute_import("language"), "ukrainian.json")
 
+    RUSSIAN = LanguageCreated("RU", base_absolute_import("language"), "russian.json")
+
     active_language = LanguageSetter(config)
-    active_language.checking_typical_language(ENGLISH, UKRAINIAN)
+    active_language.checking_typical_language(ENGLISH, UKRAINIAN, RUSSIAN)
     log.info("LANGUAGE LOADED...")
 
     log.info("Load font...")
@@ -198,22 +201,21 @@ def bootstrap() -> AppContext:
         fon_background.update()
         fon_background.draw(d)
 
-    vers = DrawText(VERS_GAME, d)
+    vers = DrawText(d)
     def version_game():
         vers.draw_text(
-            get_version(), width - 2*procent, height, BLACK, "bottomright"
+            get_version(), width - 2*procent, height, VERS_GAME, BLACK, "bottomright"
         )
 
-    tx_fps = DrawText(GAME_TEXT, d)
+    tx_fps = DrawText(d)
     def get_fps(
             font_text: Font = BASE_FONT,
             color: tuple = (200, 200, 200),
             coordinate: tuple = (0, 0),
             rect = "bottomleft"
     ):
-        tx_fps.set_font(font_text)
         tx_fps.draw_text(
-            int(FPS.get_fps()), coordinate[0], coordinate[1], color, rect
+            int(FPS.get_fps()), coordinate[0], coordinate[1], font_text, color, rect
         )
 
     return AppContext(
@@ -234,10 +236,11 @@ def bootstrap() -> AppContext:
         get_fps=get_fps, update_display=update_display,
         click_open_1=click_open_1, effect_game=effect_game,
         sound_game=sound_game, ENGLISH=ENGLISH, UKRAINIAN=UKRAINIAN,
+        RUSSIAN=RUSSIAN,
         GAME_TEXT=GAME_TEXT, sound_menu=sound_menu,
         main_surface=main_surface, bg=bg, bgX=bgX, bgX2=bgX2,
         BASE_FONT=BASE_FONT,BLACK=BLACK,LIME=LIME, WHITE=WHITE,
-        RED=RED, GREEN=GREEN, active_language=active_language
+        RED=RED, GREEN=GREEN, active_language=active_language,
     )
 
 boot = bootstrap()

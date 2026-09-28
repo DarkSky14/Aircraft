@@ -24,24 +24,31 @@ _button2_.set_object(
     (300, 30),
 )#.set_surface(s)
 
+_button3_ = boot.button_modified.copy()
+_button3_.set_object(
+    (-300 * boot.procent),
+    (_button2_.y + _button2_.size_y + (10 * boot.procent)),
+    (300, 30),
+)#.set_surface(s)
+
 _button4_ = boot.button_modified.copy()
 _button4_.set_object(
     (-300 * boot.procent),
-    (_button2_.y + _button2_.size_y + (30 * boot.procent)),
+    (_button3_.y + _button3_.size_y + (30 * boot.procent)),
     (300, 30),
 )#.set_surface(s)
 
 def _button_get():
-    _button1_.moved(50, None, 300)
-    _button2_.moved(50, None, 300)
-    #_button3_.moved(50, None, 300)
-    _button4_.moved(50, None, 300)
+    _button1_.moved(50, None, 0.5)
+    _button2_.moved(50, None, 0.5)
+    _button3_.moved(50, None, 0.5)
+    _button4_.moved(50, None, 0.5)
 
 def _button_hide():
-    _button1_.moved(-300, None, 300)
-    _button2_.moved(-300, None, 300)
-    # _button3_.moved(-300, None, 300)
-    _button4_.moved(-300, None, 300)
+    _button1_.moved(-300, None, 0.5)
+    _button2_.moved(-300, None, 0.5)
+    _button3_.moved(-300, None, 0.5)
+    _button4_.moved(-300, None, 0.5)
 
 def _button1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
@@ -55,14 +62,22 @@ def _button2_callback_():
         boot.config.writer({"language": "UA"})
         boot.active_language.set_language(boot.UKRAINIAN.language)
 
+def _button3_callback_():
+    boot.config.check({"effect": "True"}, boot.clicks)
+    if not boot.config.check({"language": "RU"}):
+        boot.config.writer({"language": "RU"})
+        boot.active_language.set_language(boot.RUSSIAN.language)
+
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    _button4_.set_func(exit_language, _button_get)
-    _button_hide()
+    if not _button4_.move_status:
+        _button4_.set_func(exit_language, _button_get)
+        _button_hide()
 
 _buttons = (
     (_button1_, _button1_callback_, "English"),
     (_button2_, _button2_callback_, "Українська"),
+    (_button3_, _button3_callback_, "Русский"),
     (_button4_, _button_4_callback_, "6"),
 )
 
@@ -108,6 +123,7 @@ def language_get():
 
                     _button1_.add_coord(height=scroll_y)
                     _button2_.add_coord(height=scroll_y)
+                    _button3_.add_coord(height=scroll_y)
                     _button4_.add_coord(height=scroll_y)
 
             boot.GLOBAL_EVENT.mouse.mouse_get()
@@ -127,8 +143,8 @@ def language_get():
             boot.get_fps(coordinate=(3, boot.height))
             boot.tick_fps()
             boot.update_display()
-    except Exception:
-        log.exception("Unhandled error in language")
+    except Exception as e:
+        log.exception("Unhandled error in language: %s", e)
         raise
 
     #boot.GLOBAL_EVENT.mouse.set_config(0, -100)

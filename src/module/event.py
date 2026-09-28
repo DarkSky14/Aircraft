@@ -3,7 +3,7 @@ import pygame as py
 
 class Mouse:
     def __init__(
-        self, event: "EventControl", debounce_ms=200,
+        self, event: "EventManager", debounce_ms=200,
         config_width: float = 0, config_height: float = 0
         ):
         self._last_click_time = 0
@@ -74,7 +74,7 @@ class Task:
         return self.status
 
 
-class EventControl:
+class EventManager:
     def __init__(
         self,
         debounce_ms=200,
