@@ -1,9 +1,9 @@
-from module.UI.button import CanvasButton
+from Aircraft.module.UI.button import CanvasButton
 
-from module import (
+from Aircraft.module import (
     base_absolute_import, log, py, sys
 )
-from module.bootstrap import boot
+from Aircraft.module.bootstrap import boot
 
 _fon_obj = py.image.load(base_absolute_import("pictures/fon_.png")).convert()
 _fon = py.transform.scale(_fon_obj, boot.screen)

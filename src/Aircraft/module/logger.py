@@ -1,7 +1,7 @@
 import logging
 import os
 from time import strftime
-from module import base_absolute_import
+from Aircraft.module import base_absolute_import
 
 
 class Logger:

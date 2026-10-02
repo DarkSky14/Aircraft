@@ -1,27 +1,17 @@
-__version__ = "0.2.9"
-__author__ = "Chinho/DarkSky14"
-
 import pygame as py
 import sys
 
-from module.loader import base_absolute_import
-from module.logger import log
-from module.music import Music, Sound
+from Aircraft import base_absolute_import
+from Aircraft.module.logger import log
+from Aircraft.module.music import Music, Sound
 
-from module.language import LanguageCreated, LanguageSetter
-from module.FileWorker import JsonReader, JsonWorker
+from Aircraft.module.language import LanguageCreated, LanguageSetter
+from Aircraft.module.FileWorker import JsonWorker
 
-from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
-from module.event import EventManager, Mouse
+from Aircraft.module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
+from Aircraft.module.event import EventManager, Mouse
 
-from module.UI import ButtonModify, CanvasButton, ButtonCollector, Text, DrawText
-
-def get_version():
-    return __version__
-
-
-def get_author():
-    return __author__
+from Aircraft.module.UI import ButtonModify, CanvasButton, ButtonCollector, Text, DrawText
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

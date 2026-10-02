@@ -1,6 +1,6 @@
 import pygame as py
 
-from module.UI import AnimationMove, MyDrawObject, Text
+from Aircraft.module.UI import AnimationMove, MyDrawObject, Text
 
 class ButtonInfo:
     x, y = 0, 0

@@ -1,7 +1,5 @@
-import sys
-
 import pygame as py
-from module.UI import DrawText
+from Aircraft.module.UI import DrawText
 
 
 class Font:

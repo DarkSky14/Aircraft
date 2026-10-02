@@ -1,13 +1,13 @@
 import sys
 
-from module import (
-    log, base_absolute_import, py, CanvasButton, ButtonCollector, __version__
+from Aircraft.module import (
+    log, base_absolute_import, py, CanvasButton, ButtonCollector,
 )
-from module.bootstrap import boot
+from Aircraft.module.bootstrap import boot
 
-from settings_menu import options, canvas_conf
-from language_menu import language_get
-from level_menu import level
+from Aircraft.menu.settings_menu import options, canvas_conf
+from Aircraft.menu.language_menu import language_get
+from Aircraft.menu.level_menu import level
 
 # Setup pygame/window -----------------------------
 

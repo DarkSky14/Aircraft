@@ -1,19 +1,20 @@
 from dataclasses import dataclass
-import pygame as py, sys
+import pygame as py
 
-from module.loader import base_absolute_import
-from module.logger import log
-from module.music import Music, Sound
-from module.language import LanguageCreated, LanguageSetter
-from module.FileWorker import JsonWorker
-from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
-from module.event import EventManager
-from module.UI.Text import Text, Font
-from module.UI.button import ButtonModify
-from module import (
-    get_version, BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText,
+from Aircraft import base_absolute_import
+from Aircraft.module.logger import log
+from Aircraft.module.music import Music, Sound
+from Aircraft.module.language import LanguageCreated, LanguageSetter
+from Aircraft.module.FileWorker import JsonWorker
+from Aircraft.module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
+from Aircraft.module.event import EventManager
+from Aircraft.module.UI.Text import Text, Font
+from Aircraft.module.UI.button import ButtonModify
+from Aircraft.module import (
+    BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText,
     click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game
 )
+from Aircraft import get_version
 
 
 @dataclass

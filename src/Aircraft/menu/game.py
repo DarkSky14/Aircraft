@@ -1,11 +1,11 @@
-from module import (
+from Aircraft.module import (
     ScrollingBG, log, base_absolute_import, py, sys
 )
 
 from random import randint
 from os import listdir
-from settings_menu import options, canvas_conf
-from module.bootstrap import boot
+from Aircraft.menu.settings_menu import options, canvas_conf
+from Aircraft.module.bootstrap import boot
 
 _bg_speed_ = 2 * boot.procent
 _game_work = True

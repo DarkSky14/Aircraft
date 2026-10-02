@@ -1,5 +1,5 @@
-from module.FileWorker import Lib, JsonReader
-from module.logger import log
+from Aircraft.module.FileWorker import Lib, reader
+from Aircraft.module.logger import log
 
 
 English = {
@@ -24,7 +24,7 @@ class LanguageCreated(Lib):
         self._lang = {}
         super().__init__(name, url, self._lang, file)
         try:
-            self.data = JsonReader.reader(self.path)
+            self.data = reader(self.path)
         except FileNotFoundError:
             self.data = {}
             log.warning(f"Language %s not found.", self.name)
