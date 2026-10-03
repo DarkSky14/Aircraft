@@ -4,11 +4,12 @@ Version
 **Add**
 - Add render.py
 - Add Task class in event.py.
-- Add config.py, main.py, __init__.py
+- Add config.py, main.py, __init__.py.
+- Add class ImageLoader.
 
 **Changed**
 - Text.py moved in UI path.
-- New file system.
+- Update architecture.
 - main.py renamed in main_menu.py.
 - Logic loader.py moved to __init__.py.
 
@@ -60,7 +61,6 @@ Version
 - Fix dynamic import.
 
 # V 0.2.7
--------------
 **Improvements**
 - Splitting the monolith into smaller scripts.
 - Moving the main script from *Aircraft* to *Aircraft/src*.
@@ -75,7 +75,6 @@ Version
 - Fixed a bug that occurred when exiting Settings by pressing a button, and which affected entering the game.
 
 # V 0.2.6
--------------
 **Improvements**
 - Automatic leveling of bonuses, opponents and player sizes.
 - Optimization of RAM usage.
@@ -90,7 +89,6 @@ Version
 - Fixed a bug with the button getting stuck when pressed.
 
 # V 0.2.5
--------------
 **Improvements**
 - Optimized RAM usage.
 - Better smoothness.
@@ -104,7 +102,6 @@ Version
 - Fixed a bug where the fill would break when hovering over a button.
 
 # V 0.2.4
--------------
 **Improvements**
 - Add automatic text size alignment.
 
@@ -114,7 +111,6 @@ Version
 - Fixed a bug that caused the game to crash on small screens.
 
 # V 0.2.3
--------------
 **Improvements**
 - Added FPS display in the menu.
 - Animated dimming in settings.
@@ -129,7 +125,6 @@ Version
 - Fixes in *text* and *button* classes.
 
 # V 0.2.2
--------------
 **Improvements**
 - Improving the performance of the *Surface* class.
 
@@ -137,7 +132,6 @@ Version
 - Fix *screen_config*.
 
 # V 0.2.1
--------------
 **Improvements**
 - Add event_pool.
 - Add logging class (print in console).
@@ -167,7 +161,6 @@ Version
 - Fixed a bug with the game crashing if the config file or folder is missing.
 
 # V 0.1.1
--------------
 **Improvements**
 - Added automatic adjustment to screen size.
 - A *temp* object has been created to store music.
@@ -179,5 +172,4 @@ Version
 - Fixed issues with reading languages ​​to install them when logging into the game.
 
 # V 0.1.0
--------------
 Add.

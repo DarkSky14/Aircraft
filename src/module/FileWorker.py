@@ -1,6 +1,6 @@
 import json
 import os
-from Aircraft.module.logger import log
+from module.logger import log
 
 
 class Lib:
@@ -57,18 +57,22 @@ class CheckedDict:
         return data.get(key) == value
 
 
-def reader(path, encoding="utf-8"):
-    with open(path, "r", encoding=encoding) as file:
-        return json.load(file)
+class JsonReader:
+    @staticmethod
+    def reader(path, encoding="utf-8"):
+        with open(path, "r", encoding=encoding) as file:
+            return json.load(file)
 
 
-def writer(url, path, data, args: dict, encoding="utf-8"):
-    data.update(args)
-    os.makedirs(url, exist_ok=True)
+class JsonWriter:
+    @staticmethod
+    def writer(url, path, data, args: dict, encoding="utf-8"):
+        data.update(args)
+        os.makedirs(url, exist_ok=True)
 
-    with open(path, "w", encoding=encoding) as file:
-        json.dump(data, file, indent=4)
-    return data
+        with open(path, "w", encoding=encoding) as file:
+            json.dump(data, file, indent=4)
+        return data
 
 
 class JsonWorker(Lib):
@@ -78,12 +82,12 @@ class JsonWorker(Lib):
     def check(self, args: dict, script=None):
         checker = CheckedDict.check(self.data, args)
         if checker and script is not None:
-            script()  # type: ignore
+            script()
         return checker
 
     def reader(self, encoding="utf-8"):
         try:
-            data = reader(self.path, encoding)
+            data = JsonReader.reader(self.path, encoding)
             log.info("Loaded %s: %s", self.name, self.data)
         except FileNotFoundError:
             log.warning("File %s not found, creating new one...", self.file)
@@ -97,4 +101,4 @@ class JsonWorker(Lib):
 
     def writer(self, args: dict, encoding="utf-8"):
         log.info("Writing %s: %s", self.name, args)
-        writer(self.url, self.path, self.data, args, encoding)
+        JsonWriter.writer(self.url, self.path, self.data, args, encoding)

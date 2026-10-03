@@ -5,7 +5,7 @@
 [project]
 name = "aircraft"
 #.dynamic = ["version"]
-version = "0.2.9"
+version = "0.3.0"
 #dynamic = ["version"]
 readme = "README.md"
 license = "GPL-3.0"
@@ -14,7 +14,7 @@ dependencies = [
     "pygame-ce>=2.5.7",
 ]
 
-#[project.optional-dependencies]
+#[project_info.optional-dependencies]
 #all =
 
 #[tool.uv.extra-build-dependencies]

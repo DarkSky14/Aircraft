@@ -1,5 +1,5 @@
-from Aircraft.module.FileWorker import Lib, reader
-from Aircraft.module.logger import log
+from module.FileWorker import Lib, reader
+from module.logger import log
 
 
 English = {

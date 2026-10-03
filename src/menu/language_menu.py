@@ -1,5 +1,8 @@
-from Aircraft.module.bootstrap import boot, SubSurface
-from Aircraft.module import log, py, sys
+import sys
+sys.path.append("..")
+
+from module.bootstrap import boot, SubSurface
+from module import log, py, sys
 
 _work = True
 

@@ -1,20 +1,19 @@
 from dataclasses import dataclass
 import pygame as py
 
-from Aircraft import base_absolute_import
-from Aircraft.module.logger import log
-from Aircraft.module.music import Music, Sound
-from Aircraft.module.language import LanguageCreated, LanguageSetter
-from Aircraft.module.FileWorker import JsonWorker
-from Aircraft.module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
-from Aircraft.module.event import EventManager
-from Aircraft.module.UI.Text import Text, Font
-from Aircraft.module.UI.button import ButtonModify
-from Aircraft.module import (
-    BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText,
-    click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game
+from module.logger import log
+from module.music import Music, Sound
+from module.language import LanguageCreated, LanguageSetter
+from module.FileWorker import JsonWorker
+from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
+from module.event import EventManager
+from module.UI.Text import Text, Font
+from module.UI.button import ButtonModify
+from module import (
+    BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText, get_version,
+    click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game,
+    url_fixer
 )
-from Aircraft import get_version
 
 
 @dataclass
@@ -138,7 +137,7 @@ def bootstrap() -> AppContext:
 
     log.info("Start load background image...")
     bg = py.transform.scale(
-        py.image.load(base_absolute_import("pictures/background.png")).convert(), screen
+        py.image.load(url_fixer("pictures/background.png")).convert(), screen
     )
     log.info("Background image successfully loaded.")
     bgX = 0
@@ -147,7 +146,7 @@ def bootstrap() -> AppContext:
 
     config = JsonWorker(
         "config",
-        base_absolute_import("data"),
+        url_fixer("data"),
         {"level": 1, "effect": "True", "music": "True", "language": "EN"},
         "config.json",
     )
@@ -155,11 +154,11 @@ def bootstrap() -> AppContext:
 
     GLOBAL_EVENT = EventManager(200, conf_width, conf_height)
 
-    ENGLISH = LanguageCreated("EN", base_absolute_import("language"), "english.json")
+    ENGLISH = LanguageCreated("EN", url_fixer("language"), "english.json")
 
-    UKRAINIAN = LanguageCreated("UA", base_absolute_import("language"), "ukrainian.json")
+    UKRAINIAN = LanguageCreated("UA", url_fixer("language"), "ukrainian.json")
 
-    RUSSIAN = LanguageCreated("RU", base_absolute_import("language"), "russian.json")
+    RUSSIAN = LanguageCreated("RU", url_fixer("language"), "russian.json")
 
     active_language = LanguageSetter(config)
     active_language.checking_typical_language(ENGLISH, UKRAINIAN, RUSSIAN)

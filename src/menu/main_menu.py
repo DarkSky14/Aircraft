@@ -1,21 +1,17 @@
 import sys
+sys.path.append("..")
 
-from Aircraft.module import (
-    log, base_absolute_import, py, CanvasButton, ButtonCollector,
+from module import (
+    log, py, ImageLoader
 )
-from Aircraft.module.bootstrap import boot
+from module.bootstrap import boot
 
-from Aircraft.menu.settings_menu import options, canvas_conf
-from Aircraft.menu.language_menu import language_get
-from Aircraft.menu.level_menu import level
+from menu.settings_menu import options, canvas_conf
+from menu.language_menu import language_get
+from menu.level_menu import level
 
 # Setup pygame/window -----------------------------
-
-log.info("Setup icon window...")
-icon_obj = py.image.load(base_absolute_import("Aircraft.ico")).convert()
-icon = py.transform.scale(icon_obj, (32, 32))
-log.info("Icon window setup complete.")
-log.info("Setup background image options...")
+icon = ImageLoader("Aircraft.ico", (32,32)).show()
 
 py.display.set_caption("Aircraft", "Aircraft")
 py.display.set_icon(icon)

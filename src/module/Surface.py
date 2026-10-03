@@ -1,6 +1,6 @@
 import pygame as py
 
-from Aircraft.module.logger import log
+from module.logger import log
 
 
 class _ClassSurface:

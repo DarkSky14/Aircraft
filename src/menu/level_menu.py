@@ -1,6 +1,9 @@
-from Aircraft.menu.game import source, ENEMY_EVENT
-from Aircraft.module import log, py, sys
-from Aircraft.module.bootstrap import boot
+import sys
+sys.path.append("..")
+
+from menu.game import source, ENEMY_EVENT
+from module import log, py, sys
+from module.bootstrap import boot
 
 _work = True
 

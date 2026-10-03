@@ -1,16 +1,19 @@
-from Aircraft.module import (
-    ScrollingBG, log, base_absolute_import, py, sys
+import sys
+sys.path.append("..")
+
+from module import (
+    ScrollingBG, log, url_fixer, py, sys, ImageLoader
 )
 
 from random import randint
 from os import listdir
-from Aircraft.menu.settings_menu import options, canvas_conf
-from Aircraft.module.bootstrap import boot
+from menu.settings_menu import options, canvas_conf
+from module.bootstrap import boot
 
 _bg_speed_ = 2 * boot.procent
 _game_work = True
 
-IMGS_PATH = base_absolute_import("player")
+IMGS_PATH = url_fixer("player")
 
 log.info("Start load player images...")
 _player_img = [
@@ -31,32 +34,22 @@ _player_rect = _player.get_rect()
 _player_speed = 2.5 * boot.procent
 
 
-log.info("Start load enemy image...")
-_enemy_png = py.image.load(base_absolute_import("pictures/enemy.png"))
-_enemy = py.transform.scale(
-    _enemy_png, ((_enemy_png.get_width() * boot.procent), (_enemy_png.get_height() * boot.procent))
-)
+_enemy = ImageLoader("pictures/enemy.png", ((93 * boot.procent), (25 * boot.procent)))
 def _create_enemy(speed_w1, speed_w2):
     global _enemy
     enemy_rect = py.Rect(boot.width, randint(0, int(boot.height)), *_enemy.get_size())
     enemy_speed = randint(speed_w1, speed_w2)
-    return [_enemy, enemy_rect, enemy_speed]
+    return [_enemy.show(), enemy_rect, enemy_speed]
 ENEMY_EVENT = boot.GLOBAL_EVENT.custom_type()
-log.info("Enemy image successfully loaded.")
 
 
-log.info("Start load bonus image...")
-_bonus_jpg = py.image.load(base_absolute_import("pictures/bonus.jpg"))
-_bonus = py.transform.scale(
-    _bonus_jpg, ((_bonus_jpg.get_width() * boot.procent), (_bonus_jpg.get_height() * boot.procent))
-)
+_bonus = ImageLoader("pictures/bonus.jpg", (43* boot.procent,43* boot.procent))
 def _create_bonus():
     global _bonus
     bonus_rect = py.Rect(randint(0, int(boot.width)), -1000, *_bonus.get_size())
     bonus_speed = 0
-    return [_bonus, bonus_rect, bonus_speed]
+    return [_bonus.show(), bonus_rect, bonus_speed]
 BONUS_EVENT = boot.GLOBAL_EVENT.custom_type()
-log.info("Bonus image successfully loaded.")
 
 
 def source(
