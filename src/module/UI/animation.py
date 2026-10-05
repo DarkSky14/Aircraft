@@ -1,6 +1,3 @@
-is_move = True
-
-
 class AnimationMove:
     def __init__(self, size_config, button: "ButtonModify") -> None:
         self.object = button
@@ -15,11 +12,10 @@ class AnimationMove:
         self._move_to_y = 0
 
     def moved(self, pixel_x=None, pixel_y=None, milliseconds: int = 0):  # type: ignore #
-        global is_move
         self.move_status = True
         times = 1
 
-        if is_move:
+        if self.object.text.config.check({"animation": "True"}):
             if milliseconds > 0:
                 times = 60 * milliseconds
             self.times = times
@@ -73,9 +69,8 @@ class Resizable:
         self.size_x = button.size_x
         self.size_y = button.size_y
 
-    def change_size(self, pixel_x_size=None, pixel_y_size=None, milliseconds=0):  # type: ignore
-        global is_move
-        if is_move:
+    def change_size(self, pixel_x_size=None, pixel_y_size=None, milliseconds=0):
+        if self.object.text.config.check({"animation": "True"}):
             if milliseconds == 0:
                 times = 1
             else:

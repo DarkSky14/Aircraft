@@ -21,7 +21,7 @@ work = True
 def exit_game():
     global work
     work = False
-    log.delete_log()
+    #log.delete_log()
 
 _button1_ = boot.button_modified.copy()
 _button1_.set_object(
@@ -75,7 +75,7 @@ def _button_1_callback_():
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
     if not _button2_.move_status:
-        canvas_conf.set_x(0.018), canvas_conf.set_y(0.20)
+        #canvas_conf.set_x(0.018), canvas_conf.set_y(0.20)
         _button2_.set_func(options, _button_get)
         _button_hide()
 
@@ -89,8 +89,6 @@ def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
     if not _button4_.move_status:
         exit_game()
-
-_button_get()
 
 _buttons = (
     (_button1_, _button_1_callback_, "0"),
@@ -108,6 +106,8 @@ def draw_menu_buttons():
 
 def main_menu():
     global work
+
+    _button_get()
 
     boot.set_fps(60)
 

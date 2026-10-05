@@ -90,7 +90,7 @@ def source(
         enemies.clear()
 
     settings_open = False
-    canvas_conf.set_x(0.390), canvas_conf.set_y(0.336)
+    #canvas_conf.set_x(0.390), canvas_conf.set_y(0.336)
 
     while _game_work:
         pressed_keys = py.key.get_pressed()
