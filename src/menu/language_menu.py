@@ -90,10 +90,10 @@ def draw_menu_buttons():
         button.callback(callback)
         button.get_text(boot.standard_text.set_base_text(text_key))
 
-_button_get()
-
 def language_get():
     global _work
+
+    _button_get()
 
     boot.set_fps(60)
     #boot.GLOBAL_EVENT.mouse.set_config(0,200)

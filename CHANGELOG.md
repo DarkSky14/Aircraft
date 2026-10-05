@@ -1,6 +1,6 @@
 Version
 =========
-# Unreleased 
+# 0.3.0 - 2026-05-10 
 **Add**
 - Add render.py
 - Add Task class in event.py.
@@ -8,12 +8,16 @@ Version
 - Add class ImageLoader.
 - Add class PathUrlFix.
 - Add project_info.__init__.py.
+- Add choose animation status in settings.
+- Return russian language.
 
 **Changed**
 - Text.py moved in UI path.
 - Update architecture.
 - main.py renamed in main_menu.py.
 - Logic loader.py moved to config.__init__.py, change logic module.loader.py.
+- Update logic auto-resize window.
+- Improved path handling.
 
 **Fixed**
 - Fixed animations.

@@ -42,11 +42,11 @@ class CoordinateOptions:
     def set_y(self, y):
         self.y_coord = y
 
-canvas_conf = CoordinateOptions(0.390, 0.336)
+canvas_conf = CoordinateOptions(0.1, 0.1) #0.390, 0.336
 x_coord, y_coord = 0,0
 
-x_size = 0.255
-y_size = 0.33
+x_size = 0.8#0.255
+y_size = 0.8#0.33
 
 _surfM_ = CanvasButton(boot.GLOBAL_EVENT, boot.main_surface, (boot.width, boot.height))
 _surfM_.set_object(
@@ -72,7 +72,14 @@ _button2_.set_object(
 _button3_ = boot.button_modified.copy()
 _button3_.set_object(
     _button2_.x,
-    (_button2_.y + _button2_.size_y + (0.026 * boot.height)),
+    (_button2_.y + _button2_.size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
+)
+
+_button4_ = boot.button_modified.copy()
+_button4_.set_object(
+    _button3_.x,
+    (_button3_.y + _button3_.size_y + (0.026 * boot.height)),
     (0.22, 0.041),
 )
 
@@ -92,6 +99,14 @@ def _button2_callback():
     sound()
 
 def _button3_callback():
+    boot.config.check({"effect": "True"}, boot.clicks)
+    if boot.config.check({"animation": "True"}):
+        boot.config.writer({"animation": "False"})
+    else:
+        boot.config.writer({"animation": "True"})
+    sound()
+
+def _button4_callback():
     boot.config.check({"effect": "True"}, boot.return_exit)
     exit_options()
 
@@ -121,7 +136,13 @@ def options():
 
         _button3_.set_object(
             _button2_.x,
-            (_button2_.y + _button2_.size_y + (0.026 * boot.height)),
+            (_button2_.y + _button2_.size_y + (0.0132 * boot.height)),
+            (0.22, 0.041),
+        )
+
+        _button4_.set_object(
+            _button3_.x,
+            (_button3_.y + _button3_.size_y + (0.026 * boot.height)),
             (0.22, 0.041),
         )
 
@@ -156,7 +177,12 @@ def options():
         _button2_.get_text("{} {}".format(text, check))
 
         _button3_.callback(_button3_callback)
-        _button3_.get_text(boot.standard_text.set_base_text("6"))
+        text = boot.standard_text.set_base_text("13")
+        check = boot.standard_text.set_change_text({"animation": "True"}, "8", "9")
+        _button3_.get_text("{} {}".format(text, check))
+
+        _button4_.callback(_button4_callback)
+        _button4_.get_text(boot.standard_text.set_base_text("6"))
 
         boot.GLOBAL_EVENT.mouse.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll

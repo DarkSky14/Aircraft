@@ -122,7 +122,7 @@ def bootstrap() -> AppContext:
     log.info("Setup sounds/config/UI...")
 
     auto_resize_surface = AdjustmentSurface().surface()
-    sub_surface = AdjustmentSubSurface(1920, 1080) #1373, 761 | 1920, 1080
+    sub_surface = AdjustmentSubSurface(1373, 761) #1373, 761 | 1920, 1080
     main_surface = sub_surface.surface(auto_resize_surface)
 
     auto_resize_surface.fill((0, 0, 0))
@@ -149,7 +149,13 @@ def bootstrap() -> AppContext:
     config = JsonWorker(
         "config",
         url_fixer("data"),
-        {"level": 1, "effect": "True", "music": "True", "language": "EN"},
+        {
+            "level": 1,
+            "effect": "True",
+            "music": "True",
+            "language": "EN",
+            "animation": "True"
+        },
         "config.json",
     )
     config.reader()

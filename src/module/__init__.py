@@ -2,7 +2,7 @@ import pygame as py
 import sys
 
 
-from config import url_fixer
+from config import url_fixer, LIBRARY_ROOT
 from project_info import get_version
 from module.logger import log
 from module.loader import ImageLoader
@@ -15,6 +15,8 @@ from module.Surface import AdjustmentSubSurface, AdjustmentSurface, ScrollingBG
 from module.event import EventManager, Mouse
 
 from module.UI import ButtonModify, CanvasButton, ButtonCollector, Text, DrawText
+
+log.debug(LIBRARY_ROOT.debug())
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
