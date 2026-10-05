@@ -1,4 +1,4 @@
-from module.FileWorker import Lib, reader
+from module.FileWorker import Lib, JsonReader
 from module.logger import log
 
 
@@ -24,10 +24,13 @@ class LanguageCreated(Lib):
         self._lang = {}
         super().__init__(name, url, self._lang, file)
         try:
-            self.data = reader(self.path)
+            self.data = JsonReader.reader(self.path)
         except FileNotFoundError:
             self.data = {}
-            log.warning(f"Language %s not found.", self.name)
+            log.warning(
+                f"%s language | %s file to way %s not found.",
+                self.name, self.file, self.url
+            )
 
     @property
     def language(self) -> dict:

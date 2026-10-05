@@ -4,7 +4,7 @@ sys.path.append("..")
 from module import (
     log, py, ImageLoader
 )
-from module.bootstrap import boot
+from cached.bootstrap import boot
 
 from menu.settings_menu import options, canvas_conf
 from menu.language_menu import language_get
@@ -16,52 +16,54 @@ icon = ImageLoader("Aircraft.ico", (32,32)).show()
 py.display.set_caption("Aircraft", "Aircraft")
 py.display.set_icon(icon)
 
+work = True
+
 def exit_game():
-    py.quit()
+    global work
+    work = False
     log.delete_log()
-    sys.exit()
 
 _button1_ = boot.button_modified.copy()
 _button1_.set_object(
-    (-300 * boot.procent),
-    (220 * boot.procent),
-    (300, 30)
+    (-0.22 * boot.width),
+    (0.289 * boot.height),
+    (0.22, 0.041)
 )
 
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
-    (-300 * boot.procent),
-    (_button1_.y + _button1_.size_y + (10 * boot.procent)),
-    (300, 30),
+    (-0.22 * boot.width),
+    (_button1_.y + _button1_.size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
 )
 
 _button3_ = boot.button_modified.copy()
 _button3_.set_object(
-    (-300 * boot.procent),
-    (_button2_.y + _button2_.size_y + (10 * boot.procent)),
-    (300, 30),
+    (-0.22 * boot.width),
+    (_button2_.y + _button2_.size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
 )
 
 _button4_ = boot.button_modified.copy()
 _button4_.set_object(
-    (-300 * boot.procent),
-    (_button3_.y + _button3_.size_y + (25 * boot.procent)),
-    (300, 30),
+    (-0.22 * boot.width),
+    (_button3_.y + _button3_.size_y + (0.033 * boot.height)),
+    (0.22, 0.041),
 )
 
 
 def _button_hide():
-    _button1_.moved(-300, None, 0.5)
-    _button2_.moved(-300, None, 0.5)
-    _button3_.moved(-300, None, 0.5)
-    _button4_.moved(-300, None, 0.5)
+    _button1_.moved(-0.22, None, 0.5)
+    _button2_.moved(-0.22, None, 0.5)
+    _button3_.moved(-0.22, None, 0.5)
+    _button4_.moved(-0.22, None, 0.5)
 
 
 def _button_get():
-    _button1_.moved(50, None, 0.5)
-    _button2_.moved(50, None, 0.5)
-    _button3_.moved(50, None, 0.5)
-    _button4_.moved(50, None, 0.5)
+    _button1_.moved(0.032, None, 0.5)
+    _button2_.moved(0.032, None, 0.5)
+    _button3_.moved(0.032, None, 0.5)
+    _button4_.moved(0.032, None, 0.5)
 
 
 def _button_1_callback_():
@@ -73,7 +75,7 @@ def _button_1_callback_():
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
     if not _button2_.move_status:
-        canvas_conf.set_x(25), canvas_conf.set_y(150)
+        canvas_conf.set_x(0.018), canvas_conf.set_y(0.20)
         _button2_.set_func(options, _button_get)
         _button_hide()
 
@@ -101,11 +103,11 @@ def draw_menu_buttons():
     for button, callback, text_key in _buttons:
         button.animation()
         button.callback(callback)
-        button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
+        button.get_text(boot.standard_text.set_base_text(text_key))
 
 
 def main_menu():
-    work = True
+    global work
 
     boot.set_fps(60)
 
@@ -126,10 +128,10 @@ def main_menu():
                 boot.standard_curs, boot.click_cursor, boot.sound_scroll
             )
             boot.big_text.draw_text(
-                boot.big_text.set_base_text("7"), 70 * boot.procent, 150 * boot.procent
+                boot.big_text.set_base_text("7"), 0.05 * boot.width, 0.20 * boot.height
             )
 
-            boot.get_fps(coordinate=(3, boot.height))
+            boot.get_fps(coordinate=(0.0022*boot.width, boot.height))
             boot.tick_fps()
             boot.update_display()
 

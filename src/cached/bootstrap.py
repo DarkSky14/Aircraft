@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-import pygame as py
+import pygame as py, sys
+
+sys.path.append("..")
 
 from module.logger import log
 from module.music import Music, Sound
@@ -18,7 +20,7 @@ from module import (
 
 @dataclass
 class AppContext:
-    d: py.surface.Surface
+    main_surface: py.surface.Surface
     screen: tuple[int, int]
     procent: float
     conf_width: float
@@ -56,7 +58,7 @@ class AppContext:
     RUSSIAN: dict
     GAME_TEXT: None
     sound_menu: str
-    main_surface: None
+    auto_resize_surface: None
     bg: None
     bgX: int
     bgX2: int
@@ -67,7 +69,6 @@ class AppContext:
     GREEN: tuple
     LIME: tuple
     active_language: None
-    #mouse: None
 
 
 def bootstrap() -> AppContext:
@@ -120,18 +121,19 @@ def bootstrap() -> AppContext:
 
     log.info("Setup sounds/config/UI...")
 
-    main_surface = AdjustmentSurface().surface()
-    sub_surface = AdjustmentSubSurface(1373, 761) #1373, 761 | 1920, 1080
-    d = sub_surface.surface(main_surface)
-    main_surface.fill((0, 0, 0))
-    d.fill((255, 255, 255))
+    auto_resize_surface = AdjustmentSurface().surface()
+    sub_surface = AdjustmentSubSurface(1920, 1080) #1373, 761 | 1920, 1080
+    main_surface = sub_surface.surface(auto_resize_surface)
+
+    auto_resize_surface.fill((0, 0, 0))
+    main_surface.fill((255, 255, 255))
 
     screen = sub_surface.screen
     conf_width = sub_surface.get_conf_width()
     conf_height = sub_surface.get_conf_height()
     procent = sub_surface.get_proponent()
-    height = d.get_height()
-    width = d.get_width()
+    height = main_surface.get_height()
+    width = main_surface.get_width()
 
     log.debug({"Main surface size": screen})
 
@@ -166,24 +168,24 @@ def bootstrap() -> AppContext:
 
     log.info("Load font...")
 
-    BIG_TEXT = Font("Georgia", round(36 * procent))  # Arial
-    VERS_GAME = Font(None, round(20 * procent))
-    BASE_FONT = Font("Georgia", round(21 * procent))
-    GAME_TEXT = Font("NotoSans", round(30 * procent))
+    BIG_TEXT = Font("Georgia", round(0.0473 * height))  # Arial
+    VERS_GAME = Font(None, round(0.0263 * height))
+    BASE_FONT = Font("Georgia", round(0.0276 * height))
+    GAME_TEXT = Font("NotoSans", round(0.0324 * height))
     #GAME_TEXT.set_font(VERS_GAME)
     #GAME_TEXT = Font(py.font.get_default_font().rstrip(".ttf"), round(30 * procent))
     #print(GAME_TEXT.render_font().get_point_size())
     #print(py.font.get_default_font().rstrip(".ttf"))
     log.info("Font (4) successfully loaded.")
 
-    text = Text(VERS_GAME, active_language, d, config, (0, 0, 0))
+    text = Text(VERS_GAME, active_language, main_surface, config, (0, 0, 0))
     big_text = text.copy_text()
     big_text.set_font(BIG_TEXT)
 
     standard_text = text.copy_text()
     standard_text.set_font(BASE_FONT)
 
-    button_modified = ButtonModify(GLOBAL_EVENT, d, standard_text.copy_text(), procent)
+    button_modified = ButtonModify(GLOBAL_EVENT, main_surface, standard_text.copy_text(), (width,height))
 
     def sound_scroll():
         if config.check({"effect": "True"}):
@@ -199,15 +201,16 @@ def bootstrap() -> AppContext:
 
     def background():
         fon_background.update()
-        fon_background.draw(d)
+        fon_background.draw(main_surface)
 
-    vers = DrawText(d)
+    vers = DrawText(main_surface)
+
     def version_game():
         vers.draw_text(
-            get_version(), width - 2*procent, height, VERS_GAME, BLACK, "bottomright"
+            get_version(), width - 0.0014*width, height, VERS_GAME, BLACK, "bottomright"
         )
 
-    tx_fps = DrawText(d)
+    tx_fps = DrawText(main_surface)
     def get_fps(
             font_text: Font = BASE_FONT,
             color: tuple = (200, 200, 200),
@@ -219,7 +222,7 @@ def bootstrap() -> AppContext:
         )
 
     return AppContext(
-        d=d, screen=screen, procent=procent,
+        main_surface=main_surface, screen=screen, procent=procent,
         conf_width=conf_width, conf_height=conf_height,
         height=height, width=width,
         config=config, GLOBAL_EVENT=GLOBAL_EVENT,
@@ -238,7 +241,7 @@ def bootstrap() -> AppContext:
         sound_game=sound_game, ENGLISH=ENGLISH, UKRAINIAN=UKRAINIAN,
         RUSSIAN=RUSSIAN,
         GAME_TEXT=GAME_TEXT, sound_menu=sound_menu,
-        main_surface=main_surface, bg=bg, bgX=bgX, bgX2=bgX2,
+        auto_resize_surface=auto_resize_surface, bg=bg, bgX=bgX, bgX2=bgX2,
         BASE_FONT=BASE_FONT,BLACK=BLACK,LIME=LIME, WHITE=WHITE,
         RED=RED, GREEN=GREEN, active_language=active_language,
     )

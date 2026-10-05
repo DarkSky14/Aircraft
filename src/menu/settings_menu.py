@@ -6,7 +6,7 @@ from module.UI.button import CanvasButton
 from module import (
     log, py, sys, ImageLoader
 )
-from module.bootstrap import boot
+from cached.bootstrap import boot
 
 _fon = ImageLoader("pictures/fon_.png", boot.screen).show()
 
@@ -42,32 +42,38 @@ class CoordinateOptions:
     def set_y(self, y):
         self.y_coord = y
 
-canvas_conf = CoordinateOptions(536.5, 255.5)
+canvas_conf = CoordinateOptions(0.390, 0.336)
 x_coord, y_coord = 0,0
 
-x_size = 350 * boot.procent
-y_size = 250 * boot.procent
+x_size = 0.255
+y_size = 0.33
 
-_surfM_ = CanvasButton(boot.GLOBAL_EVENT, boot.d, boot.procent)
+_surfM_ = CanvasButton(boot.GLOBAL_EVENT, boot.main_surface, (boot.width, boot.height))
 _surfM_.set_object(
-    canvas_conf.get_x() * boot.procent, canvas_conf.get_y() * boot.procent, (x_size, y_size)
+    canvas_conf.get_x() * boot.width,
+    canvas_conf.get_y() * boot.height,
+    (x_size, y_size)
 )
 
 _button1_ = boot.button_modified.copy()
-_button1_.set_object(_surfM_.x + (23 * boot.procent), _surfM_.y + (85 * boot.procent), (300, 30))
+_button1_.set_object(
+    _surfM_.x + (0.0168 * boot.width),
+    _surfM_.y + (0.112 * boot.height),
+    (0.22, 0.041)
+)
 
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
     _button1_.x,
-    (_button1_.y + _button1_.size_y + (10 * boot.procent)),
-    (300, 30),
+    (_button1_.y + _button1_.size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
 )
 
 _button3_ = boot.button_modified.copy()
 _button3_.set_object(
     _button2_.x,
-    (_button2_.y + _button2_.size_y + (20 * boot.procent)),
-    (300, 30),
+    (_button2_.y + _button2_.size_y + (0.026 * boot.height)),
+    (0.22, 0.041),
 )
 
 def _button1_callback():
@@ -95,20 +101,28 @@ def options():
     if canvas_conf.get_x() != x_coord or canvas_conf.get_y() != y_coord:
         x_coord, y_coord = canvas_conf.get_x(), canvas_conf.get_y()
 
-        _surfM_.set_object(x_coord * boot.procent, y_coord * boot.procent, (x_size, y_size))
+        _surfM_.set_object(
+            x_coord * boot.width,
+            y_coord * boot.height,
+            (x_size, y_size)
+        )
 
-        _button1_.set_object(_surfM_.x + (23 * boot.procent), _surfM_.y + (85 * boot.procent), (300, 30))
+        _button1_.set_object(
+            _surfM_.x + (0.0168 * boot.width),
+            _surfM_.y + (0.112 * boot.height),
+            (0.22, 0.041)
+        )
 
         _button2_.set_object(
             _button1_.x,
-            (_button1_.y + _button1_.size_y + (10 * boot.procent)),
-            (300, 30),
+            (_button1_.y + _button1_.size_y + (0.0132 * boot.height)),
+            (0.22, 0.041),
         )
 
         _button3_.set_object(
             _button2_.x,
-            (_button2_.y + _button2_.size_y + (20 * boot.procent)),
-            (300, 30),
+            (_button2_.y + _button2_.size_y + (0.026 * boot.height)),
+            (0.22, 0.041),
         )
 
     _fon.set_alpha(20)
@@ -134,23 +148,22 @@ def options():
         _button1_.callback(_button1_callback)
         text = boot.standard_text.set_base_text("12")
         check = boot.standard_text.set_change_text({"effect": "True"}, "8", "9")
-        _button1_.get_text(boot.standard_text, "{} {}".format(text, check))
+        _button1_.get_text("{} {}".format(text, check))
 
         _button2_.callback(_button2_callback)
         text = boot.standard_text.set_base_text("10")
         check = boot.standard_text.set_change_text({"music": "True"}, "8", "9")
-        _button2_.get_text(boot.standard_text, "{} {}".format(text, check))
+        _button2_.get_text("{} {}".format(text, check))
 
         _button3_.callback(_button3_callback)
-        text = boot.standard_text.set_base_text("6")
-        _button3_.get_text(boot.standard_text, text)
+        _button3_.get_text(boot.standard_text.set_base_text("6"))
 
         boot.GLOBAL_EVENT.mouse.event_button_check(
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
         text = boot.standard_text.set_base_text("1")
         boot.big_text.draw_text(
-            text, _surfM_.x + (45 * boot.procent), _surfM_.y + (25 * boot.procent)
+            text, _surfM_.x + (0.035 * boot.width), _surfM_.y + (0.04 * boot.height)
         )
 
         #boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
@@ -162,7 +175,7 @@ def options():
         while _work:
             if anim_time_fon <= 180:
                 anim_time_fon += 20
-                boot.main_surface.blit(_fon, (0 + boot.conf_width, 0 + boot.conf_height))
+                boot.auto_resize_surface.blit(_fon, (0 + boot.conf_width, 0 + boot.conf_height))
             initialize()
     except Exception as e:
         log.exception("Unhandled error in settings: %s", e)

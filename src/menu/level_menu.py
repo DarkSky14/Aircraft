@@ -3,7 +3,7 @@ sys.path.append("..")
 
 from menu.game import source, ENEMY_EVENT
 from module import log, py, sys
-from module.bootstrap import boot
+from cached.bootstrap import boot
 
 _work = True
 
@@ -12,40 +12,40 @@ def exit_level():
     _work = False
 
 _button1_ = boot.button_modified.copy()
-_button1_.set_object((-300 * boot.procent), (220 * boot.procent), (300, 30))
+_button1_.set_object((-0.22 * boot.width), (0.289 * boot.height), (0.22, 0.041))
 
 _button2_ = boot.button_modified.copy()
 _button2_.set_object(
-    (-300 * boot.procent),
-    (_button1_.y + _button1_.size_y + (10 * boot.procent)),
-    (300, 30),
+    (-0.22 * boot.width),
+    (_button1_.y + _button1_.size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
 )
 
 _button3_ = boot.button_modified.copy()
 _button3_.set_object(
-    (-300 * boot.procent),
-    (_button2_.y + _button2_.size_y + (10 * boot.procent)),
-    (300, 30),
+    (-0.22 * boot.width),
+    (_button2_.y + _button2_.size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
 )
 
 _button4_ = boot.button_modified.copy()
 _button4_.set_object(
-    (-300 * boot.procent),
-    (_button3_.y + _button3_.size_y + (25 * boot.procent)),
-    (300, 30),
+    (-0.22 * boot.width),
+    (_button3_.y + _button3_.size_y + (0.033 * boot.height)),
+    (0.22, 0.041),
 )
 
 def _button_get():
-    _button1_.moved(50, None, 0.5)
-    _button2_.moved(50, None, 0.5)
-    _button3_.moved(50, None, 0.5)
-    _button4_.moved(50, None, 0.5)
+    _button1_.moved(0.032, None, 0.5)
+    _button2_.moved(0.032, None, 0.5)
+    _button3_.moved(0.032, None, 0.5)
+    _button4_.moved(0.032, None, 0.5)
 
 def _button_hide():
-    _button1_.moved(-300, None, 0.5)
-    _button2_.moved(-300, None, 0.5)
-    _button3_.moved(-300, None, 0.5)
-    _button4_.moved(-300, None, 0.5)
+    _button1_.moved(-0.22, None, 0.5)
+    _button2_.moved(-0.22, None, 0.5)
+    _button3_.moved(-0.22, None, 0.5)
+    _button4_.moved(-0.22, None, 0.5)
 
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
@@ -82,7 +82,7 @@ def draw_menu_buttons():
     for button, callback, text_key in _buttons:
         button.animation()
         button.callback(callback)
-        button.get_text(boot.standard_text, boot.standard_text.set_base_text(text_key))
+        button.get_text(boot.standard_text.set_base_text(text_key))
 
 _button_get()
 
@@ -114,9 +114,9 @@ def level():
             boot.standard_curs, boot.click_cursor, boot.sound_scroll
         )
         text = boot.standard_text.set_base_text("11")
-        boot.big_text.draw_text(text, 70 * boot.procent, 150 * boot.procent)
+        boot.big_text.draw_text(text, 0.05 * boot.width, 0.20 * boot.height)
 
-        boot.get_fps(coordinate=(3, boot.height))
+        boot.get_fps(coordinate=(0.0022*boot.width, boot.height))
         boot.tick_fps()
         boot.update_display()
 

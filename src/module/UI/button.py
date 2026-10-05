@@ -81,7 +81,7 @@ class ButtonBase:
 
 class ButtonModify(ButtonBase, AnimationMove):
     def __init__(
-            self, event, window: py.surface.Surface, class_text: "Text", size_config: int | float = 0
+            self, event, window: py.surface.Surface, class_text: "Text", size_config: tuple[int, int] | float = 0
     ):
         self.event = event
         self.surface = window
@@ -95,12 +95,12 @@ class ButtonModify(ButtonBase, AnimationMove):
             self.event, self.surface, self.text.copy_text(), self.size_config
         )
 
-    def set_object(self, x, y, size: tuple = (int, int)):
+    def set_object(self, x, y, size: tuple = (float, float)):
         self.x, self.y = round(x), round(y)
         self.size = size
         self.size_x, self.size_y = size
-        self.size_x *= self.size_config
-        self.size_y *= self.size_config
+        self.size_x *= self.size_config[0]
+        self.size_y *= self.size_config[1]
         self.button_radius = round(self.size_y * 0.5)
 
         if self.size_y <= (self.button_radius * 2):
@@ -120,7 +120,7 @@ class ButtonModify(ButtonBase, AnimationMove):
 
         self.button_rect.draw_object((205, 200, 200), 3, 10)
 
-    def get_text(self, class_text, text, color: tuple = (0, 0, 0)):
+    def get_text(self, text, color: tuple = (0, 0, 0)):
         self.text.draw_text(text, self.x + 15, self.y + 2, color)
 
     def set_surface(self, surface):
@@ -138,14 +138,16 @@ class ButtonModify(ButtonBase, AnimationMove):
 
 class CanvasButton(ButtonModify):
     def __init__(
-            self, event, window: py.surface.Surface, size_config: int | float = 0
+            self, event, window: py.surface.Surface, size_config: tuple[float, float] = (0,0)
     ):
         ButtonModify.__init__(self, event, window, "Text", size_config)
 
-    def set_object(self, x, y, size: tuple = (int, int)):
+    def set_object(self, x, y, size: tuple = (float, float)):
         self.x, self.y = round(x), round(y)
         self.size_x, self.size_y = size
-        self.size = size
+        self.size_x *= self.size_config[0]
+        self.size_y *= self.size_config[1]
+        self.size = self.size_x, self.size_y
         self.button_radius = self.size_y * 0.5
         self.__rect__update__()
         return self
@@ -159,7 +161,7 @@ class CanvasButton(ButtonModify):
             (100, 100, 100),
             0,
             round(self.button_radius),
-            round(40 * self.size_config),
+            round(0.0526 * self.size_config[1]),
         )
 
 

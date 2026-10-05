@@ -1,5 +1,4 @@
-from . import url_fixer
-from . import py, log
+from module import url_fixer, py, log
 
 class ImageLoader:
     def __init__(self, url:str, size:tuple[int, int]):

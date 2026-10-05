@@ -6,19 +6,18 @@ Version
 - Add Task class in event.py.
 - Add config.py, main.py, __init__.py.
 - Add class ImageLoader.
+- Add class PathUrlFix.
+- Add project_info.__init__.py.
 
 **Changed**
 - Text.py moved in UI path.
 - Update architecture.
 - main.py renamed in main_menu.py.
-- Logic loader.py moved to __init__.py.
+- Logic loader.py moved to config.__init__.py, change logic module.loader.py.
 
 **Fixed**
 - Fixed animations.
 - Fixed incorrect logic in language/text class.
-
-**Removed**
-- Deleted loader.py.
 
 # V 0.2.9 - 2026-29-08
 **Add**

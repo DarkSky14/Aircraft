@@ -25,21 +25,20 @@ class AnimationMove:
             self.times = times
 
             if pixel_x is not None:
-                pixel_x = round(pixel_x * self.size_config)
+                pixel_x = round(pixel_x * self.size_config[0])
                 self._move_to_x = (pixel_x - self.x) / times
 
             if pixel_y is not None:
-                pixel_y = round(pixel_y * self.size_config)
+                pixel_y = round(pixel_y * self.size_config[1])
                 self._move_to_y = (pixel_y - self.y) / times
 
         else:
             self.times = times
             if pixel_x is not None:
-                self.x = round(pixel_x * self.size_config)
+                self.x = round(pixel_x * self.size_config[0])
 
             if pixel_y is not None:
-                self.y = round(pixel_y * self.size_config)
-
+                self.y = round(pixel_y * self.size_config[1])
 
     def set_func(self, func1=None, func2 = None):
         if self.object.event.task.get_status() is False:
