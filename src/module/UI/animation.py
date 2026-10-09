@@ -13,23 +13,21 @@ class AnimationMove:
 
     def moved(self, pixel_x=None, pixel_y=None, milliseconds: int = 0):  # type: ignore #
         self.move_status = True
-        times = 1
+        self.times = 1
 
         if self.object.text.config.check({"animation": "True"}):
             if milliseconds > 0:
-                times = 60 * milliseconds
-            self.times = times
+                self.times = 60 * milliseconds
 
             if pixel_x is not None:
                 pixel_x = round(pixel_x * self.size_config[0])
-                self._move_to_x = (pixel_x - self.x) / times
+                self._move_to_x = (pixel_x - self.x) / self.times
 
             if pixel_y is not None:
                 pixel_y = round(pixel_y * self.size_config[1])
-                self._move_to_y = (pixel_y - self.y) / times
+                self._move_to_y = (pixel_y - self.y) / self.times
 
         else:
-            self.times = times
             if pixel_x is not None:
                 self.x = round(pixel_x * self.size_config[0])
 
@@ -60,6 +58,60 @@ class AnimationMove:
                 if self.func2 is not None:
                     self.object.event.task.add_task(self.func2)
                     self.func2 = None
+
+class AnimationMoveExp:
+    def __init__(self) -> None:
+        self.size_config = (0, 0)
+        self.move_status = False
+        self.text = None
+
+    def moved(self, name, pixel_x=None, pixel_y=None, milliseconds: float = 0):  # type: ignore #
+        self.move_status = True
+        name.times = 1
+
+        if self.text.config.check({"animation": "True"}):
+            if milliseconds > 0:
+                name.times = 60 * milliseconds
+
+            if pixel_x is not None:
+                pixel_x = round(pixel_x * self.size_config[0])
+                name._move_to_x = (pixel_x - name.x) / name.times
+
+            if pixel_y is not None:
+                pixel_y = round(pixel_y * self.size_config[1])
+                name._move_to_y = (pixel_y - name.y) / name.times
+
+        else:
+            if pixel_x is not None:
+                name.x = round(pixel_x * self.size_config[0])
+
+            if pixel_y is not None:
+                name.y = round(pixel_y * self.size_config[1])
+
+    def set_func(self, name, func1=None, func2 = None):
+        if name.event.task.get_status() is False:
+            name.event.task.set_status(True)
+            name.func1 = func1
+            name.func2 = func2
+
+    def animation(self, name):
+        if name.times > 0:
+            name.x += name._move_to_x
+            name.y += name._move_to_y
+            name.__rect__update__()
+            name.times -= 1
+            if name.times == 0:
+                self.move_status = False
+                name.event.task.set_status(False)
+                name._move_to_x = 0
+                name._move_to_y = 0
+
+                if name.func1 is not None:
+                    name.event.task.add_task(name.func1)
+                    name.func1 = None
+                if name.func2 is not None:
+                    name.event.task.add_task(name.func2)
+                    name.func2 = None
 
 
 class Resizable:

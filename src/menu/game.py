@@ -7,7 +7,7 @@ from module import (
 
 from random import randint
 from os import listdir
-from menu.settings_menu import options, canvas_conf
+from menu.settings_menu import options#, canvas_conf
 from cached.bootstrap import boot
 
 
@@ -24,7 +24,7 @@ _player_img = [
 _player_imgs = [
     py.transform.scale(
         player_img,
-        ((player_img.get_width() * boot.procent), (player_img.get_height() * boot.procent)),
+        ((0.12 * boot.width), (0.06 * boot.height)),
     )
     for player_img in _player_img
 ]
@@ -179,7 +179,7 @@ def source(
             last_score_render = scores
 
         boot.main_surface.blit(score_text_cache, (boot.main_surface.get_width() - 0.029 * boot.width, 0))
-        boot.version_game()
+        #boot.version_game()
         boot.get_fps(
             boot.GAME_TEXT, boot.RED,
             (0.0036*boot.width, 0.0065*boot.height), "topleft"

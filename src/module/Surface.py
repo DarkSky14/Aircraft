@@ -1,4 +1,8 @@
 import pygame as py
+import sys
+from screeninfo import get_monitors
+
+sys.path.append("..")
 
 from module.logger import log
 
@@ -38,22 +42,28 @@ class StandardSurface(_ClassSurface):
 
 
 class AdjustmentSurface(_ClassSurface):
-    def __init__(self):
-        _ClassSurface.__init__(self)
+    def __init__(self, current_w = 0, current_h = 0):
+        _ClassSurface.__init__(self, current_w, current_h)
 
     def surface(self, mode=py.WINDOWMAXIMIZED) -> py.Surface:
-        info = py.display.Info()
-        self.width, self.height = info.current_w, info.current_h
+        info = get_monitors()
+        py_info = py.display.Info()
+        if self.width == 0 or self.height == 0:
+            for i in info:
+                self.width = i.width
+                self.height = i.height
 
         flags = py.DOUBLEBUF | py.HWSURFACE
         supported = py.display.mode_ok(self.screen, flags)
 
         log.debug("Mode ok: %s", supported)
+        log.debug("Current monitor resolution: %s", info)
         log.debug("Display driver: %s", py.display.get_driver())
-        log.debug("Video info: %s", str(py.display.Info()))
+        log.debug("Video info: %s", str(py_info))
 
         if supported:
-            return py.display.set_mode(self.screen, flags | mode)
+            return py.display.set_mode(self.screen, flags|mode)
+            #py.FULLSCREEN | py.SCALED
         log.warning("Requested display mode not supported, falling back to defaults")
         return py.display.set_mode(self.screen, mode)
 
@@ -73,7 +83,7 @@ class AdjustmentSubSurface(_ClassSurface):
             text_error = f"width/height мають бути додатні, отримано ({width}, {height})"
             log.critical(text_error)
             raise ValueError(text_error)
-            ...
+
         self.proponent = 1
         self._conf_width = 0
         self._conf_height = 0

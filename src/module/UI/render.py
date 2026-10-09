@@ -1,7 +1,7 @@
 import pygame as py
 
 
-class MyDrawObject:
+class Rectangle:
     def __init__(
         self, left: float, top: float, size: tuple, window: py.surface.Surface
     ) -> None:
@@ -14,10 +14,6 @@ class MyDrawObject:
     def draw_object(
         self, color: tuple, border: int = 0, border_radius: int = 0, radius: int = 50
     ) -> py.Rect:
-        #max_safe = min(self.rect.width, self.rect.height) // 2
-        #border = min(border, max_safe)
-        #border_radius = min(border_radius, max_safe)
-        #radius = min(radius, max_safe)
 
         return py.draw.rect(
             self.surface, color, self.rect, border, border_radius,
@@ -26,6 +22,16 @@ class MyDrawObject:
 
     def get_rect(self) -> py.Rect:
         return self.rect
+
+
+class Line:
+    def __init__(
+        self, left: float, top: float, window: py.surface.Surface
+    ) -> None:
+        self.surface = window
+
+    def draw_object(self, color, pos1:tuple, pos2:tuple, width):
+        return py.draw.aaline(self.surface, color, pos1, pos2, width)
 
 
 class DrawText:
@@ -38,6 +44,7 @@ class DrawText:
             self._cache_key = cache_key
             self.text_obj = font.render_font().render(str(text), True, color)
             self.text_rect = self.text_obj.get_rect()
+            #print(text)
             if rect == "topleft":
                 self.text_rect.topleft = (x, y)
             elif rect == "bottomright":
@@ -47,3 +54,26 @@ class DrawText:
 
         self.surface.blit(self.text_obj, self.text_rect)
         return self.text_rect
+
+
+class DrawTextExp:
+    def __init__(self, surface: py.surface.Surface):
+        self.surface = surface
+        self.text = None
+
+    def draw_text(self, button, text, x, y, font, color: tuple = (0, 0, 0), rect:str = "topleft"):
+        cache_key = (text, color, x, y, id(font))
+        if button._cache_key != cache_key:
+            button._cache_key = cache_key
+            button.text_obj = self.text.font.render_font().render(str(text), True, color)
+            button.text_rect = button.text_obj.get_rect()
+            #print(text)
+            if rect == "topleft":
+                button.text_rect.topleft = (x, y)
+            elif rect == "bottomright":
+                button.text_rect.bottomright = (x, y)
+            elif rect == "bottomleft":
+                button.text_rect.bottomleft = (x, y)
+
+        self.surface.blit(button.text_obj, button.text_rect)
+        return button.text_rect

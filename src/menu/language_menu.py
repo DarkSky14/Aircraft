@@ -74,7 +74,7 @@ def _button3_callback_():
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
     if not _button4_.move_status:
-        _button4_.set_func(exit_language, _button_get)
+        _button4_.set_func(exit_language)
         _button_hide()
 
 _buttons = (
@@ -110,7 +110,7 @@ def language_get():
                 if event.type == py.KEYDOWN and event.key == py.K_ESCAPE:
                     boot.config.check({"effect": "True"}, boot.return_exit)
                     if not _button4_.move_status:
-                        _button4_.set_func(exit_language, _button_get)
+                        _button4_.set_func(exit_language)
                         _button_hide()
 
                 elif event.type == py.MOUSEWHEEL:
@@ -132,7 +132,7 @@ def language_get():
             draw_menu_buttons()
             boot.GLOBAL_EVENT.task.get_tasks()
 
-            boot.version_game()
+            #boot.version_game()
             boot.GLOBAL_EVENT.mouse.event_button_check(
                 boot.standard_curs, boot.click_cursor, boot.sound_scroll
             )

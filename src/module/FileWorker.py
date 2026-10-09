@@ -96,8 +96,7 @@ class JsonWorker(Lib):
             log.exception("File %s is empty or corrupted: %s", self.file, jde)
             self.writer(self.data)
         else:
-            self.data = data
-            return self.data
+            self.data.update(data)
 
     def writer(self, args: dict, encoding="utf-8"):
         log.info("Writing %s: %s", self.name, args)

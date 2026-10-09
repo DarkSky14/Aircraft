@@ -1,5 +1,7 @@
 from dataclasses import dataclass
-import pygame as py, sys
+from typing import Any
+
+import pygame as py, sys, os
 
 sys.path.append("..")
 
@@ -22,7 +24,6 @@ from module import (
 class AppContext:
     main_surface: py.surface.Surface
     screen: tuple[int, int]
-    procent: float
     conf_width: float
     conf_height: float
     height: int
@@ -37,7 +38,7 @@ class AppContext:
     clicks_used: Sound
     return_exit_used: Sound
     scroll_used: Sound
-    set_fps: None
+    set_fps: Any
     background: None
     version_game: None
     sound_scroll: None
@@ -73,6 +74,7 @@ class AppContext:
 
 def bootstrap() -> AppContext:
     py.init()
+    #os.environ["SDL_RENDER_DRIVER"] = "opengl"
 
     def click_cursor():
         py.mouse.set_cursor(11)
@@ -119,10 +121,26 @@ def bootstrap() -> AppContext:
 
     log.info("Sounds (3) successfully loaded.")
 
-    log.info("Setup sounds/config/UI...")
+    config = JsonWorker(
+        "config",
+        url_fixer("data"),
+        {
+            "level": 1,
+            "effect": "True",
+            "music": "True",
+            "language": "EN",
+            "animation": "True",
+            "monitor resolution": [0,0]
+        },
+        "config.json",
+    )
+    config.reader()
 
-    auto_resize_surface = AdjustmentSurface().surface()
-    sub_surface = AdjustmentSubSurface(1373, 761) #1373, 761 | 1920, 1080
+
+    size = config.get_value("monitor resolution", [0,0])
+    auto_resize_surface = AdjustmentSurface(int(size[0]), int(size[1])).surface()
+
+    sub_surface = AdjustmentSubSurface(16,9) #1373, 761 | 1920, 1080
     main_surface = sub_surface.surface(auto_resize_surface)
 
     auto_resize_surface.fill((0, 0, 0))
@@ -131,7 +149,6 @@ def bootstrap() -> AppContext:
     screen = sub_surface.screen
     conf_width = sub_surface.get_conf_width()
     conf_height = sub_surface.get_conf_height()
-    procent = sub_surface.get_proponent()
     height = main_surface.get_height()
     width = main_surface.get_width()
 
@@ -144,21 +161,7 @@ def bootstrap() -> AppContext:
     log.info("Background image successfully loaded.")
     bgX = 0
     bgX2 = bg.get_width()
-    bg_speed = 1
-
-    config = JsonWorker(
-        "config",
-        url_fixer("data"),
-        {
-            "level": 1,
-            "effect": "True",
-            "music": "True",
-            "language": "EN",
-            "animation": "True"
-        },
-        "config.json",
-    )
-    config.reader()
+    bg_speed = 0.0005 * width
 
     GLOBAL_EVENT = EventManager(200, conf_width, conf_height)
 
@@ -179,7 +182,7 @@ def bootstrap() -> AppContext:
     BASE_FONT = Font("Georgia", round(0.0276 * height))
     GAME_TEXT = Font("NotoSans", round(0.0324 * height))
     #GAME_TEXT.set_font(VERS_GAME)
-    #GAME_TEXT = Font(py.font.get_default_font().rstrip(".ttf"), round(30 * procent))
+    #GAME_TEXT = Font(py.font.get_default_font().rstrip(".ttf"), round(30))
     #print(GAME_TEXT.render_font().get_point_size())
     #print(py.font.get_default_font().rstrip(".ttf"))
     log.info("Font (4) successfully loaded.")
@@ -213,7 +216,7 @@ def bootstrap() -> AppContext:
 
     def version_game():
         vers.draw_text(
-            get_version(), width - 0.0014*width, height, VERS_GAME, BLACK, "bottomright"
+            get_version(), width - 0.12*width, height*0.889, VERS_GAME, BLACK, "bottomright"
         )
 
     tx_fps = DrawText(main_surface)
@@ -228,7 +231,7 @@ def bootstrap() -> AppContext:
         )
 
     return AppContext(
-        main_surface=main_surface, screen=screen, procent=procent,
+        main_surface=main_surface, screen=screen,
         conf_width=conf_width, conf_height=conf_height,
         height=height, width=width,
         config=config, GLOBAL_EVENT=GLOBAL_EVENT,

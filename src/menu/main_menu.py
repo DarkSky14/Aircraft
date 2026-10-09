@@ -4,6 +4,7 @@ sys.path.append("..")
 from module import (
     log, py, ImageLoader
 )
+from module.UI import ButtonCollector
 from cached.bootstrap import boot
 
 from menu.settings_menu import options, canvas_conf
@@ -21,87 +22,112 @@ work = True
 def exit_game():
     global work
     work = False
-    #log.delete_log()
 
-_button1_ = boot.button_modified.copy()
-_button1_.set_object(
+button_p = ButtonCollector(
+    boot.GLOBAL_EVENT, boot.main_surface,
+    boot.standard_text.copy_text(), (boot.width,boot.height)
+)
+
+button_p.add("button_1")
+button_p.add("button_2")
+button_p.add("button_3")
+button_p.add("button_4")
+
+button_p.set_object(
+"button_1",
     (-0.22 * boot.width),
     (0.289 * boot.height),
     (0.22, 0.041)
 )
 
-_button2_ = boot.button_modified.copy()
-_button2_.set_object(
+button_p.set_object(
+    "button_2",
     (-0.22 * boot.width),
-    (_button1_.y + _button1_.size_y + (0.0132 * boot.height)),
+    (button_p.get("button_1").y + button_p.get("button_1").size_y + (0.0132 * boot.height)),
     (0.22, 0.041),
 )
 
-_button3_ = boot.button_modified.copy()
-_button3_.set_object(
+button_p.set_object(
+    "button_3",
     (-0.22 * boot.width),
-    (_button2_.y + _button2_.size_y + (0.0132 * boot.height)),
+    (button_p.get("button_2").y + button_p.get("button_2").size_y + (0.0132 * boot.height)),
     (0.22, 0.041),
 )
 
-_button4_ = boot.button_modified.copy()
-_button4_.set_object(
+button_p.set_object(
+    "button_4",
     (-0.22 * boot.width),
-    (_button3_.y + _button3_.size_y + (0.033 * boot.height)),
+    (button_p.get("button_3").y + button_p.get("button_3").size_y + (0.033 * boot.height)),
     (0.22, 0.041),
 )
 
 
 def _button_hide():
-    _button1_.moved(-0.22, None, 0.5)
-    _button2_.moved(-0.22, None, 0.5)
-    _button3_.moved(-0.22, None, 0.5)
-    _button4_.moved(-0.22, None, 0.5)
+    button_p.moved(
+         button_p.get("button_1"), -0.22, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_2"), -0.22, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_3"), -0.22, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_4"), -0.22, None, 0.5
+    )
 
 
 def _button_get():
-    _button1_.moved(0.032, None, 0.5)
-    _button2_.moved(0.032, None, 0.5)
-    _button3_.moved(0.032, None, 0.5)
-    _button4_.moved(0.032, None, 0.5)
+    button_p.moved(
+        button_p.get("button_1"), 0.032, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_2"), 0.032, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_3"), 0.032, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_4"), 0.032, None, 0.5
+    )
 
 
 def _button_1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    if not _button1_.move_status:
-        _button1_.set_func(level, _button_get)
+    if not button_p.move_status:
+        button_p.set_func(button_p.get("button_1"), level, _button_get)
         _button_hide()
 
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    if not _button2_.move_status:
+    if not button_p.move_status:
         #canvas_conf.set_x(0.018), canvas_conf.set_y(0.20)
-        _button2_.set_func(options, _button_get)
+        button_p.set_func(button_p.get("button_2"), options, _button_get)
         _button_hide()
 
 def _button_3_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
-    if not _button3_.move_status:
-        _button3_.set_func(language_get, _button_get)
+    if not button_p.move_status:
+        button_p.set_func(button_p.get("button_3"), language_get, _button_get)
         _button_hide()
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    if not _button4_.move_status:
+    if not button_p.move_status:
         exit_game()
 
 _buttons = (
-    (_button1_, _button_1_callback_, "0"),
-    (_button2_, _button_2_callback_, "1"),
-    (_button3_, _button_3_callback_, "2"),
-    (_button4_, _button_4_callback_, "6"),
+    ("button_1", _button_1_callback_, "0"),
+    ("button_2", _button_2_callback_, "1"),
+    ("button_3", _button_3_callback_, "2"),
+    ("button_4", _button_4_callback_, "6"),
 )
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.animation()
-        button.callback(callback)
-        button.get_text(boot.standard_text.set_base_text(text_key))
+        button_p.animation(button_p.get(button))
+        button_p.callback(button, callback)
+        button_p.get_text(button, boot.standard_text.set_base_text(text_key))
 
 
 def main_menu():
@@ -123,7 +149,7 @@ def main_menu():
             draw_menu_buttons()
             boot.GLOBAL_EVENT.task.get_tasks()
 
-            boot.version_game()
+            #boot.version_game()
             boot.GLOBAL_EVENT.mouse.event_button_check(
                 boot.standard_curs, boot.click_cursor, boot.sound_scroll
             )
@@ -131,7 +157,7 @@ def main_menu():
                 boot.big_text.set_base_text("7"), 0.05 * boot.width, 0.20 * boot.height
             )
 
-            boot.get_fps(coordinate=(0.0022*boot.width, boot.height))
+            #boot.get_fps(coordinate=(0.0022*boot.width, boot.height))
             boot.tick_fps()
             boot.update_display()
 

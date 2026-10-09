@@ -12,6 +12,7 @@ license = "GPL-3.0"
 requires-python = ">=3.10"
 dependencies = [
     "pygame-ce>=2.5.7",
+    "screeninfo>=0.8.1",
 ]
 
 #[project_info.optional-dependencies]

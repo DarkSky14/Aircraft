@@ -2,6 +2,7 @@ import sys
 sys.path.append("..")
 
 from module.UI.button import CanvasButton
+from module.UI.render import Line
 
 from module import (
     log, py, sys, ImageLoader
@@ -54,6 +55,8 @@ _surfM_.set_object(
     canvas_conf.get_y() * boot.height,
     (x_size, y_size)
 )
+
+lines = Line((0.0168 * boot.width), (0.0168 * boot.width), boot.main_surface)
 
 _button1_ = boot.button_modified.copy()
 _button1_.set_object(
@@ -189,10 +192,25 @@ def options():
         )
         text = boot.standard_text.set_base_text("1")
         boot.big_text.draw_text(
-            text, _surfM_.x + (0.035 * boot.width), _surfM_.y + (0.04 * boot.height)
+            text, _surfM_.x + (0.3 * boot.width), (0.12 * boot.height)
         )
 
-        #boot.get_fps(coordinate=(3, boot.height - (20 * boot.procent)))
+        lines.draw_object(
+            (0,0,0),
+            ((0.11 * boot.width), 0.2 * boot.height),
+            ((0.89 * boot.width), 0.2 * boot.height),
+            round(0.001 * boot.width)
+        )
+
+        lines.draw_object(
+            (0, 0, 0),
+            ((0.11 * boot.width), 0.85 * boot.height),
+            ((0.89 * boot.width), 0.85 * boot.height),
+            round(0.001 * boot.width)
+        )
+
+        boot.get_fps(coordinate=((0.12 * boot.width), (0.89 * boot.height)))
+        boot.version_game()
         boot.tick_fps()
         boot.update_display()
 

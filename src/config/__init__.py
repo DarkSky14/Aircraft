@@ -16,9 +16,9 @@ class PathUrlFix:
         )
 
         self._debug_ = (
-            f"[path: {self.path}] "
-            f"[main_root: {main_root}] "
-            f"[reserve_root: {reserve_root}] "
+            f"\n[path: {self.path}] \n"
+            f"[main_root: {main_root}] \n"
+            f"[reserve_root: {reserve_root}]"
         )
 
     def get(self):
