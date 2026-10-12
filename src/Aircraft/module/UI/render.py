@@ -26,7 +26,7 @@ class Rectangle:
 
 class Line:
     def __init__(
-        self, left: float, top: float, window: py.surface.Surface
+        self, window: py.surface.Surface
     ) -> None:
         self.surface = window
 
@@ -44,13 +44,14 @@ class DrawText:
             self._cache_key = cache_key
             self.text_obj = font.render_font().render(str(text), True, color)
             self.text_rect = self.text_obj.get_rect()
-            #print(text)
             if rect == "topleft":
                 self.text_rect.topleft = (x, y)
             elif rect == "bottomright":
                 self.text_rect.bottomright = (x, y)
             elif rect == "bottomleft":
                 self.text_rect.bottomleft = (x, y)
+            elif rect == "centerx":
+                self.text_rect.centerx, self.text_rect.y = (x, y)
 
         self.surface.blit(self.text_obj, self.text_rect)
         return self.text_rect
@@ -67,13 +68,14 @@ class DrawTextExp:
             button._cache_key = cache_key
             button.text_obj = self.text.font.render_font().render(str(text), True, color)
             button.text_rect = button.text_obj.get_rect()
-            #print(text)
             if rect == "topleft":
                 button.text_rect.topleft = (x, y)
             elif rect == "bottomright":
                 button.text_rect.bottomright = (x, y)
             elif rect == "bottomleft":
                 button.text_rect.bottomleft = (x, y)
+            elif rect == "centerx":
+                button.text_rect.centerx, button.text_rect.y = (x, y)
 
         self.surface.blit(button.text_obj, button.text_rect)
         return button.text_rect

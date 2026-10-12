@@ -1,12 +1,12 @@
 import logging
 import os
 from time import strftime
-from module import url_fixer
+from Aircraft.module import url_fixer
 
 
 class Logger:
     def __init__(self):
-        path_log = url_fixer("Logs")
+        path_log = url_fixer("assets/Logs")
         os.makedirs(path_log, exist_ok=True)
         self.file = os.path.join(path_log, "logs {}.log").format(strftime("%Y-%m-%d %H-%M-%S"))
 

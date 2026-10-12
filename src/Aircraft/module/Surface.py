@@ -2,9 +2,9 @@ import pygame as py
 import sys
 from screeninfo import get_monitors
 
-sys.path.append("..")
+sys.path.append("../..")
 
-from module.logger import log
+from Aircraft.module.file_manager.logger import log
 
 
 class _ClassSurface:
@@ -62,7 +62,7 @@ class AdjustmentSurface(_ClassSurface):
         log.debug("Video info: %s", str(py_info))
 
         if supported:
-            return py.display.set_mode(self.screen, flags|mode)
+            return py.display.set_mode(self.screen, flags | mode)
             #py.FULLSCREEN | py.SCALED
         log.warning("Requested display mode not supported, falling back to defaults")
         return py.display.set_mode(self.screen, mode)
@@ -88,26 +88,30 @@ class AdjustmentSubSurface(_ClassSurface):
         self._conf_width = 0
         self._conf_height = 0
 
-    def surface(self, window: surface.Surface):
+    def surface(self, window: surface.Surface, size: tuple[int, int]) -> py.Surface:
         proponent_width = window.get_width() / self.width
         proponent_height = window.get_height() / self.height
 
         if proponent_width > proponent_height:
             self.proponent = proponent_height
             self.width = self.width * proponent_height
-            self.height = window.get_height()
+            self.height = size[0]
+            #self.height = window.get_height()
             self._conf_width = (window.get_width() - self.width) * 0.5
 
         elif proponent_width < proponent_height:
             self.proponent = proponent_width
-            self.width = window.get_width()
+            self.width = size[1]
+            #self.width = window.get_width()
             self.height = self.height * proponent_width
             self._conf_height = (window.get_height() - self.height) * 0.5
 
         else:
             self.proponent = proponent_width
-            self.width = window.get_width()
-            self.height = window.get_height()
+            self.width = size[0]
+            self.height = size[1]
+            #self.width = window.get_width()
+            #self.height = window.get_height()
 
         log.debug("Proponent: %s", self.proponent)
         log.debug("Size width: %s", self.width)

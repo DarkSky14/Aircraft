@@ -1,8 +1,6 @@
-import sys
-
 import pygame as py
 
-from module.UI import AnimationMove, Rectangle, Text
+from Aircraft.module.UI import AnimationMove, Rectangle, Text, DrawTextExp
 
 class ButtonInfo:
     x, y = 0, 0
@@ -81,83 +79,29 @@ class ButtonBase:
         return self
 
 
-class ButtonModify(ButtonBase, AnimationMove):
+class ButtonModify(ButtonBase):
     def __init__(
-            self, event, window: py.surface.Surface, class_text: "Text", size_config: tuple[int, int] | float = 0
+            self, event, window: py.surface.Surface, size_config: tuple[int, int] | float = 0
     ):
         self.event = event
         self.surface = window
         self.size_config = size_config
-        self.text = class_text
         ButtonBase.__init__(self)
-        AnimationMove.__init__(self, size_config, self)
 
     def copy(self):
         return ButtonModify(
-            self.event, self.surface, self.text.copy_text(), self.size_config
+            self.event, self.surface, self.size_config
         )
 
-    def set_object(self, x, y, size: tuple = (float, float)):
-        self.button.x, self.button.y = round(x), round(y)
-        self.button.size = size
-        self.button.size_x, self.button.size_y = size
-        self.button.size_x *= self.size_config[0]
-        self.button.size_y *= self.size_config[1]
-        self.button.button_radius = round(self.size_y * 0.5)
-
-        if self.button.size_y <= (self.button.button_radius * 2):
-            self.button.size_y = self.button.button_radius * 2
-        self.button.size = self.button.size_x, self.button.size_y
-        self.__rect__update__()
-        return self
-
-    def callback(self, function, bool_custom: bool = True):
-        if self.button_rect.get_rect().collidepoint((self.event.mouse.mx, self.event.mouse.my)) == bool_custom:
-            self.button_rect.draw_object((205, 200, 200), 0, round(self.button.button_radius))
-            self.event.mouse.set_choose_mouse(True)
-
-            if self.event.mouse.mouse_button_down():
-                self.button_rect.draw_object((205, 200, 200), 3, 10)
-                function()
-
-        self.button_rect.draw_object((205, 200, 200), 3, 10)
-
-    def get_text(self, text, color: tuple = (0, 0, 0)):
-        self.text.draw_text(text, self.button.x + 15, self.button.y + 2, color)
+    def __rect__update__(self):
+        self.button_rect = Rectangle(
+            self.button.x, self.button.y, self.button.size, self.surface
+        )
 
     def set_surface(self, surface):
         self.surface = surface
-        self.text.surface = surface
+        #self.text.surface = surface
         self.__rect__update__()
-
-    def __rect__update__(self):
-        self.button_rect = Rectangle(
-            self.button.x, self.button.y, self.button.size, self.surface
-        )
-
-    def add_coord(self, width=0, height=0):
-        self.button.x, self.button.y = round(self.button.x) + width, round(self.button.y) + height
-        self.__rect__update__()
-
-
-class ButtonMod(ButtonBase):
-    def __init__(
-            self, event, window: py.surface.Surface#, size_config: tuple[int, int] | float = 0
-    ):
-        self.event = event
-        self.surface = window
-        self.size_config = 0
-        ButtonBase.__init__(self)
-
-    def copy(self):
-        return ButtonMod(
-            self.event, self.surface
-        )
-
-    def __rect__update__(self):
-        self.button_rect = Rectangle(
-            self.button.x, self.button.y, self.button.size, self.surface
-        )
 
     def add_coord(self, width=0, height=0):
         self.button.x, self.button.y = round(self.button.x) + width, round(self.button.y) + height
@@ -166,9 +110,10 @@ class ButtonMod(ButtonBase):
 
 class CanvasButton(ButtonModify):
     def __init__(
-            self, event, window: py.surface.Surface, size_config: tuple[float, float] = (0,0)
+            self, event, window: py.surface.Surface, size_config: tuple[int, int] | float = (0,0)
     ):
-        ButtonModify.__init__(self, event, window, "Text", size_config)
+        ButtonBase.__init__(self)
+        super().__init__(event, window, size_config)
 
     def set_object(self, x, y, size: tuple = (float, float)):
         self.x, self.y = round(x), round(y)
@@ -192,25 +137,34 @@ class CanvasButton(ButtonModify):
             round(0.0526 * self.size_config[1]),
         )
 
-from module.UI.animation import AnimationMoveExp
-from module.UI.render import DrawTextExp
-class ButtonCollector(AnimationMoveExp, ButtonModify, DrawTextExp):
+class ButtonCollector(AnimationMove, DrawTextExp):
     def __init__(self, event, surface: py.surface.Surface, class_text: "Text", size_config: tuple[int, int] | float = 0):
-        self._buttons: dict[str, ButtonMod] = {}
+        self._buttons: dict[str, ButtonModify] = {}
+        self.region = {}
         self.event = event
         self.text = class_text
         self.size_config = size_config
         self.surface = surface
+
+    def set_region(self, name):
+        if self.region.get(name) is None:
+            self.region[name] = self._buttons
+        else:
+            self._buttons = {}
+
+    def close_region(self, name):
+        if name in self.region:
+            del self.region[name]
 
     def add(self, name: str):
         if self._buttons.get(name):
             print(f"Button id {name} already registered")
             #raise IndexError()
         else:
-            self._buttons[name] = ButtonMod(self.event, self.surface)
+            self._buttons[name] = ButtonModify(self.event, self.surface)
 
     def get(self, name: str):
-        #print(sys.getsizeof(self._buttons[name]))
+        #print(self.region)
         return self._buttons[name]
 
     def set_object(self, name, x, y, size: tuple = (float, float)):
@@ -243,13 +197,16 @@ class ButtonCollector(AnimationMoveExp, ButtonModify, DrawTextExp):
 
         self._buttons[name].button_rect.draw_object((205, 200, 200), 3, 10)
 
-    def get_text(self, name, text, color: tuple = (0, 0, 0)):
+    def get_text(
+            self, name, text, color: tuple = (0, 0, 0), rect="topleft"
+    ):
         self.draw_text(
             self._buttons[name],
             text,
             self._buttons[name].x + 0.0125*self.size_config[0],
             self._buttons[name].y + 0.003*self.size_config[1],
-            color
+            color,
+            rect=rect
         )
 
     def remove(self, button_id):

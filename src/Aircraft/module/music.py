@@ -1,5 +1,5 @@
 from pygame import mixer, mixer_music
-from module.logger import log
+from Aircraft.module.file_manager.logger import log
 
 class Sound:
     def __init__(self, address) -> None:

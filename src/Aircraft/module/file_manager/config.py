@@ -4,16 +4,14 @@ import os
 class PathUrlFix:
     def __init__(self):
         main_root = os.path.abspath(".")
-        reserve_root = os.path.abspath(__file__).removesuffix("\\config\\__init__.py")
+        reserve_root = os.path.abspath(__file__).removesuffix(
+            "\\module\\file_manager\\config.py"
+        )
 
         if main_root == reserve_root or "AppData\\Local\\Temp" in reserve_root:
-            root = main_root
+            self.path = main_root
         else:
-            root = reserve_root
-
-        self.path = os.path.join( #type: ignore
-            root, "library"
-        )
+            self.path = reserve_root
 
         self._debug_ = (
             f"\n[path: {self.path}] \n"

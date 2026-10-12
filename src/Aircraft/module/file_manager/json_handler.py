@@ -1,6 +1,6 @@
 import json
 import os
-from module.logger import log
+from Aircraft.module.file_manager.logger import log
 
 
 class Lib:

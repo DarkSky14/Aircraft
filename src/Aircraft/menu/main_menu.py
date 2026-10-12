@@ -1,18 +1,19 @@
 import sys
-sys.path.append("..")
+import pygame as py
+sys.path.append("..\\..")
 
-from module import (
-    log, py, ImageLoader
+from Aircraft.module import (
+    log, ImageLoader
 )
-from module.UI import ButtonCollector
-from cached.bootstrap import boot
+from Aircraft.module.UI import ButtonCollector
+from Aircraft.core.bootstrap import boot
 
-from menu.settings_menu import options, canvas_conf
-from menu.language_menu import language_get
-from menu.level_menu import level
+from Aircraft.menu.settings_menu import options
+from Aircraft.menu.language_menu import language_get
+from Aircraft.menu.level_menu import level
 
 # Setup pygame/window -----------------------------
-icon = ImageLoader("Aircraft.ico", (32,32)).show()
+icon = ImageLoader("assets/Aircraft.ico", (32,32)).show()
 
 py.display.set_caption("Aircraft", "Aircraft")
 py.display.set_icon(icon)
@@ -101,7 +102,6 @@ def _button_1_callback_():
 def _button_2_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
     if not button_p.move_status:
-        #canvas_conf.set_x(0.018), canvas_conf.set_y(0.20)
         button_p.set_func(button_p.get("button_2"), options, _button_get)
         _button_hide()
 
@@ -132,6 +132,7 @@ def draw_menu_buttons():
 
 def main_menu():
     global work
+    #button_p.set_region("menu")
 
     _button_get()
 
@@ -157,8 +158,10 @@ def main_menu():
                 boot.big_text.set_base_text("7"), 0.05 * boot.width, 0.20 * boot.height
             )
 
-            #boot.get_fps(coordinate=(0.0022*boot.width, boot.height))
+            boot.get_fps(coordinate=(0.0022*boot.width, boot.height))
             boot.tick_fps()
+            #surface = py.transform.scale(boot.main_surface, (1920, 1080))
+            #boot.auto_resize_surface.blit(surface)
             boot.update_display()
 
     except Exception as e:

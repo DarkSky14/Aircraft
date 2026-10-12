@@ -1,20 +1,21 @@
 import sys
-sys.path.append("..")
+import pygame as py
+sys.path.append("..\\..")
 
-from module import (
-    ScrollingBG, log, url_fixer, py, sys, ImageLoader
+from Aircraft.module import (
+    ScrollingBG, log, url_fixer, ImageLoader
 )
 
 from random import randint
 from os import listdir
-from menu.settings_menu import options#, canvas_conf
-from cached.bootstrap import boot
+from Aircraft.menu.settings_menu import options#, canvas_conf
+from Aircraft.core.bootstrap import boot
 
 
 _bg_speed_ = 0.0015 * boot.width
 _game_work = True
 
-IMGS_PATH = url_fixer("player")
+IMGS_PATH = url_fixer("assets/player")
 
 log.info("Start load player images...")
 _player_img = [
@@ -35,7 +36,7 @@ _player_rect = _player.get_rect()
 _player_speed = 0.0018 * boot.width
 
 
-_enemy = ImageLoader("pictures/enemy.png", ((0.0677 * boot.width), (0.0329 * boot.height)))
+_enemy = ImageLoader("assets/pictures/enemy.png", ((0.0677 * boot.width), (0.0329 * boot.height)))
 def _create_enemy(speed_w1, speed_w2):
     global _enemy
     enemy_rect = py.Rect(boot.width, randint(0, int(boot.height)), *_enemy.get_size())
@@ -44,7 +45,7 @@ def _create_enemy(speed_w1, speed_w2):
 ENEMY_EVENT = boot.GLOBAL_EVENT.custom_type()
 
 
-_bonus = ImageLoader("pictures/bonus.jpg", (0.031* boot.width,0.0565* boot.height))
+_bonus = ImageLoader("assets/pictures/bonus.jpg", (0.031* boot.width,0.0565* boot.height))
 def _create_bonus():
     global _bonus
     bonus_rect = py.Rect(randint(0, int(boot.width)), -1000, *_bonus.get_size())

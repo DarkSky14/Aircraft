@@ -1,23 +1,22 @@
 from dataclasses import dataclass
 from typing import Any
 
-import pygame as py, sys, os
+import pygame as py, os
 
-sys.path.append("..")
-
-from module.logger import log
-from module.music import Music, Sound
-from module.language import LanguageCreated, LanguageSetter
-from module.FileWorker import JsonWorker
-from module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG, SubSurface
-from module.event import EventManager
-from module.UI.Text import Text, Font
-from module.UI.button import ButtonModify
-from module import (
-    BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText, get_version,
+from Aircraft.module.file_manager.logger import log
+from Aircraft.module.music import Music, Sound
+from Aircraft.module.language import LanguageCreated, LanguageSetter
+from Aircraft.module.file_manager.json_handler import JsonWorker
+from Aircraft.module.Surface import AdjustmentSurface, AdjustmentSubSurface, ScrollingBG
+from Aircraft.module.event import EventManager
+from Aircraft.module.UI.Text import Text, Font
+from Aircraft.module.UI.button import ButtonCollector
+from Aircraft.module import (
+    BLACK, WHITE, RED, GREEN, LIME, sound_menu, DrawText,
     click_open_1, click_aim, click_exit, click_open_2, effect_game, sound_game,
     url_fixer
 )
+from Aircraft.core.metadata import get_version
 
 
 @dataclass
@@ -32,7 +31,7 @@ class AppContext:
     GLOBAL_EVENT: EventManager
     standard_text: Text
     big_text: Text
-    button_modified: ButtonModify
+    button_p: ButtonCollector
     fon_background: ScrollingBG
     music: Music
     clicks_used: Sound
@@ -74,7 +73,7 @@ class AppContext:
 
 def bootstrap() -> AppContext:
     py.init()
-    #os.environ["SDL_RENDER_DRIVER"] = "opengl"
+    os.environ["SDL_RENDER_DRIVER"] = "opengl"
 
     def click_cursor():
         py.mouse.set_cursor(11)
@@ -123,7 +122,7 @@ def bootstrap() -> AppContext:
 
     config = JsonWorker(
         "config",
-        url_fixer("data"),
+        url_fixer("assets/data"),
         {
             "level": 1,
             "effect": "True",
@@ -141,7 +140,7 @@ def bootstrap() -> AppContext:
     auto_resize_surface = AdjustmentSurface(int(size[0]), int(size[1])).surface()
 
     sub_surface = AdjustmentSubSurface(16,9) #1373, 761 | 1920, 1080
-    main_surface = sub_surface.surface(auto_resize_surface)
+    main_surface = sub_surface.surface(auto_resize_surface, (1920, 1080))
 
     auto_resize_surface.fill((0, 0, 0))
     main_surface.fill((255, 255, 255))
@@ -156,7 +155,7 @@ def bootstrap() -> AppContext:
 
     log.info("Start load background image...")
     bg = py.transform.scale(
-        py.image.load(url_fixer("pictures/background.png")).convert(), screen
+        py.image.load(url_fixer("assets/pictures/background.png")).convert(), main_surface.get_size()
     )
     log.info("Background image successfully loaded.")
     bgX = 0
@@ -165,11 +164,11 @@ def bootstrap() -> AppContext:
 
     GLOBAL_EVENT = EventManager(200, conf_width, conf_height)
 
-    ENGLISH = LanguageCreated("EN", url_fixer("language"), "english.json")
+    ENGLISH = LanguageCreated("EN", url_fixer("assets/language"), "english.json")
 
-    UKRAINIAN = LanguageCreated("UA", url_fixer("language"), "ukrainian.json")
+    UKRAINIAN = LanguageCreated("UA", url_fixer("assets/language"), "ukrainian.json")
 
-    RUSSIAN = LanguageCreated("RU", url_fixer("language"), "russian.json")
+    RUSSIAN = LanguageCreated("RU", url_fixer("assets/language"), "russian.json")
 
     active_language = LanguageSetter(config)
     active_language.checking_typical_language(ENGLISH, UKRAINIAN, RUSSIAN)
@@ -194,7 +193,10 @@ def bootstrap() -> AppContext:
     standard_text = text.copy_text()
     standard_text.set_font(BASE_FONT)
 
-    button_modified = ButtonModify(GLOBAL_EVENT, main_surface, standard_text.copy_text(), (width,height))
+    button_p = ButtonCollector(
+        GLOBAL_EVENT, main_surface,
+        standard_text.copy_text(), (width, height)
+    )
 
     def sound_scroll():
         if config.check({"effect": "True"}):
@@ -221,7 +223,7 @@ def bootstrap() -> AppContext:
 
     tx_fps = DrawText(main_surface)
     def get_fps(
-            font_text: Font = BASE_FONT,
+            font_text: Font = GAME_TEXT,
             color: tuple = (200, 200, 200),
             coordinate: tuple = (0, 0),
             rect = "bottomleft"
@@ -236,7 +238,7 @@ def bootstrap() -> AppContext:
         height=height, width=width,
         config=config, GLOBAL_EVENT=GLOBAL_EVENT,
         standard_text=standard_text, big_text=big_text,
-        button_modified=button_modified,
+        button_p=button_p,
         fon_background=fon_background,
         music=music, clicks_used=clicks_used,
         return_exit_used=return_exit_used, scroll_used=scroll_used,

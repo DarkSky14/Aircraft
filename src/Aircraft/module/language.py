@@ -1,5 +1,5 @@
-from module.FileWorker import Lib, JsonReader
-from module.logger import log
+from Aircraft.module.file_manager.json_handler import Lib, JsonReader
+from Aircraft.module.file_manager.logger import log
 
 
 English = {

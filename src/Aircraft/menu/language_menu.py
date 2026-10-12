@@ -1,8 +1,10 @@
 import sys
-sys.path.append("..")
+import pygame as py
+sys.path.append("..\\..")
 
-from cached.bootstrap import boot, SubSurface
-from module import log, py, sys
+from Aircraft.core.bootstrap import boot
+from Aircraft.module import log
+from Aircraft.module.UI import ButtonCollector
 
 _work = True
 
@@ -13,45 +15,73 @@ def exit_language():
 #surf_m = SubSurface(500, 400)
 #s = surf_m.surface(boot.d, 0, 200)
 
-_button1_ = boot.button_modified.copy()
-_button1_.set_object(
+button_p = ButtonCollector(
+    boot.GLOBAL_EVENT, boot.main_surface,
+    boot.standard_text.copy_text(), (boot.width,boot.height)
+)
+
+button_p.add("button_1")
+button_p.add("button_2")
+button_p.add("button_3")
+button_p.add("button_4")
+
+button_p.set_object(
+"button_1",
     (-0.22 * boot.width),
     (0.289 * boot.height),
     (0.22, 0.041)
-)#.set_surface(s)
+)
 
-_button2_ = boot.button_modified.copy()
-_button2_.set_object(
+button_p.set_object(
+    "button_2",
     (-0.22 * boot.width),
-    (_button1_.y + _button1_.size_y + (0.0132 * boot.height)),
-    (0.22, 0.041)
-)#.set_surface(s)
+    (button_p.get("button_1").y + button_p.get("button_1").size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
+)
 
-_button3_ = boot.button_modified.copy()
-_button3_.set_object(
+button_p.set_object(
+    "button_3",
     (-0.22 * boot.width),
-    (_button2_.y + _button2_.size_y + (0.0132 * boot.height)),
-    (0.22, 0.041)
-)#.set_surface(s)
+    (button_p.get("button_2").y + button_p.get("button_2").size_y + (0.0132 * boot.height)),
+    (0.22, 0.041),
+)
 
-_button4_ = boot.button_modified.copy()
-_button4_.set_object(
+button_p.set_object(
+    "button_4",
     (-0.22 * boot.width),
-    (_button3_.y + _button3_.size_y + (0.033 * boot.height)),
-    (0.22, 0.041)
-)#.set_surface(s)
+    (button_p.get("button_3").y + button_p.get("button_3").size_y + (0.033 * boot.height)),
+    (0.22, 0.041),
+)
 
-def _button_get():
-    _button1_.moved(0.032, None, 0.5)
-    _button2_.moved(0.032, None, 0.5)
-    _button3_.moved(0.032, None, 0.5)
-    _button4_.moved(0.032, None, 0.5)
 
 def _button_hide():
-    _button1_.moved(-0.22, None, 0.5)
-    _button2_.moved(-0.22, None, 0.5)
-    _button3_.moved(-0.22, None, 0.5)
-    _button4_.moved(-0.22, None, 0.5)
+    button_p.moved(
+         button_p.get("button_1"), -0.22, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_2"), -0.22, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_3"), -0.22, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_4"), -0.22, None, 0.5
+    )
+
+
+def _button_get():
+    button_p.moved(
+        button_p.get("button_1"), 0.032, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_2"), 0.032, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_3"), 0.032, None, 0.5
+    )
+    button_p.moved(
+        button_p.get("button_4"), 0.032, None, 0.5
+    )
 
 def _button1_callback_():
     boot.config.check({"effect": "True"}, boot.clicks)
@@ -73,25 +103,26 @@ def _button3_callback_():
 
 def _button_4_callback_():
     boot.config.check({"effect": "True"}, boot.return_exit)
-    if not _button4_.move_status:
-        _button4_.set_func(exit_language)
+    if not button_p.move_status:
+        button_p.set_func(button_p.get("button_4"),exit_language)
         _button_hide()
 
 _buttons = (
-    (_button1_, _button1_callback_, "English"),
-    (_button2_, _button2_callback_, "Українська"),
-    (_button3_, _button3_callback_, "Русский"),
-    (_button4_, _button_4_callback_, "6"),
+    ("button_1", _button1_callback_, "English"),
+    ("button_2", _button2_callback_, "Українська"),
+    ("button_3", _button3_callback_, "Русский"),
+    ("button_4", _button_4_callback_, "6"),
 )
 
 def draw_menu_buttons():
     for button, callback, text_key in _buttons:
-        button.animation()
-        button.callback(callback)
-        button.get_text(boot.standard_text.set_base_text(text_key))
+        button_p.animation(button_p.get(button))
+        button_p.callback(button, callback)
+        button_p.get_text(button, boot.standard_text.set_base_text(text_key))
 
 def language_get():
     global _work
+    #button_p.set_region("language")
 
     _button_get()
 
@@ -109,8 +140,8 @@ def language_get():
 
                 if event.type == py.KEYDOWN and event.key == py.K_ESCAPE:
                     boot.config.check({"effect": "True"}, boot.return_exit)
-                    if not _button4_.move_status:
-                        _button4_.set_func(exit_language)
+                    if not button_p.move_status:
+                        button_p.set_func(button_p.get("button_4"),exit_language)
                         _button_hide()
 
                 elif event.type == py.MOUSEWHEEL:
@@ -120,10 +151,10 @@ def language_get():
                     else:
                         scroll_y = 0
 
-                    _button1_.add_coord(height=scroll_y)
-                    _button2_.add_coord(height=scroll_y)
-                    _button3_.add_coord(height=scroll_y)
-                    _button4_.add_coord(height=scroll_y)
+                    #button_p.add_coord(height=scroll_y)
+                    #button_p.add_coord(height=scroll_y)
+                    #button_p.add_coord(height=scroll_y)
+                    #button_p.add_coord(height=scroll_y)
 
             boot.GLOBAL_EVENT.mouse.mouse_get()
             boot.background()

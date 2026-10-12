@@ -1,4 +1,6 @@
-from module import url_fixer, py, log
+import pygame as py
+from Aircraft.module import url_fixer, log
+
 
 class ImageLoader:
     def __init__(self, url:str, size:tuple[int, int]):
